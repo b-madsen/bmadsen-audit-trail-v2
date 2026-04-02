@@ -1,0 +1,392 @@
+/* HRManagerHome Layout CSS - Animated transitions */
+
+.hr-manager-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  position: relative;
+  padding: 0 24px;
+}
+
+/* ==================== INITIAL STATE ==================== */
+.hr-manager-home--initial {
+  justify-content: center;
+}
+
+.hr-manager-home--initial .hr-home-header,
+.hr-manager-home--initial .hr-home-initial-prompts,
+.hr-manager-home--initial .hr-home-search-section {
+  transform: translateY(-20px);
+}
+
+/* ==================== ACTIVE STATE ==================== */
+.hr-manager-home--active {
+  justify-content: flex-start;
+  padding-bottom: 140px; /* Space for fixed search bar */
+}
+
+/* ==================== GREETING HEADER ==================== */
+.hr-home-header {
+  max-width: 672px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 0 32px 0;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.hr-home-header--hidden {
+  opacity: 0;
+  transform: translateY(-30px);
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hr-home-greeting {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.hr-home-greeting-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ==================== INITIAL PROMPTS ==================== */
+.hr-home-initial-prompts {
+  max-width: 672px;
+  width: 100%;
+  padding: 24px 0 0 0;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.hr-home-initial-prompts--fading {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.hr-home-prompts-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* ==================== SEARCH SECTION ==================== */
+.hr-home-search-section {
+  max-width: 672px;
+  width: 100%;
+  padding: 40px 0 24px 0;
+}
+
+/* Search fixed at bottom when active */
+.hr-home-search-section--fixed {
+  position: fixed;
+  bottom: 48px;
+  left: 0;
+  right: 0;
+  max-width: none;
+  width: 100%;
+  padding: 0 40px;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+  animation: moveSearchToBottom 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hr-home-search-section--fixed > * {
+  max-width: 672px;
+  width: 100%;
+}
+
+@keyframes moveSearchToBottom {
+  from {
+    bottom: 50%;
+    transform: translateY(50%);
+  }
+  to {
+    bottom: 48px;
+    transform: translateY(0);
+  }
+}
+
+/* ==================== MAIN CONTENT AREA ==================== */
+.hr-home-content {
+  max-width: 672px;
+  width: 100%;
+  padding: 0 0 120px 0;
+  opacity: 0;
+  transform: translateY(-30px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.hr-home-content--visible {
+  opacity: 1;
+  transform: translateY(0);
+  animation: fadeInContent 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeInContent {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==================== BACK BUTTON ==================== */
+.hr-home-back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  margin-bottom: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.hr-home-back-button:hover {
+  opacity: 0.7;
+}
+
+/* ==================== CHAT MESSAGE ==================== */
+.hr-home-chat-message {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 24px;
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--fabric-border-color-neutral-weakest, #e5e5e5);
+}
+
+.hr-home-chat-message:last-of-type {
+  border-bottom: none;
+}
+
+/* User Query */
+.hr-home-user-query {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ==================== AI RESPONSE ==================== */
+.hr-home-ai-response {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hr-home-ai-response--animate {
+  animation: slideDownFromTop 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideDownFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Thinking/Loading shimmer animation */
+.hr-home-ai-thinking {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.hr-home-ai-thinking::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  animation: shimmerLoading 1.5s infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerLoading {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.hr-home-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hr-home-suggestion-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ==================== FEEDBACK CONTROLS ==================== */
+.hr-home-feedback-controls {
+  display: flex;
+  gap: 8px;
+}
+
+/* ==================== PRIORITY ALERTS ==================== */
+.priority-alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ==================== QUICK ACTIONS ==================== */
+.quick-actions-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.quick-actions-grid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ==================== WIDGETS ==================== */
+.hr-home-widgets {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.hr-home-widget {
+  width: 100%;
+}
+
+.hr-home-widget--animate {
+  animation: slideInWidget 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-fill-mode: both;
+}
+
+/* Staggered animation for widgets */
+.hr-home-widget--animate:nth-child(1) { animation-delay: 0.1s; }
+.hr-home-widget--animate:nth-child(2) { animation-delay: 0.2s; }
+.hr-home-widget--animate:nth-child(3) { animation-delay: 0.3s; }
+.hr-home-widget--animate:nth-child(4) { animation-delay: 0.4s; }
+.hr-home-widget--animate:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes slideInWidget {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Override Gridlet's height behavior */
+.hr-home-widget [data-fabric-component="Gridlet"] {
+  height: auto !important;
+}
+
+.hr-home-widget [data-fabric-component="Gridlet"] > section,
+.hr-home-widget [data-fabric-component="Gridlet"] > section > div {
+  height: auto !important;
+  flex: none !important;
+}
+
+/* ==================== SLIDEDOWN NOTIFICATION ==================== */
+.hr-home-slidedown {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  animation: slidedownEnter 0.3s ease-out;
+}
+
+@keyframes slidedownEnter {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.hr-home-success-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: var(--fabric-surface-color-success-weak, #f0fdf4);
+  border: 1px solid var(--fabric-border-color-success-medium, #86efac);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .hr-manager-home {
+    padding: 0 16px;
+  }
+
+  .hr-home-greeting {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .hr-home-prompts-buttons {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+
+
+  .hr-home-search-section--fixed {
+    padding: 0 32px;
+    bottom: 40px;
+  }
+
+  @keyframes moveSearchToBottom {
+    from {
+      bottom: 50%;
+      transform: translateY(50%);
+    }
+    to {
+      bottom: 40px;
+      transform: translateY(0);
+    }
+  }
+}

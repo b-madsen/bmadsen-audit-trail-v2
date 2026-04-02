@@ -1,0 +1,230 @@
+/* Navigation Option A Layout */
+.nav-option-a {
+  display: flex;
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.nav-option-a__sidebar {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.nav-option-a__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sticky header */
+.nav-option-a__main > [data-fabric-component="Header"] {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  background-color: #ffffff;
+}
+
+/* Add margins to PageCapsule */
+.nav-option-a [data-fabric-component="PageCapsule"] {
+  margin-bottom: 24px;
+  margin-right: 12px;
+  border-radius: 20px 20px 0 0;
+}
+
+/* Mobile: remove rounded corners at 360px and smaller */
+@media (max-width: 360px) {
+  .nav-option-a [data-fabric-component="PageCapsule"] {
+    border-radius: 0;
+    margin-bottom: 0;
+    margin-right: 0;
+  }
+}
+
+/* Files Page Styles */
+.files-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* No sidebar variant - full width layout */
+.files-page--no-sidebar {
+  padding: 0;
+}
+
+.files-page--no-sidebar .files-main {
+  width: 100%;
+}
+
+/* Page Title */
+.files-title {
+  padding: 24px 0 16px 0;
+}
+
+/* Content Layout */
+.files-layout {
+  display: flex;
+  flex: 1;
+  gap: 24px;
+}
+
+/* Sidebar */
+.files-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+}
+
+.files-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.files-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--fabric-theme-radius-small, 4px);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+  background: transparent;
+  color: var(--fabric-theme-color-text-neutral-strong, #38312f);
+}
+
+.files-nav-item:hover {
+  background-color: var(--fabric-theme-color-surface-neutral-x-weak, #ebe8e6);
+}
+
+.files-nav-item--active {
+  background-color: var(--fabric-theme-color-primary-strong, #2e7918);
+  color: white;
+}
+
+.files-nav-item--active:hover {
+  background-color: var(--fabric-theme-color-primary-strong, #2e7918);
+}
+
+.files-nav-item-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.files-nav-divider {
+  margin: 8px 0;
+  border: none;
+  border-top: 1px solid var(--fabric-theme-color-border-neutral-x-weak, #e5e2e0);
+}
+
+/* Main Content */
+.files-main {
+  flex: 1;
+  min-width: 0;
+}
+
+
+
+/* File List - Section provides white background */
+.files-main [data-fabric-component="Section"] {
+  background: var(--fabric-theme-color-surface-neutral-white, #ffffff);
+}
+
+/* Section Header Actions */
+.files-section-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* Select All Row */
+.files-select-all {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--fabric-theme-color-border-neutral-x-weak, #e5e2e0);
+}
+
+/* File Row */
+.file-row-wrapper {
+  /* Background provided by Section */
+}
+
+.file-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  transition: background-color 0.15s;
+}
+
+.file-row:hover {
+  background-color: var(--fabric-theme-color-surface-neutral-xx-weak, #f5f3f2);
+}
+
+.file-row--selected {
+  background-color: var(--fabric-theme-color-surface-selected-weak, #e8f4e5);
+}
+
+.file-row--selected:hover {
+  background-color: var(--fabric-theme-color-surface-selected-weak, #e8f4e5);
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--fabric-theme-color-link, #0b4fd1);
+  text-decoration: none;
+}
+
+.file-name:hover {
+  text-decoration: underline;
+}
+
+.file-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.file-divider {
+  margin: 0 16px;
+  border: none;
+  border-top: 1px solid var(--fabric-theme-color-border-neutral-x-weak, #e5e2e0);
+}
+
+/* Secure Download Link */
+.secure-download-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--fabric-theme-color-primary-strong, #2e7918);
+  text-decoration: none;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.secure-download-link:hover {
+  text-decoration: underline;
+}

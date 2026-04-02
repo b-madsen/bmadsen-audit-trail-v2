@@ -1,0 +1,654 @@
+.global-nav-mobile {
+  width: 300px;
+  height: 100vh;
+  background: var(--surface-neutral-white);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+}
+
+.global-nav-header {
+  height: 91px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Expanded header: logo left, collapse button right */
+.global-nav-header--expanded {
+  justify-content: space-between;
+}
+
+.global-nav-header-logo {
+  height: 28px;
+  width: auto;
+}
+
+.global-nav-logo {
+  height: 28px;
+}
+
+.global-nav-close {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: var(--radius-xx-small);
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.global-nav-close:hover {
+  background-color: var(--surface-neutral-xx-weak);
+}
+
+.global-nav-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.global-nav-item-wrapper {
+  /* Using gap on parent instead of margin */
+}
+
+.global-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 36px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: left;
+}
+
+/* Hover state: gray bg, green icon/text (medium weight) */
+.global-nav-item:hover {
+  background-color: var(--surface-neutral-x-weak);
+}
+
+.global-nav-item:hover .global-nav-item-icon svg {
+  color: var(--icon-color-primary-strong);
+}
+
+.global-nav-item:hover .global-nav-item-content [data-fabric-component="BodyText"] {
+  color: var(--text-color-primary);
+}
+
+/* Focus state (inactive): transparent bg, green ring, gray icon/text */
+.global-nav-item:focus-visible {
+  background-color: transparent;
+  outline: none;
+  box-shadow: 0px 0px 0px 2px rgba(89, 157, 21, 0.8);
+}
+
+/* Active/Selected state: gray bg, solid green icon, bold green text */
+.global-nav-item--active {
+  background-color: var(--surface-neutral-x-weak);
+}
+
+/* Active + Hover: same as active */
+.global-nav-item--active:hover {
+  background-color: var(--surface-neutral-x-weak);
+}
+
+/* Active + Hover: keep the active styling, don't change to hover styling */
+.global-nav-item--active:hover .global-nav-item-icon svg,
+.global-nav-item--active .global-nav-item-icon svg {
+  color: var(--icon-color-primary-strong);
+}
+
+.global-nav-item--active:hover .global-nav-item-content [data-fabric-component="BodyText"],
+.global-nav-item--active .global-nav-item-content [data-fabric-component="BodyText"] {
+  color: #2e7918 !important;
+}
+
+/* Focus state (active): gray bg, green ring, solid green icon, bold green text */
+.global-nav-item--active:focus-visible {
+  background-color: var(--surface-neutral-x-weak);
+  outline: none;
+  box-shadow: 0px 0px 0px 2px rgba(89, 157, 21, 0.8);
+}
+
+/* Expanded accordion parent style */
+.global-nav-item--expanded {
+  background-color: var(--surface-neutral-x-weak);
+  border-radius: 8px;
+  height: 36px;
+  padding: 8px 12px;
+}
+
+.global-nav-item--expanded:hover {
+  background-color: var(--surface-neutral-x-weak);
+}
+
+.global-nav-item--child {
+  /* Child items inherit standard padding; container provides indent */
+}
+
+.global-nav-item-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.global-nav-item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.global-nav-item-caret {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Items with subtitle (stacked text) need more height */
+.global-nav-item--with-subtitle {
+  height: auto;
+  min-height: 36px;
+  padding: 12px;
+}
+
+.global-nav-children {
+  margin-top: 8px;
+  padding-left: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+.global-nav-children::before {
+  content: '';
+  position: absolute;
+  left: 22px;
+  top: 0;
+  bottom: 18px;
+  width: 1px;
+  background-color: var(--border-neutral-x-weak);
+}
+
+.global-nav-divider {
+  height: 1px;
+  background-color: var(--border-neutral-x-weak);
+  margin: 0 16px;
+}
+
+.global-nav-section-divider {
+  height: 1px;
+  min-height: 1px;
+  background-color: #c5c5c5;
+  margin: 8px 0;
+  flex-shrink: 0;
+}
+
+/* Bottom account section */
+.global-nav-bottom-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+
+.global-nav-bottom-divider {
+  height: 1px;
+  background-color: var(--border-neutral-x-weak);
+  margin: 0 20px;
+  flex-shrink: 0;
+}
+
+/* Profile button - styled like nav items */
+.global-nav-profile-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s;
+}
+
+.global-nav-profile-button:hover {
+  background-color: var(--surface-neutral-x-weak);
+}
+
+.global-nav-profile-button--active {
+  background-color: var(--surface-neutral-x-weak);
+}
+
+.global-nav-profile-button--collapsed {
+  width: 48px;
+  height: 48px;
+  padding: 8px;
+  justify-content: center;
+}
+
+.global-nav-profile-button--collapsed:hover {
+  background-color: var(--surface-neutral-x-weak);
+}
+
+.global-nav-account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Profile Expandable Menu */
+.global-nav-profile-menu {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 20px;
+  background: var(--surface-neutral-white);
+  border-top: 1px solid var(--border-neutral-x-weak);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.global-nav-profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 36px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s;
+}
+
+.global-nav-profile-menu-item:hover {
+  background-color: var(--surface-neutral-xx-weak);
+}
+
+.global-nav-profile-menu-divider {
+  height: 1px;
+  background-color: var(--border-neutral-x-weak);
+  margin: 8px 0;
+}
+
+/* Gradient fade at top of scrollable area */
+.global-nav-fade-top {
+  height: 56px;
+  background: linear-gradient(to bottom, white, rgba(255, 255, 255, 0));
+  pointer-events: none;
+  flex-shrink: 0;
+  margin-bottom: -56px;
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Gradient fade at bottom of scrollable area */
+.global-nav-fade-bottom {
+  height: 56px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), white);
+  pointer-events: none;
+  flex-shrink: 0;
+  margin-top: -56px;
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Show fades when scrollable */
+.global-nav-fade--visible {
+  opacity: 1;
+}
+
+/* ============================================
+   COLLAPSED STATE STYLES
+   ============================================ */
+
+/* Collapsed nav container */
+.global-nav-mobile--collapsed {
+  width: 72px;
+  position: relative;
+}
+
+/* Menu toggle button */
+.global-nav-menu-toggle {
+  width: 48px;
+  height: 48px;
+  background-color: var(--surface-neutral-x-weak);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.global-nav-menu-toggle:hover {
+  background-color: var(--surface-neutral-weak);
+}
+
+/* Header in collapsed mode */
+.global-nav-mobile--collapsed .global-nav-header {
+  padding: 0 12px;
+  justify-content: center;
+}
+
+/* Prevent FooterItem from being squished in header */
+.global-nav-header [data-fabric-component="GlobalNavigation.FooterItem"] {
+  flex-shrink: 0;
+}
+
+/* Nav list in collapsed mode */
+.global-nav-list--collapsed {
+  padding: 0 12px;
+  align-items: center;
+}
+
+/* Collapsed nav item wrapper */
+.global-nav-item-wrapper--collapsed {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Collapsed nav item (icon only) - matches expanded item height (36px) */
+.global-nav-item--collapsed {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  border-radius: 8px;
+}
+
+/* Flyout open indicator */
+.global-nav-item--flyout-open {
+  background-color: var(--surface-neutral-x-weak);
+}
+
+/* Section divider in collapsed mode - matches expanded margin (8px) */
+.global-nav-section-divider--collapsed {
+  width: 32px;
+  margin: 8px auto;
+}
+
+/* Bottom section in collapsed mode */
+.global-nav-bottom-section--collapsed {
+  padding: 16px 12px;
+  align-items: center;
+}
+
+
+/* ============================================
+   FLYOUT MENU STYLES
+   ============================================ */
+
+.global-nav-flyout {
+  position: fixed;
+  left: 64px;
+  min-width: 220px;
+  max-width: 280px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  z-index: 999999;
+  overflow: hidden;
+  animation: flyout-enter 0.15s ease-out;
+  isolation: isolate;
+}
+
+/* Flipped flyout animation (slides up) */
+.global-nav-flyout--flipped {
+  animation: flyout-enter-flipped 0.15s ease-out;
+}
+
+@keyframes flyout-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes flyout-enter-flipped {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.global-nav-flyout-header {
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--border-neutral-x-weak);
+}
+
+/* Header at bottom (flipped) */
+.global-nav-flyout-header--bottom {
+  border-bottom: none;
+  border-top: 1px solid var(--border-neutral-x-weak);
+  padding: 8px 16px 12px;
+}
+
+.global-nav-flyout-items {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.global-nav-flyout-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  text-align: left;
+}
+
+.global-nav-flyout-item:hover {
+  background-color: var(--surface-neutral-x-weak);
+}
+
+.global-nav-flyout-item--active {
+  background-color: var(--surface-neutral-x-weak);
+}
+
+.global-nav-flyout-item--active:hover {
+  background-color: var(--surface-neutral-x-weak);
+}
+
+.global-nav-flyout-item-icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.global-nav-flyout-divider {
+  height: 1px;
+  background-color: var(--border-neutral-x-weak);
+  margin: 4px 8px;
+}
+
+/* Profile flyout specific styles */
+.global-nav-flyout--profile {
+  min-width: 240px;
+}
+
+/* Expanded mode profile flyout - appears above profile button */
+.global-nav-flyout--profile.global-nav-flyout--expanded {
+  left: 20px;
+  right: auto;
+  width: 260px;
+  border-radius: 12px;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border: 1px solid var(--border-neutral-x-weak);
+}
+
+.global-nav-flyout-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-neutral-x-weak);
+}
+
+.global-nav-flyout-profile-header--bottom {
+  border-bottom: none;
+  border-top: 1px solid var(--border-neutral-x-weak);
+}
+
+.global-nav-flyout-profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ============================================
+   MOBILE OVERLAY STYLES
+   ============================================ */
+
+/* Mobile overlay backdrop */
+.global-nav-overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999998;
+  animation: backdrop-fade-in 0.2s ease-out;
+}
+
+@keyframes backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mobile overlay mode - full screen */
+.global-nav-mobile--overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 999999;
+  animation: overlay-slide-in 0.3s ease-out;
+}
+
+@keyframes overlay-slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Close button for mobile overlay */
+.global-nav-overlay-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  z-index: 10;
+}
+
+.global-nav-overlay-close:hover {
+  background-color: var(--surface-neutral-x-weak);
+}
+
+/* Hide the collapse button in mobile overlay */
+.global-nav-mobile--overlay .global-nav-header {
+  justify-content: flex-start;
+  padding-left: 20px;
+}
+
+/* Adjust header content for overlay mode */
+.global-nav-mobile--overlay .global-nav-header > [data-fabric-component="GlobalNavigation.FooterItem"] {
+  display: none;
+}
+
+/* Mobile overlay logo */
+.global-nav-overlay-logo {
+  height: 28px;
+  width: auto;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .global-nav-mobile--overlay {
+    width: 100%;
+    max-width: none;
+  }
+}

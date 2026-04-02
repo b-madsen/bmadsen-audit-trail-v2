@@ -1,0 +1,77 @@
+.prototype-index {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.prototype-index__header {
+  margin-bottom: 32px;
+}
+
+.prototype-index__header > *:first-child {
+  margin-bottom: 8px;
+}
+
+.prototype-index__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.prototype-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 24px;
+  background: var(--fabric-surface-color-neutral-inverted);
+  border: 1px solid var(--fabric-border-color-neutral-weakest);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.prototype-card:hover {
+  border-color: var(--fabric-border-color-primary-medium);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.prototype-card:focus {
+  outline: 2px solid var(--fabric-border-color-primary-strong);
+  outline-offset: 2px;
+}
+
+.prototype-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: var(--fabric-surface-color-primary-weakest);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.prototype-card--error .prototype-card__icon {
+  background: var(--fabric-surface-color-neutral-weak);
+}
+
+.prototype-card__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.prototype-card__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+/* Pill spacing adjustment */
+.prototype-card__title [data-fabric-component="Pill"] {
+  flex-shrink: 0;
+}
+
+.prototype-card__arrow {
+  flex-shrink: 0;
+}

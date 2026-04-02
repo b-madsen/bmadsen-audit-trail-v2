@@ -1,0 +1,50 @@
+.pe-version-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 16px;
+  height: 36px;
+  background: #2d2d3a;
+}
+.pe-version-bar__label {
+  color: rgba(255,255,255,0.4);
+  font-size: 11px;
+  font-family: Inter, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-right: 8px;
+  user-select: none;
+}
+.pe-version-btn {
+  height: 24px;
+  padding: 0 12px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+  font-family: Inter, sans-serif;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.pe-version-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
+.pe-version-btn--active { background: rgba(255,255,255,0.14); color: #fff; font-weight: 500; }
+
+.pe-cell { cursor: default; position: relative; overflow: visible; max-width: 0; }
+.pe-cell .MuiFormControl-root { width: 100% !important; min-width: 0 !important; }
+.pe-cell .MuiInputBase-root { min-width: 0 !important; }
+.pe-cell__edit-btn { opacity: 0; pointer-events: none; transition: opacity 0.1s; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); z-index: 1; }
+.pe-cell:hover .pe-cell__edit-btn { opacity: 1; pointer-events: auto; }
+
+/* Override ButtonGroup last-button radius for IconButton (e.g. Fields panel Close)
+   so the button is fully rounded instead of square on the left. */
+.MuiButtonGroup-root .MuiButtonGroup-lastButton[data-fabric-component="IconButton"] {
+  border-top-left-radius: 100px;
+  border-bottom-left-radius: 100px;
+  border-radius: 100px;
+}

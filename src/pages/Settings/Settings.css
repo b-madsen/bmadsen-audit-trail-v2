@@ -1,0 +1,252 @@
+.settings-page {
+  min-height: 100%;
+}
+
+/* No-sidebar layout */
+.settings-page--no-sidebar .settings-layout {
+  display: block;
+}
+
+.settings-page--no-sidebar .settings-main {
+  padding: 0 32px 40px;
+}
+
+.settings-header {
+  padding: 32px 32px 24px;
+}
+
+.settings-layout {
+  display: flex;
+  min-height: 100%;
+}
+
+/* Sidebar Navigation */
+.settings-sidebar {
+  width: 280px;
+  padding: 0 24px 32px 32px;
+  flex-shrink: 0;
+}
+
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  width: 100%;
+  border: none;
+  border-radius: var(--radius-small);
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  background: transparent;
+  color: var(--text-neutral-strong);
+}
+
+.settings-nav-item:hover {
+  background-color: var(--surface-neutral-white);
+  color: var(--color-primary-strong);
+}
+
+.settings-nav-item--active {
+  background-color: var(--color-primary-strong);
+  color: white;
+}
+
+.settings-nav-item--active:hover {
+  background-color: var(--color-primary-strong);
+  color: white;
+}
+
+/* Main Content */
+.settings-main {
+  flex: 1;
+  padding: 0 40px 40px;
+}
+
+.settings-card {
+  background: var(--surface-neutral-white);
+  border-radius: var(--radius-medium);
+  padding: 32px;
+}
+
+.settings-card-header {
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-neutral-x-weak);
+}
+
+/* Content Layout */
+.settings-content-layout {
+  display: flex;
+  gap: 32px;
+}
+
+/* Vertical Sub-tabs */
+.settings-subtabs {
+  width: 160px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-subtab {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 15px;
+  border: none;
+  border-radius: var(--radius-xx-small);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  color: var(--text-neutral-medium);
+}
+
+.settings-subtab:hover {
+  background-color: var(--surface-neutral-xx-weak);
+  color: var(--text-neutral-strong);
+}
+
+.settings-subtab--active {
+  background-color: var(--surface-neutral-xx-weak);
+  color: var(--color-primary-strong);
+  font-weight: 600;
+}
+
+/* Content Area */
+.settings-content {
+  flex: 1;
+}
+
+/* Account Info Header */
+.account-info-header {
+  margin-bottom: 32px;
+}
+
+.account-info-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.account-info-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.account-info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account-owner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.account-owner-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.account-owner-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Section */
+.settings-section {
+  margin-bottom: 24px;
+}
+
+.settings-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+/* Info Card */
+.info-card {
+  background: var(--surface-neutral-white);
+  border: 1px solid var(--border-neutral-x-weak);
+  border-radius: var(--radius-medium);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.info-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.info-card-row + .info-card-row {
+  margin-top: 16px;
+}
+
+.info-card-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.info-card-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--surface-neutral-xx-weak);
+  border-radius: var(--radius-xx-small);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-card-icon--large {
+  width: 56px;
+  height: 56px;
+}
+
+.info-card-text {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Upgrade Card */
+.upgrade-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-neutral-white);
+  border: 1px solid var(--border-neutral-x-weak);
+  border-radius: var(--radius-medium);
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+
+/* Promo Box */
+.promo-box {
+  background: var(--surface-neutral-xx-weak);
+  border-radius: var(--radius-xx-small);
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+/* Data Section */
+.data-location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}

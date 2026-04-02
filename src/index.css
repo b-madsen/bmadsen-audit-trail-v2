@@ -1,0 +1,155 @@
+/* ================================
+   Design Tokens (Fabric-compatible)
+   ================================ */
+
+:root {
+  /* Primary Colors */
+  --color-primary-strong: #2e7918;
+  --color-primary-medium: #3d9a21;
+  --color-primary-weak: #f0f9ed;
+
+  /* Text Colors */
+  --text-neutral-xx-strong: #38312f;
+  --text-neutral-x-strong: #48413f;
+  --text-neutral-strong: #48413f;
+  --text-neutral-medium: #676260;
+  --text-neutral-weak: #777270;
+
+  /* Icon Colors */
+  --icon-neutral-xx-strong: #38312f;
+  --icon-neutral-x-strong: #48413f;
+  --icon-neutral-strong: #777270;
+  --icon-neutral-medium: #8a8582;
+
+  /* Surface Colors */
+  --surface-neutral-white: #ffffff;
+  --surface-neutral-xx-weak: #f6f6f4;
+  --surface-neutral-x-weak: #f5f4f1;
+
+  /* Border Colors */
+  --border-neutral-xx-weak: #e9e8e6;
+  --border-neutral-x-weak: #e4e3e0;
+  --border-neutral-weak: #d4d2cf;
+  --border-neutral-medium: #c6c2bf;
+
+  /* Spacing */
+  --space-none: 0px;
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-s: 12px;
+  --space-m: 16px;
+  --space-l: 20px;
+  --space-xl: 24px;
+  --space-xxl: 32px;
+  --space-xxxl: 40px;
+
+  /* Border Radius */
+  --radius-xx-small: 8px;
+  --radius-x-small: 12px;
+  --radius-small: 16px;
+  --radius-medium: 20px;
+  --radius-large: 24px;
+  --radius-full: 1000px;
+
+  /* Shadows */
+  --shadow-100: 1px 1px 0px 1px rgba(56, 49, 47, 0.04);
+  --shadow-300: 1px 1px 0px 2px rgba(56, 49, 47, 0.03);
+  --shadow-500: 1px 1px 0px 2px rgba(56, 49, 47, 0.05);
+
+  /* Additional tokens */
+  --color-link: #2563eb;
+  --surface-selected-weak: #f0f9ed;
+}
+
+/* ================================
+   Custom Fonts
+   ================================ */
+
+@font-face {
+  font-family: 'Fields';
+  src: url('/assets/fonts/Fields-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Fields';
+  src: url('/assets/fonts/Fields-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Fields';
+  src: url('/assets/fonts/Fields-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* ================================
+   Base Styles
+   ================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-neutral-strong);
+  background-color: var(--surface-neutral-xx-weak);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Link reset */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Button reset */
+button {
+  font-family: inherit;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}

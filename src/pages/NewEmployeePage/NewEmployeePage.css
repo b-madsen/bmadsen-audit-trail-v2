@@ -1,0 +1,156 @@
+.new-employee-page {
+  height: 100%;
+  overflow-y: auto;
+  background: var(--surface-neutral-xx-weak);
+}
+
+.new-employee-header {
+  padding: 32px 32px 0;
+}
+
+.new-employee-header-content {
+  max-width: 1248px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.new-employee-title {
+  font-family: 'Fields', system-ui, sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 58px;
+  color: var(--color-primary-strong);
+}
+
+.new-employee-form {
+  padding: 24px 32px;
+}
+
+.new-employee-form-content {
+  max-width: 1248px;
+  margin: 0 auto;
+}
+
+.new-employee-form-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Form rows */
+.new-employee-form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.new-employee-form-row + .new-employee-form-row {
+  margin-top: 16px;
+}
+
+.new-employee-field {
+  width: 248px;
+}
+
+.new-employee-field--wide {
+  width: 369px;
+}
+
+.new-employee-field--narrow {
+  width: 180px;
+}
+
+.new-employee-field--extra-narrow {
+  width: 112px;
+}
+
+/* Self-service access cards */
+.new-employee-access-cards {
+  display: flex;
+  gap: 24px;
+}
+
+.new-employee-access-card {
+  width: 380px;
+  height: 102px;
+  background: var(--surface-neutral-white);
+  border: 1px solid var(--border-neutral-x-weak);
+  border-radius: var(--radius-xx-small);
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  cursor: pointer;
+  box-shadow: var(--shadow-300);
+}
+
+.new-employee-access-card--selected {
+  border-color: var(--color-primary-medium);
+}
+
+.new-employee-access-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-xx-small);
+  flex-shrink: 0;
+}
+
+.new-employee-access-icon--primary {
+  background: var(--color-primary-strong);
+}
+
+.new-employee-access-icon--neutral {
+  background: var(--surface-neutral-x-weak);
+}
+
+.new-employee-access-content {
+  flex: 1;
+  text-align: left;
+}
+
+.new-employee-access-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: var(--color-primary-strong);
+  margin-bottom: 2px;
+}
+
+.new-employee-access-title--medium {
+  font-weight: 500;
+}
+
+.new-employee-access-description {
+  font-size: 13px;
+  line-height: 19px;
+  color: var(--text-neutral-strong);
+}
+
+/* Action buttons */
+.new-employee-actions {
+  display: flex;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+/* Date range */
+.new-employee-date-range {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.new-employee-date-separator {
+  font-size: 24px;
+  color: var(--text-neutral-strong);
+  padding-top: 24px;
+}
+
+/* Add button spacing */
+.new-employee-add-button {
+  padding-top: 16px;
+}

@@ -1,0 +1,323 @@
+.job-detail-page {
+  padding: 40px;
+}
+
+/* Back button */
+.job-detail-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-neutral-medium);
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: color 0.2s;
+}
+
+.job-detail-back:hover {
+  color: var(--text-neutral-strong);
+}
+
+/* Header */
+.job-detail-header {
+  margin-bottom: 32px;
+}
+
+.job-detail-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.job-detail-title {
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 62px;
+  color: var(--color-primary-strong);
+  margin: 0;
+}
+
+.job-detail-next-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-neutral-medium);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.job-detail-next-button:hover {
+  color: var(--text-neutral-strong);
+}
+
+.job-detail-next-info {
+  text-align: right;
+}
+
+.job-detail-next-title {
+  font-weight: 600;
+  color: var(--text-neutral-strong);
+}
+
+.job-detail-subtitle {
+  font-size: 15px;
+  color: var(--text-neutral-strong);
+}
+
+/* Action bar */
+.job-detail-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-neutral-x-weak);
+}
+
+.job-detail-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.job-detail-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.job-detail-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-neutral-medium);
+  background: var(--surface-neutral-white);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.job-detail-icon-button:hover {
+  background: var(--surface-neutral-xx-weak);
+}
+
+.job-detail-dropdown-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-neutral-medium);
+  background: var(--surface-neutral-white);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.job-detail-dropdown-button:hover {
+  background: var(--surface-neutral-xx-weak);
+}
+
+.job-detail-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+.job-detail-link:hover {
+  text-decoration: underline;
+}
+
+/* Meta info */
+.job-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.job-detail-meta-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.job-detail-meta-label {
+  font-size: 14px;
+  color: var(--text-neutral-weak);
+}
+
+.job-detail-meta-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-neutral-x-strong);
+}
+
+.job-detail-meta-divider {
+  width: 1px;
+  height: 48px;
+  background: var(--border-neutral-x-weak);
+}
+
+/* Hiring lead */
+.job-detail-hiring-lead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.job-detail-hiring-lead-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Candidates table card */
+.job-detail-card {
+  background: var(--surface-neutral-white);
+  border-radius: var(--radius-xx-small);
+  border: 1px solid var(--border-neutral-x-weak);
+  box-shadow: var(--shadow-500);
+  overflow: hidden;
+}
+
+.job-detail-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border-neutral-x-weak);
+}
+
+.job-detail-card-title {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 34px;
+  color: var(--color-primary-strong);
+  margin: 0;
+}
+
+.job-detail-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.job-detail-small-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  border: 1px solid var(--border-neutral-medium);
+  background: var(--surface-neutral-white);
+  box-shadow: var(--shadow-100);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.job-detail-small-button:hover {
+  background: var(--surface-neutral-xx-weak);
+}
+
+/* Table */
+.job-detail-table-container {
+  padding: 0 32px;
+}
+
+.job-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.job-detail-table thead tr {
+  height: 48px;
+  background: var(--surface-neutral-xx-weak);
+}
+
+.job-detail-table th {
+  padding: 0 16px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-neutral-strong);
+}
+
+.job-detail-table th:first-child {
+  width: 48px;
+  padding-left: 16px;
+  border-top-left-radius: var(--radius-xx-small);
+  border-bottom-left-radius: var(--radius-xx-small);
+}
+
+.job-detail-table th:last-child {
+  border-top-right-radius: var(--radius-xx-small);
+  border-bottom-right-radius: var(--radius-xx-small);
+}
+
+.job-detail-table tbody tr {
+  height: 96px;
+  border-bottom: 1px solid var(--border-neutral-x-weak);
+  transition: background-color 0.2s;
+}
+
+.job-detail-table tbody tr:hover {
+  background: var(--surface-neutral-xx-weak);
+}
+
+.job-detail-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.job-detail-table td {
+  padding: 0 16px;
+}
+
+.job-detail-table td:first-child {
+  padding-left: 16px;
+}
+
+.job-detail-candidate-link {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-link);
+  text-decoration: none;
+  margin-bottom: 4px;
+}
+
+.job-detail-candidate-link:hover {
+  text-decoration: underline;
+}
+
+.job-detail-candidate-meta {
+  font-size: 13px;
+  color: var(--text-neutral-medium);
+}
+
+.job-detail-status {
+  font-size: 15px;
+  color: var(--text-neutral-x-strong);
+  margin-bottom: 4px;
+}
+
+.job-detail-timestamp {
+  font-size: 13px;
+  color: var(--text-neutral-medium);
+}
+
+.job-detail-date {
+  font-size: 15px;
+  color: var(--text-neutral-x-strong);
+}

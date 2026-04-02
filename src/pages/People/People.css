@@ -1,0 +1,177 @@
+/*
+ * People Page Styles
+ */
+
+.people-page {
+  padding: 32px 0;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Page Header */
+.people-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.people-header h2 {
+  font-size: 48px;
+}
+
+.people-header-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  color: var(--fabric-theme-color-primary-strong);
+  text-decoration: none;
+}
+
+.people-header-link:hover {
+  text-decoration: underline;
+}
+
+/* Actions bar with tabs */
+.people-actions-bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 0;
+}
+
+/* Suppress the Tabs component's own bottom border so the Divider is the sole line */
+.people-tabs > * {
+  border-bottom: none !important;
+}
+
+.people-tab-divider {
+  margin-bottom: 24px;
+}
+
+.people-new-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+}
+
+/* Force primary green outlined style — mirrors .header-ask-btn */
+.people-primary-btn {
+  color: var(--color-primary-strong) !important;
+  border-color: var(--color-primary-strong) !important;
+}
+.people-primary-btn svg,
+.people-primary-btn [data-icon],
+.people-primary-btn path {
+  color: var(--color-primary-strong) !important;
+  fill: var(--color-primary-strong) !important;
+}
+
+.people-tabs {
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Directory Filters */
+.people-directory-filters {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.people-directory-search {
+  flex: 1;
+  min-width: 200px;
+}
+
+.people-directory-filter-group {
+  flex-shrink: 0;
+}
+
+/* Employee groups for Directory view */
+.people-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.people-group-header {
+  padding: 16px 24px;
+}
+
+.people-group-list {
+  border-top: 1px solid var(--fabric-border-color-neutral-weak);
+}
+
+.people-group-list > div {
+  border-bottom: 1px solid var(--fabric-border-color-neutral-extra-weak);
+}
+
+.people-group-list > div:last-child {
+  border-bottom: none;
+}
+
+/* Empty state */
+.people-empty {
+  text-align: center;
+  padding: 48px;
+}
+
+/* Org chart container */
+.people-org-chart {
+  height: calc(100vh - 280px);
+  min-height: 500px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .people-page {
+    padding: 24px 0;
+  }
+
+  .people-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .people-directory-filters {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .people-directory-search {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .people-page {
+    padding: 16px 0;
+  }
+
+  .people-actions-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .people-new-button {
+    padding-bottom: 0;
+  }
+
+  .people-tabs {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .people-org-chart {
+    height: calc(100vh - 320px);
+  }
+}

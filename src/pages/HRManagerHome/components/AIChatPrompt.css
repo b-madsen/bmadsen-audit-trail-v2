@@ -1,0 +1,137 @@
+/* AI Chat Prompt with animated gradient border */
+
+.ai-chat-prompt {
+  position: relative;
+  width: 100%;
+}
+
+.ai-chat-prompt-border {
+  position: relative;
+  padding: 1px;
+  border-radius: 16px;
+  background: var(--fabric-tetratic-gradient-medium, linear-gradient(90deg, #10B981, #3B82F6, #8B5CF6, #EC4899, #F59E0B));
+  background-size: 300% 300%;
+  animation: gradient-rotate 4s ease infinite;
+}
+
+@keyframes gradient-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.ai-chat-prompt--focused .ai-chat-prompt-border {
+  animation: gradient-rotate 2s ease infinite;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.ai-chat-prompt-content {
+  background: var(--fabric-surface-color-neutral-default, #ffffff);
+  border-radius: 15px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-chat-prompt-input {
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--fabric-text-color-neutral-strong, #1a1a1a);
+  background: transparent;
+  width: 100%;
+  min-height: 24px;
+  max-height: 120px;
+}
+
+.ai-chat-prompt-input::placeholder {
+  color: var(--fabric-text-color-neutral-weak, #666666);
+}
+
+.ai-chat-prompt-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ai-chat-prompt-actions-left,
+.ai-chat-prompt-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* File attachment styles */
+.ai-chat-prompt-file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background-color: var(--fabric-surface-color-neutral-xx-weak, #f5f4f4);
+  border-radius: 6px;
+  max-width: 200px;
+}
+
+.ai-chat-prompt-file-name {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-chat-prompt-file-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  background-color: var(--fabric-surface-color-neutral-x-weak, #e8e6e5);
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ai-chat-prompt-file-remove:hover {
+  background-color: var(--fabric-surface-color-neutral-weak, #d4d2d1);
+}
+
+.ai-chat-prompt-file-input {
+  display: none;
+}
+
+/* Drag and drop active state */
+.ai-chat-prompt--drag-active .ai-chat-prompt-border {
+  background: var(--fabric-tetratic-gradient-strong, linear-gradient(90deg, #10B981, #3B82F6, #8B5CF6, #EC4899, #F59E0B));
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.4);
+  animation: gradient-rotate 1s ease infinite;
+}
+
+.ai-chat-prompt--drag-active .ai-chat-prompt-content {
+  position: relative;
+}
+
+.ai-chat-prompt--drag-active .ai-chat-prompt-content::after {
+  content: 'Drop document here to add new employee';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--fabric-text-color-primary-strong, #2d7a15);
+}

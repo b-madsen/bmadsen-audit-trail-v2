@@ -1,0 +1,61 @@
+.home-page {
+  padding: 40px;
+}
+
+/* Profile Header */
+.home-profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.home-profile-info {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.home-profile-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-back-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.home-back-link:hover {
+  opacity: 0.8;
+}
+
+.home-profile-subtitle {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 22px;
+  color: var(--text-neutral-medium);
+}
+
+/* Gridlet Dashboard */
+.home-dashboard {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  grid-template-rows: auto;
+}
+
+.home-dashboard-item--span-2-cols {
+  grid-column: span 2;
+}
+
+.home-dashboard-item--span-2-rows {
+  grid-row: span 2;
+}

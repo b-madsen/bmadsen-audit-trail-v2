@@ -1,0 +1,14 @@
+{
+  "skills": [
+    ".claude/skills/basecamp.md",
+    ".claude/skills/beacon.md",
+    ".claude/skills/compass.md",
+    ".claude/skills/countdown.md",
+    ".claude/skills/dock.md",
+    ".claude/skills/launch.md",
+    ".claude/skills/orbit.md",
+    ".claude/skills/relay.md",
+    ".claude/skills/survey.md",
+    ".claude/skills/telemetry.md"
+  ]
+}

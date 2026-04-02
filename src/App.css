@@ -1,0 +1,189 @@
+/*
+ * Layout-only CSS for composing Fabric components.
+ * All visual styling (colors, typography, borders, spacing within components)
+ * is handled by Fabric components themselves.
+ *
+ * This file ONLY handles:
+ * - Page-level layout (grid/flexbox arrangement)
+ * - Component composition positioning
+ */
+
+.app-layout {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Global Navigation spans full height on the left */
+.app-layout > [data-fabric-component="GlobalNavigation"] {
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  background-color: var(--surface-neutral-white) !important;
+}
+
+.app-layout > [data-fabric-component="GlobalNavigation"] > * {
+  background-color: var(--surface-neutral-white) !important;
+}
+
+/* Main content area: Header + Page content stacked vertically */
+.app-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding-right: 16px;
+  height: 100vh;
+  overflow-y: hidden;
+  background-color: var(--surface-neutral-white);
+}
+
+/* Fixed Header at top - extends into padding area */
+.app-main > [data-fabric-component="Header"] {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: white;
+  margin-right: -16px;
+  padding-right: 16px;
+}
+
+/* Page content - fills remaining viewport height; content scrolls inside */
+.app-main > [data-fabric-component="PageCapsule"] {
+  flex: 1 !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  padding: 12px 32px 32px 32px;
+  margin: 0 0 24px 0;
+  border-radius: 20px !important;
+}
+
+/* Power Edit — suppress ActionFooter's built-in top shadow */
+.pe-action-footer [data-fabric-component="ActionFooter"] {
+  box-shadow: none !important;
+}
+
+/* Header nav icons — GlobalNavigation.FooterItem in idle/white state */
+.app-header-nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.app-header-nav-icons li {
+  list-style: none;
+}
+.app-header-nav-icons * {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+.app-header-nav-icons button:hover,
+.app-header-nav-icons button:hover * {
+  background: var(--surface-neutral-xx-weak) !important;
+  background-color: var(--surface-neutral-xx-weak) !important;
+}
+
+/* Header Ask button — force primary green outlined style */
+.header-ask-btn {
+  color: var(--color-primary-strong) !important;
+  border-color: var(--color-primary-strong) !important;
+}
+.header-ask-btn svg,
+.header-ask-btn [data-icon],
+.header-ask-btn path {
+  color: var(--color-primary-strong) !important;
+  fill: var(--color-primary-strong) !important;
+}
+
+/* Direct content (no PageCapsule) — used for pages that manage their own layout (e.g. PowerEdit) */
+.app-direct-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+/* Minimal layout for index page (no sidebar) */
+.app-minimal {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-minimal > [data-fabric-component="Header"] {
+  flex-shrink: 0;
+}
+
+.app-minimal > [data-fabric-component="PageCapsule"] {
+  flex: 1;
+  padding: 24px 32px;
+}
+
+/* ============================================
+   HEADER RESPONSIVE STYLES
+   ============================================ */
+
+/* Search field - shown by default */
+.header-search-field {
+  display: block;
+}
+
+/* Search icon - hidden by default */
+.header-search-icon {
+  display: none;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
+
+/* Tablet breakpoint: swap search field for icon */
+@media (max-width: 768px) {
+  /* Hide search field, show search icon */
+  .header-search-field {
+    display: none;
+  }
+
+  .header-search-icon {
+    display: block;
+  }
+
+  /* Adjust main content padding for mobile */
+  .app-main {
+    padding-right: 0;
+  }
+
+  /* Header responsive layout for tablet */
+  .app-main > [data-fabric-component="Header"] {
+    display: flex;
+    padding-right: 16px;
+    margin-right: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  /* Force header internal wrapper to shrink and fit */
+  .app-main > [data-fabric-component="Header"] > div {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+  }
+
+  .app-main > [data-fabric-component="PageCapsule"] {
+    padding: 0;
+    margin-bottom: 0;
+  }
+}
+
+/* ============================================
+   SMALL MOBILE STYLES (360px and smaller)
+   ============================================ */
+
+@media (max-width: 360px) {
+  .app-main > [data-fabric-component="PageCapsule"] {
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+}

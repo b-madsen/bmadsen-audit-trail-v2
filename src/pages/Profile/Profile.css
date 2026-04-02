@@ -1,0 +1,168 @@
+/*
+ * Layout-only CSS for the Employee Profile page.
+ * All visual styling is handled by Fabric components.
+ * This file ONLY handles page-level layout composition.
+ */
+
+.ee-profile-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Global Navigation spans full height on the left with footer pinned to bottom */
+.ee-profile-layout > [data-fabric-component="GlobalNavigation"] {
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.ee-profile-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding-right: 18px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Fixed Header at top */
+.ee-profile-main > [data-fabric-component="Header"] {
+  flex-shrink: 0;
+}
+
+/* Scrollable content area (profile header + page content) */
+.ee-profile-scrollable {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* PageCapsule padding to match other pages */
+.ee-profile-scrollable > [data-fabric-component="PageCapsule"] {
+  padding: 24px 32px 0 32px;
+  margin-bottom: 24px;
+  border-radius: 20px 20px 0 0;
+}
+
+/* Mobile: remove rounded corners at 360px and smaller */
+@media (max-width: 360px) {
+  .ee-profile-scrollable > [data-fabric-component="PageCapsule"] {
+    border-radius: 0;
+    margin-bottom: 0;
+    padding: 16px;
+  }
+}
+
+/* Profile Header - green background area */
+.profile-header {
+  display: flex;
+  gap: 32px;
+  padding: 32px;
+  padding-bottom: 0;
+  background: linear-gradient(180deg, #2e7918 0%, #245f13 100%);
+  position: relative;
+}
+
+.profile-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  padding-top: 32px;
+}
+
+.profile-header-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+}
+
+.profile-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Content area below the profile header */
+.ee-profile-content-layout {
+  /* padding handled by PageCapsule */
+}
+
+.content-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.ee-profile-content-body {
+  display: flex;
+  gap: 32px;
+}
+
+/* Left sidebar */
+.profile-sidebar {
+  width: 195px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.manager-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* Main sections column */
+.ee-profile-sections {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  overflow-y: auto;
+}
+
+/* Form fields inside sections */
+.section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 8px;
+}
+
+.field-row {
+  display: flex;
+  gap: 12px;
+}
+
+.field-row-with-note {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+/* Passport table (Fabric Table is data-driven, using minimal
+   custom styling for the HTML table fallback) */
+.passport-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.passport-table th,
+.passport-table td {
+  text-align: left;
+  padding: 12px 16px;
+}
+
+.passport-table thead {
+  background-color: var(--surface-neutral-x-weak, #f5f4f1);
+}
+
+.passport-table tbody tr {
+  border-bottom: 1px solid var(--border-neutral-x-weak, #e0ddd9);
+}

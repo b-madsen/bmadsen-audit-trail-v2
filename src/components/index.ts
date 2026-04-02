@@ -1,0 +1,43 @@
+// Re-export GlobalNavMobile
+export { GlobalNavMobile } from './GlobalNavMobile';
+
+// Core components from fabric-claude-env-local
+export { Icon } from './Icon';
+export { Avatar } from './Avatar';
+export { Button } from './Button';
+export { TextHeadline } from './TextHeadline';
+export { Gridlet } from './Gridlet';
+export { EmployeeCard } from './EmployeeCard';
+export { Dropdown } from './Dropdown';
+export { FormDropdown } from './FormDropdown';
+export { DatePicker } from './DatePicker';
+export { TextArea } from './TextArea';
+export { TextInput } from './TextInput';
+export { Tabs } from './Tabs';
+export { ProgressBar } from './ProgressBar';
+export { AIChatPanel } from './AIChatPanel';
+export { ChatSidebar } from './ChatSidebar';
+export { ChatContent } from './ChatContent';
+export { InboxSidebar } from './InboxSidebar';
+export { InboxContentCard } from './InboxContentCard';
+export { RequestItem } from './RequestItem';
+export { Pagination } from './Pagination';
+export { EmployeeTableRow } from './EmployeeTableRow';
+export { PeopleListView } from './PeopleListView';
+export { FeedbackCard } from './FeedbackCard';
+export { PendingFeedbackCard } from './PendingFeedbackCard';
+export { GoalCard } from './GoalCard';
+export { RatingCircles } from './RatingCircles';
+export { AssessmentBlock } from './AssessmentBlock';
+export { StarRating } from './StarRating';
+export { TalentPoolCard } from './TalentPoolCard';
+export { Checkbox } from './Checkbox';
+export { Card } from './Card';
+export { OrgChartView } from './OrgChart/OrgChartView';
+export { FormSectionHeader } from './FormSectionHeader';
+export { InfoBanner } from './InfoBanner';
+export { JobLocationOption } from './JobLocationOption';
+export { JobWizardSidebar } from './JobWizardSidebar';
+export { JobInformationForm } from './JobInformationForm';
+export { SuccessNotification } from './SuccessNotification';
+export { default as MarkdownContent } from './MarkdownContent';

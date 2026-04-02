@@ -1,0 +1,83 @@
+.create-job-page {
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  min-height: 100vh;
+}
+
+.create-job-back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-neutral-medium);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.create-job-back-button:hover {
+  color: var(--text-neutral-strong);
+}
+
+.create-job-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.create-job-title {
+  font-family: 'Fields', system-ui, sans-serif;
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 62px;
+  color: var(--color-primary-strong);
+}
+
+.create-job-content {
+  display: flex;
+  gap: 40px;
+}
+
+.create-job-form-container {
+  flex: 1;
+  background: var(--surface-neutral-white);
+  border-radius: var(--radius-xx-small);
+  border: 1px solid var(--border-neutral-x-weak);
+  box-shadow: var(--shadow-500);
+  overflow: hidden;
+}
+
+.create-job-section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 32px 24px;
+}
+
+.create-job-section-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-xx-small);
+  background: var(--surface-neutral-x-weak);
+}
+
+.create-job-section-title {
+  font-family: 'Fields', system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 34px;
+  color: var(--color-primary-strong);
+}
+
+.create-job-form-content {
+  padding: 0 32px 32px;
+}

@@ -1,0 +1,223 @@
+/*
+ * Layout-only CSS for the Headcount Report page.
+ * Visual styling handled by Fabric components.
+ */
+
+.report-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Global Navigation spans full height on the left with footer pinned to bottom */
+.report-layout > [data-fabric-component="GlobalNavigation"] {
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.report-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding-right: 18px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Fixed Header at top */
+.report-main > [data-fabric-component="Header"] {
+  flex-shrink: 0;
+}
+
+/* Scrollable PageCapsule with padding to match other pages */
+.report-main > [data-fabric-component="PageCapsule"] {
+  flex: 1;
+  padding: 24px 32px 0 32px;
+  margin-bottom: 24px;
+  overflow-y: auto;
+  border-radius: 20px 20px 0 0;
+}
+
+/* Mobile: remove rounded corners at 360px and smaller */
+@media (max-width: 360px) {
+  .report-main > [data-fabric-component="PageCapsule"] {
+    border-radius: 0;
+    margin-bottom: 0;
+  }
+}
+
+.report-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Page Header */
+.report-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Filter Bar */
+.report-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+/* Chart Card */
+.chart-card {
+  display: flex;
+  gap: 0;
+  padding: 32px;
+}
+
+.chart-area {
+  flex: 1;
+  height: 380px;
+  border-right: 1px solid var(--border-neutral-x-weak, #e0ddd9);
+  padding-right: 32px;
+}
+
+/* Chart Summary */
+.chart-summary {
+  width: 300px;
+  flex-shrink: 0;
+  padding: 0 0 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chart-summary-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chart-summary-number {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-neutral-strong, #222);
+}
+
+.chart-summary-change {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Year breakdown bars */
+.chart-summary-years {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.year-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.year-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.year-bar-track {
+  flex: 1;
+  min-width: 0;
+}
+
+.year-bar {
+  height: 20px;
+  background: var(--fabric-surface-color-primary-medium, #4a9a32);
+  border-radius: 4px;
+}
+
+/* Simple Bar Chart */
+.simple-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 100%;
+  padding-bottom: 40px;
+}
+
+.bar-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.bar-value {
+  font-size: 12px;
+  color: var(--fabric-text-color-neutral-medium);
+}
+
+.bar {
+  width: 24px;
+  background: var(--fabric-surface-color-primary-medium, #4a9a32);
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+}
+
+.bar-label {
+  font-size: 11px;
+  color: var(--fabric-text-color-neutral-medium);
+  white-space: nowrap;
+}
+
+/* Report Title Row */
+.report-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+
+.report-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Report Table */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.report-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fabric-text-color-neutral-strong);
+  border-bottom: 1px solid var(--fabric-border-color-neutral-weakest);
+}
+
+.report-table td {
+  padding: 12px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--fabric-border-color-neutral-weakest);
+  color: var(--fabric-text-color-neutral-strong);
+}
+
+.report-table tbody tr:hover {
+  background-color: var(--fabric-surface-color-neutral-weakest);
+}
+

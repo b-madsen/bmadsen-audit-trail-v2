@@ -1,0 +1,339 @@
+.reports-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--surface-neutral-xx-weak);
+}
+
+/* No sidebar variant - full width layout */
+.reports-page--no-sidebar .reports-main {
+  padding-left: 32px;
+}
+
+.reports-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 40px 24px 32px;
+}
+
+.reports-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.reports-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  background: var(--surface-neutral-white);
+  border: 1px solid var(--border-neutral-medium);
+  border-radius: var(--radius-full);
+}
+
+.reports-search-input {
+  width: 200px;
+  background: transparent;
+  font-size: 14px;
+  color: var(--text-neutral-strong);
+  border: none;
+  outline: none;
+}
+
+.reports-search-input::placeholder {
+  color: var(--text-neutral-weak);
+}
+
+.reports-new-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 20px;
+  background: var(--color-primary-strong);
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reports-new-button:hover {
+  background: #267015;
+}
+
+.reports-new-button-plus {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Layout */
+.reports-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.reports-sidebar {
+  width: 280px;
+  padding-left: 32px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.reports-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reports-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--radius-xx-small);
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  background: transparent;
+  color: var(--text-neutral-strong);
+}
+
+.reports-nav-item:hover {
+  background-color: var(--surface-neutral-xx-weak);
+}
+
+.reports-nav-item--active {
+  background-color: var(--color-primary-strong);
+  color: white;
+}
+
+.reports-nav-item--active:hover {
+  background-color: var(--color-primary-strong);
+}
+
+/* Main Content */
+.reports-main {
+  flex: 1;
+  padding: 0 40px 40px 24px;
+  overflow-y: auto;
+}
+
+/* Ask Question Section */
+.reports-ask-section {
+  margin-bottom: 32px;
+}
+
+.reports-ask-card {
+  background: var(--surface-neutral-white);
+  border-radius: var(--radius-xx-small);
+  padding: 24px;
+}
+
+.reports-ask-input {
+  margin-bottom: 20px;
+}
+
+.reports-suggestions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.reports-suggestion-button {
+  padding: 8px 12px;
+  background: var(--surface-neutral-xx-weak);
+  border: none;
+  border-radius: var(--radius-xx-small);
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text-neutral-medium);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reports-suggestion-button:hover {
+  background: var(--surface-neutral-x-weak);
+}
+
+/* Insights Section */
+.reports-section {
+  margin-bottom: 32px;
+}
+
+.reports-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.reports-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reports-section-title h2 {
+  font-family: 'Fields', system-ui, sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-primary-strong);
+  line-height: 30px;
+}
+
+.reports-view-all {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-primary-strong);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.reports-view-all:hover {
+  text-decoration: underline;
+}
+
+/* Insights Grid */
+.reports-insights-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.reports-insight-card {
+  padding: 24px;
+  background: var(--surface-neutral-white);
+  border: 1px solid var(--border-neutral-x-weak);
+  border-radius: var(--radius-xx-small);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.reports-insight-card:hover {
+  border-color: var(--color-primary-strong);
+}
+
+.reports-insight-icon {
+  margin-bottom: 16px;
+}
+
+.reports-insight-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-neutral-xx-strong);
+  margin-bottom: 8px;
+}
+
+.reports-insight-description {
+  font-size: 14px;
+  color: var(--text-neutral-medium);
+  line-height: 1.4;
+}
+
+/* Recently Viewed Section */
+.reports-table-card {
+  background: var(--surface-neutral-white);
+  border: 1px solid var(--border-neutral-x-weak);
+  border-radius: var(--radius-xx-small);
+  overflow: hidden;
+}
+
+.reports-table-container {
+  padding: 24px;
+}
+
+.reports-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reports-table thead tr {
+  background: var(--surface-neutral-xx-weak);
+}
+
+.reports-table th {
+  padding: 16px 24px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-neutral-x-strong);
+}
+
+.reports-table th:first-child {
+  border-top-left-radius: var(--radius-xx-small);
+  border-bottom-left-radius: var(--radius-xx-small);
+}
+
+.reports-table th:last-child {
+  border-top-right-radius: var(--radius-xx-small);
+  border-bottom-right-radius: var(--radius-xx-small);
+}
+
+.reports-table tbody tr {
+  border-bottom: 1px solid var(--border-neutral-x-weak);
+  transition: background-color 0.2s;
+}
+
+.reports-table tbody tr:hover {
+  background: var(--surface-neutral-xx-weak);
+}
+
+.reports-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.reports-table td {
+  padding: 16px 24px;
+}
+
+.reports-table-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reports-table-name a {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+.reports-table-name a:hover {
+  text-decoration: underline;
+}
+
+.reports-table-owner {
+  font-size: 15px;
+  color: var(--text-neutral-strong);
+}
+
+.reports-table-date {
+  font-size: 15px;
+  color: var(--text-neutral-medium);
+}
+
+/* Star icon for section headers */
+.reports-star-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.reports-clock-icon {
+  width: 20px;
+  height: 20px;
+}

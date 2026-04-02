@@ -1,0 +1,231 @@
+.hiring-page {
+  padding: 40px;
+}
+
+.hiring-header {
+  margin-bottom: 24px;
+}
+
+/* Tabs - using Fabric Tabs component */
+.hiring-tabs-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--fabric-border-color-neutral-weak, #e5e2e0);
+}
+
+.hiring-tabs {
+  display: flex;
+  align-items: flex-end;
+}
+
+.hiring-tab-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+}
+
+/* Card */
+.hiring-card {
+  background: var(--surface-neutral-white);
+  border-radius: var(--radius-xx-small);
+  border: 1px solid var(--border-neutral-x-weak);
+  overflow: hidden;
+}
+
+/* Actions Bar */
+.hiring-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+}
+
+.hiring-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Rounded Dropdown */
+.hiring-dropdown-wrapper {
+  position: relative;
+}
+
+.hiring-dropdown-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 160px;
+  height: 40px;
+  padding: 0 16px;
+  background: var(--fabric-surface-color-neutral-white, #ffffff);
+  border: 1px solid var(--fabric-border-color-neutral-medium, #c9c5c2);
+  border-radius: 20px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--fabric-text-color-neutral-strong, #38312f);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.hiring-dropdown-button:hover {
+  border-color: var(--fabric-border-color-neutral-strong, #8a8583);
+}
+
+.hiring-dropdown-button:focus {
+  outline: none;
+  border-color: var(--fabric-theme-color-primary-strong, #2e7918);
+  box-shadow: 0 0 0 2px rgba(46, 121, 24, 0.2);
+}
+
+.hiring-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 100;
+  min-width: 100%;
+  background: var(--fabric-surface-color-neutral-white, #ffffff);
+  border: 1px solid var(--fabric-border-color-neutral-medium, #c9c5c2);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.hiring-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.hiring-dropdown-item:hover {
+  background-color: var(--fabric-surface-color-neutral-extra-extra-weak, #f5f4f3);
+}
+
+.hiring-dropdown-item--selected {
+  background-color: var(--fabric-surface-color-primary-extra-weak, #e8f4e5);
+}
+
+/* Table */
+.hiring-table-container {
+  padding: 0 24px;
+}
+
+.hiring-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.hiring-table thead tr {
+  background: var(--surface-neutral-xx-weak);
+}
+
+.hiring-table th {
+  padding: 16px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-neutral-x-strong);
+}
+
+.hiring-table th:first-child {
+  border-top-left-radius: var(--radius-xx-small);
+  border-bottom-left-radius: var(--radius-xx-small);
+}
+
+.hiring-table th:last-child {
+  border-top-right-radius: var(--radius-xx-small);
+  border-bottom-right-radius: var(--radius-xx-small);
+}
+
+.hiring-table tbody tr {
+  border-bottom: 1px solid var(--border-neutral-x-weak);
+  transition: background-color 0.2s;
+}
+
+.hiring-table tbody tr:hover {
+  background: var(--surface-neutral-xx-weak);
+}
+
+.hiring-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.hiring-table td {
+  padding: 16px;
+}
+
+/* Candidates Cell */
+.hiring-candidates-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hiring-candidates-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary-strong);
+  color: white;
+}
+
+.hiring-candidates-count {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-neutral-strong);
+}
+
+.hiring-candidates-new {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-primary-strong);
+}
+
+/* Job Opening Cell */
+.hiring-job-title {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+.hiring-job-title:hover {
+  text-decoration: underline;
+}
+
+.hiring-job-location {
+  font-size: 14px;
+  color: var(--text-neutral-medium);
+}
+
+/* Text cells */
+.hiring-cell-text {
+  font-size: 15px;
+  color: var(--text-neutral-strong);
+}
+
+/* Talent Pools Tab */
+.hiring-talent-pools-actions {
+  padding: 20px 24px;
+}
+
+.hiring-talent-pools-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 0 24px 24px;
+}
