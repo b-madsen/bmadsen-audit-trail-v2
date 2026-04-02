@@ -1,27 +1,20 @@
 ---
 name: launch
-description: Build pages from Figma URLs using Fabric components (default) or raw React (nebula mode)
-argument-hint: "[--nebula] <figma-urls>"
+description: Build pages from Figma URLs using Fabric components
+argument-hint: "<figma-urls>"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite, mcp__figma-desktop__*
 ---
 
 # /launch — Figma-to-Fabric Builder
 
-Build pages from Figma URLs. Two modes:
-
-- **Fabric mode** (default): Maps Figma designs to Fabric design system components. Output is production-ready BambooHR code.
-- **Nebula mode** (`--nebula`): Builds raw React components from Figma pixel specs. For exploring ideas outside the design system. Nebula output is unformed — it needs `/dock` to become production-ready.
+Build pages from Figma URLs using Fabric design system components. Output is production-ready BambooHR code.
 
 ## Initial Prompt
 
-When invoked, **check for `--nebula` flag in the arguments.**
-
-**If Fabric mode (default):**
+When invoked:
 
 ```
 🚀 Ready to launch from Figma using Fabric components!
-
-Mode: **Fabric** (production-ready, uses Fabric design system)
 
 I'll decompose your URLs, identify which Fabric components match each element, and assemble everything using the design system.
 
@@ -37,27 +30,11 @@ I'll decompose your URLs, identify which Fabric components match each element, a
 **Paste your screenshot and URLs now.**
 ```
 
-**If Nebula mode (`--nebula`):**
-
-```
-🌌 Ready to launch in **Nebula mode**!
-
-Mode: **Nebula** (raw React, NOT using Fabric — for exploration only)
-
-⚠️ Nebula output is not production-ready. It uses custom CSS instead of Fabric components. When ready to productionize, run `/dock` to convert to Fabric.
-
-**What I need:**
-1. Full-page screenshot (for layout context)
-2. One or more Figma URLs
-
-**Paste your screenshot and URLs now.**
-```
-
 **STOP and wait for user to provide screenshot and URLs.**
 
 ---
 
-## Workflow: Fabric Mode (Default)
+## Workflow
 
 ### Step 1: Decompose URLs
 
@@ -96,7 +73,7 @@ mcp__figma-desktop__get_screenshot(nodeId="656:22960", clientLanguages="typescri
 
 ### Step 3: Map Figma Elements to Fabric Components
 
-**This is the critical step that differentiates Fabric mode from Nebula mode.**
+**This is the critical step.**
 
 Before building, read the Fabric reference:
 ```
@@ -279,43 +256,7 @@ After all component agents complete:
 
 ---
 
-## Workflow: Nebula Mode (`--nebula`)
-
-When `--nebula` flag is present, use the raw-build approach:
-
-### Steps 1-2: Same as Fabric mode
-(Decompose URLs, fetch specs in parallel)
-
-### Step 3: Skip Fabric mapping
-Do NOT map to Fabric components. Build from raw Figma specs.
-
-### Step 4: Build raw components
-
-**Each agent receives:**
-
-```
-Build the [ComponentName] component from Figma specs.
-
-Specs: [paste component specs from get_design_context]
-Screenshot: [reference screenshot]
-
-Requirements:
-- Match Figma specs exactly (colors, spacing, typography, dimensions)
-- Use CSS modules or Tailwind for styling
-- TypeScript with proper types
-- Export via index.ts
-- File: /src/components/[ComponentName]/[ComponentName].tsx
-
-NOTE: This is Nebula mode. Use custom CSS, not Fabric components.
-```
-
-### Step 5: Assemble page (same structure, raw components)
-
----
-
 ## Final Output
-
-### Fabric Mode:
 
 ```
 🚀 Launch complete!
@@ -345,27 +286,6 @@ All UI elements use Fabric components. Layout CSS only for composition.
 **Next step:** Run `/orbit` to verify against Figma.
 ```
 
-### Nebula Mode:
-
-```
-🌌 Nebula launch complete!
-
-⚠️ NEBULA MODE — Not using Fabric design system
-
-Built [N] raw components from Figma specs
-
-Components created:
-- /src/prototypes/PerformancePage/GlobalHeader.tsx
-- /src/prototypes/PerformancePage/Sidebar.tsx
-
-Page created:
-- /src/prototypes/PerformancePage/PerformancePage.tsx
-
-This is prototype code. When ready to productionize:
-→ Run `/dock` to convert to Fabric components
-→ Or re-run `/launch` (without --nebula) to rebuild from scratch with Fabric
-```
-
 ---
 
 ## Tips
@@ -375,19 +295,8 @@ This is prototype code. When ready to productionize:
 - Select 2-4 main sections for best results
 - Can mix parent and individual URLs
 
-**Fabric mode tips:**
+**Building tips:**
 - If a Figma element is clearly a Fabric component (it came from the Fabric Library), trust the mapping
 - When in doubt between two Fabric components, check the reference doc for usage guidelines
 - Only create custom CSS for layout (flexbox/grid to position Fabric components)
 - Use `StyledBox` instead of raw `div` for custom containers
-
-**Nebula mode tips:**
-- Use for exploring ideas that don't have Fabric components yet
-- Use for quick throwaway demos
-- Always flag nebula code clearly so it doesn't ship to production
-
-**When to use which mode:**
-- Building a feature for BambooHR → **Fabric mode** (default)
-- Exploring a new concept / hackathon → **Nebula mode** (`--nebula`)
-- Rebuilding a legacy page → **Fabric mode**
-- Quick demo for stakeholders → either, depending on fidelity needs

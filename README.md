@@ -6,59 +6,40 @@ The sandbox comes pre-loaded with working prototype pages (Home, People, Hiring,
 
 ---
 
-## Getting Started
+## Quick Start
 
-### Prerequisites
+> Everyone has Claude Code — it can help you with any of these steps. Just ask it!
 
-- **Node.js** (v18+) and **npm**
-- Access to BambooHR's private npm registry (for `@bamboohr/fabric` packages)
-
-### 1. Clone the repo
+### 1. Clone and install
 
 ```bash
 git clone https://github.com/BambooHR/product-sandbox.git
 cd product-sandbox
-```
-
-### 2. Configure your NPM token
-
-The project needs access to BambooHR's private Fabric packages. Set the `PACKAGECLOUD_NPM_TOKEN` environment variable:
-
-```bash
-# Get your token from Vault
-vault login -method=oidc -path=okta -address="https://vault.bamboohr.io"
-export PACKAGECLOUD_NPM_TOKEN=$(vault kv get -field=NPM_TOKEN -address="https://vault.bamboohr.io" shared-product-development/builder)
-```
-
-To persist the token across terminal sessions, add the `export` line to your `~/.zshrc` or `~/.bashrc`.
-
-### 3. Install dependencies
-
-```bash
 npm install
 ```
 
-If you're on macOS and get Gatekeeper warnings, run:
+If `npm install` fails, make sure `NPM_TOKEN` is set in your `~/.zshrc`.
+
+### 2. Create your branch
 
 ```bash
-xattr -rd com.apple.quarantine node_modules 2>/dev/null
+git checkout -b yourname
+git push -u origin yourname
 ```
 
-### 4. Start the dev server
+### 3. Start building
 
 ```bash
 npm run dev
 ```
 
-Visit **http://localhost:5173** to browse all prototype pages.
+Visit **http://localhost:5173** to see the prototype pages. Open Claude Code and start building!
 
 ---
 
 ## Branching Workflow
 
-This repo uses a specific branching strategy. Feature branches are never merged into `main` — they exist as standalone explorations.
-
-### How it works
+Feature branches are never merged into `main` — they exist as standalone explorations.
 
 ```
 main                          ← the shared template (kept clean)
@@ -71,56 +52,27 @@ main                          ← the shared template (kept clean)
 └── ...
 ```
 
-### Step 1: Create your personal branch
+### Day-to-day workflow
 
-Branch off `main` with your name. This is your home base.
+1. **Create feature branches** off your personal branch for each idea:
+   ```bash
+   git checkout yourname
+   git checkout -b yourname/descriptive-feature-name
+   ```
 
-```bash
-git checkout main
-git pull origin main
-git checkout -b yourname
-git push -u origin yourname
-```
+2. **Work and push.** No PRs needed — these branches are your workspace.
 
-### Step 2: Create feature branches for each idea
-
-For each prototype or experiment, branch off your personal branch:
-
-```bash
-git checkout yourname
-git checkout -b yourname/descriptive-feature-name
-git push -u origin yourname/descriptive-feature-name
-```
-
-### Step 3: Work and push
-
-Make your changes, commit, and push. No PRs needed — these branches are your workspace.
-
-```bash
-git add .
-git commit -m "Add initial payroll dashboard prototype"
-git push
-```
-
-### Improving the template
-
-If you build something that should be part of the shared template for everyone (e.g., a new base page, a bug fix, or an improvement to the setup), create a PR into `main`:
-
-```bash
-git checkout main
-git pull origin main
-git checkout -b template/your-improvement-name
-# make your changes
-git push -u origin template/your-improvement-name
-# then open a PR targeting main
-```
+3. **Want to improve the shared template?** Create a branch off `main` and open a PR:
+   ```bash
+   git checkout main
+   git checkout -b template/your-improvement-name
+   ```
 
 ### Key rules
 
 - **Feature branches are never merged into `main`** — they live as standalone explorations
-- **`main` is the shared template** — only improvements to the template itself get merged in via PR
+- **`main` is the shared template** — only template improvements get merged via PR
 - **Branch off your personal branch** for features, not directly off `main`
-- **Use descriptive branch names** so others can browse your work
 
 ---
 
@@ -153,16 +105,3 @@ This repo includes Claude Code skills (in `.claude/skills/`) that automate commo
 - **Vite** for dev server and builds
 - **BambooHR Fabric** design system (`@bamboohr/fabric`)
 - **React Router** for page navigation
-
----
-
-## Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| `npm install` fails with 401/403 | Your NPM token is missing or expired. Re-run the Vault commands above. |
-| macOS "cannot verify developer" dialog | Run `xattr -rd com.apple.quarantine node_modules` |
-| Port 5173 already in use | Kill the other process or run `npm run dev -- --port 5174` |
-| Fabric components not rendering | Make sure `@bamboohr/fabric` installed successfully — check for errors in `npm install` output |
-
-Need help? Ask in **#pathfinder-design** on Slack.
