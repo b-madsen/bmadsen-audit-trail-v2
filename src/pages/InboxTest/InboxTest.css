@@ -9,12 +9,16 @@
 
 /* Back button */
 .inbox-test-back {
-  padding: 24px 40px 0;
+  padding: 24px 0 0;
 }
 
 /* Page Header */
 .inbox-test-header {
-  padding: 8px 40px 24px;
+  padding: 8px 0 24px;
+}
+
+.inbox-test-header h2 {
+  font-size: 48px;
 }
 
 /* Main content area */
@@ -23,7 +27,7 @@
   gap: 24px;
   flex: 1;
   min-height: 0;
-  padding: 0 40px 40px;
+  padding: 0 0 40px;
 }
 
 /* Sidebar */

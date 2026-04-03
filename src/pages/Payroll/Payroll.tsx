@@ -53,7 +53,7 @@ export function Payroll() {
     <div className="payroll-page">
       {/* Header */}
       <div className="payroll-header">
-        <Headline size="large">Payroll</Headline>
+        <Headline size="large" color="primary">Payroll</Headline>
         <div className="payroll-header-actions">
           <button className="payroll-button payroll-button--secondary">
             Open TRAXPayroll

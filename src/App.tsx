@@ -1,5 +1,5 @@
 import { useState, Suspense, lazy } from 'react';
-import { Routes, Route, Link, Link as RouterLink, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Link, Link as RouterLink, useLocation } from 'react-router-dom';
 import {
   BodyText,
   Headline,
@@ -23,17 +23,16 @@ const InboxTest = lazy(() => import('./pages/InboxTest/InboxTest'));
 const MyInfo = lazy(() => import('./pages/MyInfo/MyInfo'));
 const Payroll = lazy(() => import('./pages/Payroll/Payroll'));
 const People = lazy(() => import('./pages/People/People'));
-const PowerEditSessions = lazy(() => import('./pages/PowerEditSessions/PowerEditSessions'));
-const PowerEdit = lazy(() => import('./pages/PowerEdit/PowerEdit'));
 const Profile = lazy(() => import('./pages/Profile/Profile'));
 const ReportsTemplate = lazy(() => import('./pages/ReportsTemplate/Reports'));
 const Settings = lazy(() => import('./pages/Settings/Settings'));
+
+const HomeTemplate = lazy(() => import('./pages/HomeTemplate/Home'));
 
 // Pages requiring additional dependencies (commented out until deps resolved)
 // const Chat = lazy(() => import('./pages/Chat/Chat'));
 // const CreateJobOpening = lazy(() => import('./pages/CreateJobOpening/CreateJobOpening'));
 // const HeadcountReport = lazy(() => import('./pages/HeadcountReport/HeadcountReport'));
-// const HomeTemplate = lazy(() => import('./pages/HomeTemplate/Home'));
 // const HRManagerHome = lazy(() => import('./pages/HRManagerHome/HRManagerHome'));
 // const JobOpeningDetail = lazy(() => import('./pages/JobOpeningDetail/JobOpeningDetail'));
 // const NewEmployeePage = lazy(() => import('./pages/NewEmployeePage/NewEmployeePage'));
@@ -194,70 +193,13 @@ function FullLayout({ children, noCapsule }: { children: React.ReactNode; noCaps
         links={[
           <GlobalNavigation.Link key="home" active={p === '/'} icon="house-regular" activeIcon="house-solid" label="Home" component={RouterLink} to="/" />,
           <GlobalNavigation.Link key="my-info" active={p === '/my-info'} icon="circle-user-regular" activeIcon="circle-user-solid" label="My Info" component={RouterLink} to="/my-info" />,
-          <GlobalNavigation.LinkMenu
-            key="people"
-            active={isPeopleActive}
-            icon="user-group-regular"
-            activeIcon="user-group-solid"
-            label="People"
-            menuItems={[
-              { text: 'Directory', value: 'people-directory', isActionOnly: true, component: RouterLink, to: '/people/directory' },
-              { text: 'Org Chart', value: 'people-org-chart', isActionOnly: true, component: RouterLink, to: '/people/org-chart' },
-            ]}
-          />,
-          <GlobalNavigation.LinkMenu
-            key="hiring"
-            active={isHiringActive}
-            icon="id-badge-regular"
-            activeIcon="id-badge-solid"
-            label="Hiring"
-            menuItems={[
-              { text: 'Job Openings', value: 'job-openings', isActionOnly: true, component: RouterLink, to: '/hiring' },
-              { text: 'Candidates', value: 'candidates', isActionOnly: true, component: RouterLink, to: '/hiring' },
-              { text: 'Talent Pools', value: 'talent-pools', isActionOnly: true, component: RouterLink, to: '/hiring' },
-            ]}
-          />,
-          <GlobalNavigation.LinkMenu
-            key="reports"
-            active={isReportsActive}
-            icon="chart-pie-simple-regular"
-            activeIcon="chart-pie-simple-solid"
-            label="Reports"
-            menuItems={[
-              { text: 'Standard Reports', value: 'reports-standard', isActionOnly: true, component: RouterLink, to: '/reports' },
-              { text: 'Benchmarks', value: 'reports-benchmarks', isActionOnly: true, component: RouterLink, to: '/reports' },
-              { text: 'Custom Reports', value: 'reports-custom', isActionOnly: true, component: RouterLink, to: '/reports' },
-              { text: 'New Custom Reports', value: 'reports-new-custom', isActionOnly: true, component: RouterLink, to: '/reports' },
-              { text: 'Signed Documents', value: 'reports-signed', isActionOnly: true, component: RouterLink, to: '/reports' },
-            ]}
-          />,
-          <GlobalNavigation.LinkMenu
-            key="files"
-            active={isFilesActive}
-            icon="file-lines-solid"
-            activeIcon="file-lines-solid"
-            label="Files"
-            menuItems={[
-              { text: 'Signature Templates', value: 'sig-templates', isActionOnly: true, component: RouterLink, to: '/files/signature-templates' },
-              { text: 'Benefits Docs (137)', value: 'benefits-docs', isActionOnly: true, component: RouterLink, to: '/files/benefits-docs' },
-              { text: 'Payroll (12)', value: 'payroll-files', isActionOnly: true, component: RouterLink, to: '/files/payroll' },
-              { text: 'Trainings (23)', value: 'trainings', isActionOnly: true, component: RouterLink, to: '/files/trainings' },
-              { text: 'Company Policies (7)', value: 'company-policies', isActionOnly: true, component: RouterLink, to: '/files/company-policies' },
-            ]}
-          />,
+          <GlobalNavigation.Link key="people" active={isPeopleActive} icon="user-group-regular" activeIcon="user-group-solid" label="People" component={RouterLink} to="/people" />,
+          <GlobalNavigation.Link key="hiring" active={isHiringActive} icon="id-badge-regular" activeIcon="id-badge-solid" label="Hiring" component={RouterLink} to="/hiring" />,
+          <GlobalNavigation.Link key="reports" active={isReportsActive} icon="chart-pie-simple-regular" activeIcon="chart-pie-simple-solid" label="Reports" component={RouterLink} to="/reports" />,
+          <GlobalNavigation.Link key="files" active={isFilesActive} icon="file-lines-solid" activeIcon="file-lines-solid" label="Files" component={RouterLink} to="/files" />,
           <GlobalNavigation.Link key="payroll" active={p === '/payroll'} icon="circle-dollar-regular" activeIcon="circle-dollar-solid" label="Payroll" component={RouterLink} to="/payroll" />,
           <GlobalNavigation.Link key="benefits" active={false} icon="heart-pulse-regular" activeIcon="heart-pulse-solid" label="Benefits" />,
-          <GlobalNavigation.LinkMenu
-            key="compensation"
-            active={false}
-            icon="money-bill-wave-regular"
-            activeIcon="money-bill-wave-solid"
-            label="Compensation"
-            menuItems={[
-              { text: 'Total Rewards', value: 'total-rewards', isActionOnly: true },
-              { text: 'More', value: 'more', isActionOnly: true },
-            ]}
-          />,
+          <GlobalNavigation.Link key="compensation" active={false} icon="money-bill-wave-regular" activeIcon="money-bill-wave-solid" label="Compensation" />,
         ]}
       />
       <div className="app-main">
@@ -305,7 +247,7 @@ function App() {
     <DatePickerProvider>
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        <Route path="/" element={<Navigate to="/people" replace />} />
+        <Route path="/" element={<FullLayout><HomeTemplate /></FullLayout>} />
         <Route path="/index" element={<FullLayout><PrototypeIndex /></FullLayout>} />
         <Route path="/navigation-option-a" element={<FullLayout><NavigationOptionA /></FullLayout>} />
         {/* Files routes - each category has its own route */}
@@ -323,8 +265,6 @@ function App() {
         <Route path="/people" element={<FullLayout><People /></FullLayout>} />
         <Route path="/people/directory" element={<FullLayout><People defaultTab="directory" /></FullLayout>} />
         <Route path="/people/org-chart" element={<FullLayout><People defaultTab="orgChart" /></FullLayout>} />
-        <Route path="/people/power-edit" element={<FullLayout><PowerEditSessions /></FullLayout>} />
-        <Route path="/people/power-edit/edit" element={<FullLayout noCapsule><PowerEdit /></FullLayout>} />
         <Route path="/profile" element={<FullLayout><Profile /></FullLayout>} />
         <Route path="/reports" element={<FullLayout><ReportsTemplate /></FullLayout>} />
         {/* Settings routes - each section has its own route */}

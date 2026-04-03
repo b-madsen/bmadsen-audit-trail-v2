@@ -61,7 +61,11 @@
 
 /* Page Title */
 .files-title {
-  padding: 24px 0 16px 0;
+  padding: 32px 0 24px 0;
+}
+
+.files-title h2 {
+  font-size: 48px;
 }
 
 /* Content Layout */

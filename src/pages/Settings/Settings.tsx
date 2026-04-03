@@ -38,7 +38,7 @@ export function Settings({ section = 'account' }: SettingsProps) {
     <div className="settings-page settings-page--no-sidebar">
       {/* Page Header */}
       <div className="settings-header">
-        <Headline size="large">{currentSectionLabel}</Headline>
+        <Headline size="large" color="primary">{currentSectionLabel}</Headline>
       </div>
 
       <div className="settings-layout">

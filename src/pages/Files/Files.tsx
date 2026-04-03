@@ -96,7 +96,7 @@ export function Files({ category = 'all' }: FilesProps) {
     <div className="files-page files-page--no-sidebar">
       {/* Page Title */}
       <div className="files-title">
-        <Headline size="large">{currentCategoryLabel}</Headline>
+        <Headline size="large" color="primary">{currentCategoryLabel}</Headline>
       </div>
 
       {/* Main Content - Full Width */}

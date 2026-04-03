@@ -279,8 +279,7 @@
 .my-info-content {
   display: flex;
   gap: 32px;
-  padding: 40px;
-  padding-top: 32px;
+  padding: 32px 0;
 }
 
 /* Sidebar */

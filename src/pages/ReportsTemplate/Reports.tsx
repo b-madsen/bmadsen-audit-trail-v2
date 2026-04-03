@@ -8,7 +8,7 @@ export function Reports() {
     <div className="reports-page reports-page--no-sidebar">
       {/* Header */}
       <div className="reports-header">
-        <Headline size="large">Analytics</Headline>
+        <Headline size="large" color="primary">Analytics</Headline>
         <div className="reports-header-actions">
           {/* Search */}
           <div className="reports-search">

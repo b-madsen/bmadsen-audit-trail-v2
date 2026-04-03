@@ -1,7 +1,11 @@
 .payroll-page {
   min-height: 100%;
   background: var(--surface-neutral-x-weak);
-  padding: 32px;
+  padding: 32px 0;
+}
+
+.payroll-header h2 {
+  font-size: 48px;
 }
 
 /* Header */

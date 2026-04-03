@@ -8,11 +8,15 @@
 }
 
 .settings-page--no-sidebar .settings-main {
-  padding: 0 32px 40px;
+  padding: 0 0 40px;
 }
 
 .settings-header {
-  padding: 32px 32px 24px;
+  padding: 32px 0 24px;
+}
+
+.settings-header h2 {
+  font-size: 48px;
 }
 
 .settings-layout {
@@ -23,7 +27,7 @@
 /* Sidebar Navigation */
 .settings-sidebar {
   width: 280px;
-  padding: 0 24px 32px 32px;
+  padding: 0 24px 32px 0;
   flex-shrink: 0;
 }
 
@@ -68,7 +72,7 @@
 /* Main Content */
 .settings-main {
   flex: 1;
-  padding: 0 40px 40px;
+  padding: 0 0 40px;
 }
 
 .settings-card {

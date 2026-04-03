@@ -1,5 +1,9 @@
 .hiring-page {
-  padding: 40px;
+  padding: 32px 0;
+}
+
+.hiring-header h2 {
+  font-size: 48px;
 }
 
 .hiring-header {

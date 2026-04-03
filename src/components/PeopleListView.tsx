@@ -1,11 +1,9 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   IconV2,
   BodyText,
   Section,
   IconButton,
-  Button,
   Link,
   Avatar,
   SelectField,
@@ -19,12 +17,10 @@ interface PeopleListViewProps {
 }
 
 export function PeopleListView({ employees }: PeopleListViewProps) {
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState('all');
   const [showingFilter, setShowingFilter] = useState('active');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const menuRef = useRef<HTMLDivElement>(null);
   const itemsPerPage = 50;
 
@@ -71,39 +67,10 @@ export function PeopleListView({ employees }: PeopleListViewProps) {
     currentPage * itemsPerPage
   );
 
-  const selectedCount = selectedIds.size;
-  const allOnPageSelected = currentEmployees.length > 0 && currentEmployees.every((e) => selectedIds.has(e.id));
-  const someOnPageSelected = currentEmployees.some((e) => selectedIds.has(e.id));
-
-  function toggleRow(id: number) {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      return next;
-    });
-  }
-
-  function toggleAll() {
-    if (allOnPageSelected) {
-      setSelectedIds((prev) => {
-        const next = new Set(prev);
-        currentEmployees.forEach((e) => next.delete(e.id));
-        return next;
-      });
-    } else {
-      setSelectedIds((prev) => {
-        const next = new Set(prev);
-        currentEmployees.forEach((e) => next.add(e.id));
-        return next;
-      });
-    }
-  }
-
   return (
     <div className="people-list-view">
       {/* Filter Bar */}
       <div className="people-list-filter-bar">
-        {/* Left: filter icon + status pill + count */}
         <div className="people-list-filter-left">
           <IconButton
             icon="sliders-solid"
@@ -132,81 +99,43 @@ export function PeopleListView({ employees }: PeopleListViewProps) {
           </div>
         </div>
 
-        {/* Right: selection actions OR default controls */}
-        {selectedCount > 0 ? (
-          <div className="people-list-filter-right">
-            <BodyText size="small" weight="medium">{selectedCount} Selected</BodyText>
-            <Button
-              variant="outlined"
-              color="secondary"
+        <div className="people-list-filter-right">
+          <div className="people-list-select-showing">
+            <SelectField
+              label="Showing"
+              labelPlacement="inline"
               size="medium"
-              startIcon={<IconV2 name="arrow-down-to-line-solid" size={16} />}
+              variant="single"
+              value={showingFilter}
+              onChange={(e) => { setShowingFilter(e.target.value); setCurrentPage(1); }}
             >
-              Download Forms
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              size="medium"
-              startIcon={<IconV2 name="bolt-solid" size={16} />}
-              onClick={() => navigate('/people/power-edit/edit', { state: { selectedIds: Array.from(selectedIds) } })}
-            >
-              Power Edit
-            </Button>
-            <IconButton
-              icon="xmark-solid"
-              aria-label="Clear selection"
-              variant="outlined"
-              color="secondary"
-              size="medium"
-              onClick={() => setSelectedIds(new Set())}
-            />
+              {showingOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </SelectField>
           </div>
-        ) : (
-          <div className="people-list-filter-right">
-            <div className="people-list-select-showing">
-              <SelectField
-                label="Showing"
-                labelPlacement="inline"
-                size="medium"
-                variant="single"
-                value={showingFilter}
-                onChange={(e) => { setShowingFilter(e.target.value); setCurrentPage(1); }}
-              >
-                {showingOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </SelectField>
-            </div>
 
-            <div className="people-list-menu-wrapper" ref={menuRef}>
-              <IconButton
-                icon="ellipsis-solid"
-                aria-label="More options"
-                variant="outlined"
-                color="secondary"
-                size="medium"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              />
-              {isMenuOpen && (
-                <div className="people-list-menu">
-                  <button
-                    className="people-list-menu-item"
-                    onClick={() => { setIsMenuOpen(false); navigate('/people/power-edit/edit'); }}
-                  >
-                    <BodyText size="medium">Power Edit Employees</BodyText>
-                  </button>
-                  <button className="people-list-menu-item" onClick={() => setIsMenuOpen(false)}>
-                    <BodyText size="medium">Download Forms</BodyText>
-                  </button>
-                  <button className="people-list-menu-item" onClick={() => setIsMenuOpen(false)}>
-                    <BodyText size="medium">Customize View</BodyText>
-                  </button>
-                </div>
-              )}
-            </div>
+          <div className="people-list-menu-wrapper" ref={menuRef}>
+            <IconButton
+              icon="ellipsis-solid"
+              aria-label="More options"
+              variant="outlined"
+              color="secondary"
+              size="medium"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            />
+            {isMenuOpen && (
+              <div className="people-list-menu">
+                <button className="people-list-menu-item" onClick={() => setIsMenuOpen(false)}>
+                  <BodyText size="medium">Download Forms</BodyText>
+                </button>
+                <button className="people-list-menu-item" onClick={() => setIsMenuOpen(false)}>
+                  <BodyText size="medium">Customize View</BodyText>
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Table */}
@@ -215,15 +144,6 @@ export function PeopleListView({ employees }: PeopleListViewProps) {
           <table className="people-list-table">
             <thead>
               <tr>
-                <th className="people-list-table__checkbox-col">
-                  <input
-                    type="checkbox"
-                    checked={allOnPageSelected}
-                    ref={(el) => { if (el) el.indeterminate = someOnPageSelected && !allOnPageSelected; }}
-                    onChange={toggleAll}
-                    style={{ width: 16, height: 16, cursor: 'pointer', accentColor: 'var(--color-primary-strong)' }}
-                  />
-                </th>
                 <th>Employee Photo</th>
                 <th>Employee #</th>
                 <th>Last Name, First Name</th>
@@ -235,18 +155,7 @@ export function PeopleListView({ employees }: PeopleListViewProps) {
             </thead>
             <tbody>
               {currentEmployees.map((employee) => (
-                <tr
-                  key={employee.id}
-                  className={selectedIds.has(employee.id) ? 'people-list-table__row--selected' : ''}
-                >
-                  <td className="people-list-table__checkbox-col">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.has(employee.id)}
-                      onChange={() => toggleRow(employee.id)}
-                      style={{ width: 16, height: 16, cursor: 'pointer', accentColor: 'var(--color-primary-strong)' }}
-                    />
-                  </td>
+                <tr key={employee.id}>
                   <td><Avatar src={employee.avatar} alt={employee.name} size={64} /></td>
                   <td><BodyText size="medium">{employee.employeeNumber}</BodyText></td>
                   <td>

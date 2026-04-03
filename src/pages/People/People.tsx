@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, type ChangeEvent } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
   IconV2,
   Headline,
@@ -28,7 +28,6 @@ interface PeopleProps {
 }
 
 export function People({ defaultTab = 'list' }: PeopleProps) {
-  const navigate = useNavigate();
   const location = useLocation();
   const [viewMode, setViewMode] = useState<ViewMode>(defaultTab);
   const [toastVisible, setToastVisible] = useState(false);
@@ -121,19 +120,8 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
             size="medium"
             className="people-primary-btn"
             startIcon={<IconV2 name="circle-plus-regular" size={16} />}
-            onClick={() => navigate('/people/new')}
           >
             New Employee
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            size="medium"
-            className="people-primary-btn"
-            startIcon={<IconV2 name="bolt-regular" size={16} />}
-            onClick={() => navigate('/people/power-edit/edit')}
-          >
-            Power Edit
           </Button>
         </div>
 
