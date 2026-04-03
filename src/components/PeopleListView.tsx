@@ -7,8 +7,6 @@ import {
   Link,
   Avatar,
   SelectField,
-  Checkbox,
-  AccordionV2,
 } from '@bamboohr/fabric';
 import { Pagination } from './Pagination';
 import type { Employee } from '../data/employees';
@@ -18,13 +16,16 @@ interface PeopleListViewProps {
   employees: Employee[];
 }
 
-const EMPLOYMENT_TYPE_OPTIONS = ['Contractor', 'Full-Time', 'Intern', 'Part-Time', 'Terminated'];
-
 export function PeopleListView({ employees }: PeopleListViewProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState('all');
   const [showingFilter, setShowingFilter] = useState('active');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [selectedEmploymentTypes] = useState<Set<string>>(new Set());
+  const [selectedDepartments] = useState<Set<string>>(new Set());
+  const [selectedLocations] = useState<Set<string>>(new Set());
+  const hasActiveFilters = selectedEmploymentTypes.size > 0 || selectedDepartments.size > 0 || selectedLocations.size > 0;
   const menuRef = useRef<HTMLDivElement>(null);
   const itemsPerPage = 50;
 
@@ -50,16 +51,6 @@ export function PeopleListView({ employees }: PeopleListViewProps) {
     { value: 'inactive', label: 'Inactive' },
     { value: 'all', label: 'All' },
   ];
-
-  const departments = useMemo(
-    () => [...new Set(employees.map((e) => e.department))].sort(),
-    [employees]
-  );
-
-  const locations = useMemo(
-    () => [...new Set(employees.map((e) => e.location).filter(Boolean))].sort(),
-    [employees]
-  );
 
   const filteredEmployees = useMemo(() => {
     let result = employees;
@@ -166,156 +157,54 @@ export function PeopleListView({ employees }: PeopleListViewProps) {
         </div>
       </div>
 
-      {/* Table */}
-      <Section>
-        <div className="people-list-table-container">
-          <table className="people-list-table">
-            <thead>
-              <tr>
-                <th>Employee Photo</th>
-                <th>Employee #</th>
-                <th>Last Name, First Name</th>
-                <th>Job Title</th>
-                <th>Location</th>
-                <th>Employment Status</th>
-                <th>Hire Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentEmployees.map((employee) => (
-                <tr key={employee.id}>
-                  <td><Avatar src={employee.avatar} alt={employee.name} size={64} /></td>
-                  <td><BodyText size="medium">{employee.employeeNumber}</BodyText></td>
-                  <td>
-                    <Link href={`/employees/${employee.id}`}>
-                      {employee.lastName}, {employee.firstName}
-                    </Link>
-                  </td>
-                  <td><BodyText size="medium" color="neutral-medium">{employee.jobTitle}</BodyText></td>
-                  <td><BodyText size="medium" color="neutral-medium">{employee.location}</BodyText></td>
-                  <td><BodyText size="medium" color="neutral-medium">{employee.employmentStatus}</BodyText></td>
-                  <td><BodyText size="medium" color="neutral-medium">{employee.hireDate}</BodyText></td>
+      {/* Table area */}
+      <div className="people-list-main">
+        <Section>
+          <div className="people-list-table-container">
+            <table className="people-list-table">
+              <thead>
+                <tr>
+                  <th>Employee Photo</th>
+                  <th>Employee #</th>
+                  <th>Last Name, First Name</th>
+                  <th>Job Title</th>
+                  <th>Location</th>
+                  <th>Employment Status</th>
+                  <th>Hire Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-              <AccordionV2
-                title="Locations"
-                subtitle={`${locations.length}`}
-                variant="border-bottom"
-              >
-                <div className="people-list-sidebar-checks">
-                  {locations.map((loc) => (
-                    <Checkbox
-                      key={loc}
-                      label={loc}
-                      value={loc}
-                      checked={selectedLocations.has(loc)}
-                      onChange={({ value }) => {
-                        setSelectedLocations((prev) => toggleSet(prev, String(value)));
-                        setCurrentPage(1);
-                      }}
-                    />
-                  ))}
-                </div>
-              </AccordionV2>
-
-              <AccordionV2 title="Pay Range" variant="border-bottom">
-                <div className="people-list-sidebar-checks">
-                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
-                </div>
-              </AccordionV2>
-
-              <AccordionV2 title="Pay Type" variant="border-bottom">
-                <div className="people-list-sidebar-checks">
-                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
-                </div>
-              </AccordionV2>
-
-              <AccordionV2 title="Tenure" variant="border-bottom">
-                <div className="people-list-sidebar-checks">
-                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
-                </div>
-              </AccordionV2>
-
-              <AccordionV2 title="Age" variant="border-bottom">
-                <div className="people-list-sidebar-checks">
-                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
-                </div>
-              </AccordionV2>
-
-              <AccordionV2 title="Gender" variant="border-bottom">
-                <div className="people-list-sidebar-checks">
-                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
-                </div>
-              </AccordionV2>
-
-              <AccordionV2 title="Ethnicity" variant="border-bottom">
-                <div className="people-list-sidebar-checks">
-                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
-                </div>
-              </AccordionV2>
-
-              <AccordionV2 title="More" variant="border-bottom">
-                <div className="people-list-sidebar-checks">
-                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
-                </div>
-              </AccordionV2>
-            </div>
-          </div>
-        )}
-
-        {/* Table area */}
-        <div className="people-list-main">
-          <Section>
-            <div className="people-list-table-container">
-              <table className="people-list-table">
-                <thead>
-                  <tr>
-                    <th>Employee Photo</th>
-                    <th>Employee #</th>
-                    <th>Last Name, First Name</th>
-                    <th>Job Title</th>
-                    <th>Location</th>
-                    <th>Employment Status</th>
-                    <th>Hire Date</th>
+              </thead>
+              <tbody>
+                {currentEmployees.map((employee) => (
+                  <tr key={employee.id}>
+                    <td><Avatar src={employee.avatar} alt={employee.name} size={64} /></td>
+                    <td><BodyText size="medium">{employee.employeeNumber}</BodyText></td>
+                    <td>
+                      <Link href={`/employees/${employee.id}`}>
+                        {employee.lastName}, {employee.firstName}
+                      </Link>
+                    </td>
+                    <td><BodyText size="medium" color="neutral-medium">{employee.jobTitle}</BodyText></td>
+                    <td><BodyText size="medium" color="neutral-medium">{employee.location}</BodyText></td>
+                    <td><BodyText size="medium" color="neutral-medium">{employee.employmentStatus}</BodyText></td>
+                    <td><BodyText size="medium" color="neutral-medium">{employee.hireDate}</BodyText></td>
                   </tr>
-                </thead>
-                <tbody>
-                  {currentEmployees.map((employee) => (
-                    <tr key={employee.id}>
-                      <td><Avatar src={employee.avatar} alt={employee.name} size={64} /></td>
-                      <td><BodyText size="medium">{employee.employeeNumber}</BodyText></td>
-                      <td>
-                        <Link href={`/employees/${employee.id}`}>
-                          {employee.lastName}, {employee.firstName}
-                        </Link>
-                      </td>
-                      <td><BodyText size="medium" color="neutral-medium">{employee.jobTitle}</BodyText></td>
-                      <td><BodyText size="medium" color="neutral-medium">{employee.location}</BodyText></td>
-                      <td><BodyText size="medium" color="neutral-medium">{employee.employmentStatus}</BodyText></td>
-                      <td><BodyText size="medium" color="neutral-medium">{employee.hireDate}</BodyText></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-            {totalPages > 1 && (
-              <div className="people-list-pagination">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  totalItems={totalItems}
-                  itemsPerPage={itemsPerPage}
-                  onPageChange={setCurrentPage}
-                />
-              </div>
-            )}
-          </Section>
-        </div>
+          {totalPages > 1 && (
+            <div className="people-list-pagination">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                itemsPerPage={itemsPerPage}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          )}
+        </Section>
       </div>
     </div>
   );

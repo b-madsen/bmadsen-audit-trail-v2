@@ -152,10 +152,10 @@ export function JobTabContent({ employeeName }: JobTabContentProps) {
           <div className="job-field-group">
             <p className="job-field-label">Veteran Status</p>
             <div className="job-item-stack">
-              <Checkbox id="vet-active" label="Active Duty Wartime or Campaign Badge Veteran" checked={vetActive} onChange={() => setVetActive(!vetActive)} />
-              <Checkbox id="vet-armed" label="Armed Forces Service Medal Veteran" checked={vetArmed} onChange={() => setVetArmed(!vetArmed)} />
-              <Checkbox id="vet-disabled" label="Disabled Veteran" checked={vetDisabled} onChange={() => setVetDisabled(!vetDisabled)} />
-              <Checkbox id="vet-separated" label="Recently Separated Veteran" checked={vetSeparated} onChange={() => setVetSeparated(!vetSeparated)} />
+              <Checkbox id="vet-active" value="vet-active" label="Active Duty Wartime or Campaign Badge Veteran" checked={vetActive} onChange={() => setVetActive(!vetActive)} />
+              <Checkbox id="vet-armed" value="vet-armed" label="Armed Forces Service Medal Veteran" checked={vetArmed} onChange={() => setVetArmed(!vetArmed)} />
+              <Checkbox id="vet-disabled" value="vet-disabled" label="Disabled Veteran" checked={vetDisabled} onChange={() => setVetDisabled(!vetDisabled)} />
+              <Checkbox id="vet-separated" value="vet-separated" label="Recently Separated Veteran" checked={vetSeparated} onChange={() => setVetSeparated(!vetSeparated)} />
             </div>
           </div>
           <div className="job-field-group">

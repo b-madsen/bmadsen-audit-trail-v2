@@ -375,7 +375,7 @@ export function Home() {
                       value="community"
                       label={
                         <span className="home-tab-label">
-                          <IconV2 name="award-solid" size={14} color={feedTab === 'community' ? 'primary-strong' : 'neutral-medium'} />
+                          <IconV2 name="award-solid" size={12} color={feedTab === 'community' ? 'primary-strong' : 'neutral-medium'} />
                           Employee Community
                         </span>
                       }
@@ -384,7 +384,7 @@ export function Home() {
                       value="happening"
                       label={
                         <span className="home-tab-label">
-                          <IconV2 name="bullhorn-solid" size={14} color={feedTab === 'happening' ? 'primary-strong' : 'neutral-medium'} />
+                          <IconV2 name="bullhorn-solid" size={12} color={feedTab === 'happening' ? 'primary-strong' : 'neutral-medium'} />
                           What's Happening
                         </span>
                       }
@@ -396,7 +396,7 @@ export function Home() {
                   <div className="home-feed-content">
                     <div className="home-feed-toolbar">
                       <div className="home-feed-toolbar-left">
-                        <Button variant="outlined" color="secondary" size="small" startIcon={<IconV2 name="pen-to-square-regular" size={14} />}>
+                        <Button variant="outlined" color="secondary" size="small" startIcon={<IconV2 name="pen-to-square-regular" size={12} />}>
                           New Post
                         </Button>
                         <Button variant="outlined" color="secondary" size="small" endIcon={<IconV2 name="chevron-down-solid" size={12} />}>
@@ -520,7 +520,7 @@ export function Home() {
                     <Avatar src={person.avatar} size={96} />
                     <BodyText size="medium" weight="semibold" color="neutral-strong">{person.name}</BodyText>
                     <div className="home-team-status">
-                      <IconV2 name="person-walking-arrow-right-solid" size={14} color="neutral-medium" />
+                      <IconV2 name="person-walking-arrow-right-solid" size={12} color="neutral-medium" />
                       <BodyText size="small" color="neutral-weak">{person.status}</BodyText>
                     </div>
                   </div>
@@ -729,7 +729,7 @@ export function Home() {
                   <div key={training.id} className="home-training-card">
                     <BodyText size="medium" weight="semibold" color="neutral-strong">{training.name}</BodyText>
                     <div className="home-training-count">
-                      <IconV2 name="people-group-regular" size={14} color="neutral-medium" />
+                      <IconV2 name="people-group-regular" size={12} color="neutral-medium" />
                       <BodyText size="small" color="neutral-weak">{training.count} Employees</BodyText>
                     </div>
                   </div>

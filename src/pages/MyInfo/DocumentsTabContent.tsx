@@ -48,7 +48,7 @@ export function DocumentsTabContent() {
             color="primary"
             size="medium"
             className="my-info-add-entry-btn"
-            startIcon={<IconV2 name="arrow-up-from-bracket-regular" size={14} />}
+            startIcon={<IconV2 name="arrow-up-from-bracket-regular" size={12} />}
           >
             Upload
           </Button>
@@ -83,7 +83,7 @@ export function DocumentsTabContent() {
         <div className="docs-toolbar-right">
           <div className="docs-search-wrapper">
             <span className="docs-search-icon">
-              <IconV2 name="magnifying-glass-regular" size={14} color="neutral-medium" />
+              <IconV2 name="magnifying-glass-regular" size={12} color="neutral-medium" />
             </span>
             <TextField
               label=""
@@ -146,7 +146,7 @@ export function DocumentsTabContent() {
           >
             <div className="docs-dropzone">
               <div className="docs-dropzone-left">
-                <IconV2 name="arrow-up-from-bracket-regular" size={14} color="neutral-medium" />
+                <IconV2 name="arrow-up-from-bracket-regular" size={12} color="neutral-medium" />
                 <BodyText size="medium" color="neutral-weak">Drag and drop files to upload</BodyText>
               </div>
               <BodyText size="medium" color="neutral-weak">5 folders</BodyText>

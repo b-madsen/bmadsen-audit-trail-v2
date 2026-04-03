@@ -60,13 +60,13 @@ export function TimeOffTabContent() {
           </div>
           <div className="timeoff-card-actions">
             <IconButton
-              icon={<IconV2 name="paper-plane-solid" size={14} />}
+              icon={<IconV2 name="paper-plane-solid" size={12} />}
               aria-label="Request time off"
               size="small"
               color="secondary"
             />
             <IconButton
-              icon={<IconV2 name="table-cells-solid" size={14} />}
+              icon={<IconV2 name="table-cells-solid" size={12} />}
               aria-label="View history"
               size="small"
               color="secondary"
@@ -96,7 +96,7 @@ export function TimeOffTabContent() {
           </div>
           <div className="timeoff-card-actions">
             <IconButton
-              icon={<IconV2 name="paper-plane-solid" size={14} />}
+              icon={<IconV2 name="paper-plane-solid" size={12} />}
               aria-label="Request time off"
               size="small"
               color="secondary"
@@ -116,7 +116,7 @@ export function TimeOffTabContent() {
           </div>
           <div className="timeoff-card-actions">
             <IconButton
-              icon={<IconV2 name="paper-plane-solid" size={14} />}
+              icon={<IconV2 name="paper-plane-solid" size={12} />}
               aria-label="Request time off"
               size="small"
               color="secondary"
@@ -150,7 +150,7 @@ export function TimeOffTabContent() {
         <div className="timeoff-history-filters">
           <div className="timeoff-history-filters-left">
             <div className="timeoff-filter-field">
-              <SelectField label="" value={policyFilter} onChange={(val) => setPolicyFilter(val as string)}>
+              <SelectField label="" value={policyFilter} onChange={(e: any) => setPolicyFilter(e.target.value)}>
                 <option value="vacation">Vacation</option>
                 <option value="sick">Sick</option>
                 <option value="pto">Paid Time Off</option>
@@ -158,7 +158,7 @@ export function TimeOffTabContent() {
               </SelectField>
             </div>
             <div className="timeoff-filter-field timeoff-filter-field--narrow">
-              <SelectField label="" value={yearFilter} onChange={(val) => setYearFilter(val as string)}>
+              <SelectField label="" value={yearFilter} onChange={(e: any) => setYearFilter(e.target.value)}>
                 <option value="2024">2024</option>
                 <option value="2023">2023</option>
                 <option value="2022">2022</option>
@@ -167,7 +167,7 @@ export function TimeOffTabContent() {
             </div>
           </div>
           <div className="timeoff-filter-field">
-            <SelectField label="" value={viewFilter} onChange={(val) => setViewFilter(val as string)}>
+            <SelectField label="" value={viewFilter} onChange={(e: any) => setViewFilter(e.target.value)}>
               <option value="earned-used">Earned/Used</option>
               <option value="accrued">Accrued</option>
               <option value="used">Used</option>
