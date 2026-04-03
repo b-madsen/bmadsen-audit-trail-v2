@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Avatar,
   BodyText,
@@ -285,6 +286,29 @@ const PassportTableSection: React.FC = () => (
 
 export const Profile: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('personal');
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const openMenu = useCallback(() => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setMenuPos({ top: rect.bottom + 8, right: window.innerWidth - rect.right });
+    }
+    setIsMoreMenuOpen(true);
+  }, []);
+
+  const closeMenu = useCallback(() => setIsMoreMenuOpen(false), []);
+
+  useEffect(() => {
+    if (!isMoreMenuOpen) return;
+    function handleClose(event: MouseEvent) {
+      if (triggerRef.current && triggerRef.current.contains(event.target as Node)) return;
+      closeMenu();
+    }
+    document.addEventListener('mousedown', handleClose);
+    return () => document.removeEventListener('mousedown', handleClose);
+  }, [isMoreMenuOpen, closeMenu]);
 
   return (
     <div className="ee-profile-page">
@@ -310,11 +334,14 @@ export const Profile: React.FC = () => {
               >
                 Request a Change
               </Button>
-              <IconButton
-                icon={<IconV2 name="ellipsis-solid" size={16} />}
+              <button
+                ref={triggerRef}
+                className="profile-more-menu-trigger"
                 aria-label="More actions"
-                dark
-              />
+                onClick={() => isMoreMenuOpen ? closeMenu() : openMenu()}
+              >
+                <IconV2 name="ellipsis-solid" size={16} color="neutral-forcedwhite" />
+              </button>
             </div>
           </div>
 
@@ -366,6 +393,64 @@ export const Profile: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Portal-rendered dropdown — escapes all parent overflow/z-index */}
+      {isMoreMenuOpen && createPortal(
+        <div
+          className="profile-more-menu"
+          style={{ top: menuPos.top, right: menuPos.right }}
+        >
+          <button className="profile-more-menu-item" onClick={closeMenu}>
+            <IconV2 name="file-signature-regular" size={18} color="neutral-strong" />
+            <span className="profile-more-menu-label">Request Signature</span>
+          </button>
+
+          <button className="profile-more-menu-item profile-more-menu-item--has-sub" onClick={closeMenu}>
+            <IconV2 name="file-arrow-down-regular" size={18} color="neutral-strong" />
+            <div className="profile-more-menu-label-group">
+              <span className="profile-more-menu-label">Download Forms</span>
+              <span className="profile-more-menu-sublabel">(W-4, I-9)</span>
+            </div>
+            <IconV2 name="chevron-right-solid" size={10} color="neutral-medium" />
+          </button>
+
+          <Divider />
+
+          <button className="profile-more-menu-item profile-more-menu-item--highlighted" onClick={closeMenu}>
+            <IconV2 name="lock-keyhole-regular" size={18} color="neutral-strong" />
+            <div className="profile-more-menu-label-group">
+              <span className="profile-more-menu-label">Manage Access</span>
+              <span className="profile-more-menu-sublabel">Employees US</span>
+            </div>
+          </button>
+
+          <button className="profile-more-menu-item" onClick={closeMenu}>
+            <IconV2 name="eye-regular" size={18} color="neutral-strong" />
+            <span className="profile-more-menu-label">View BambooHR as Jess</span>
+          </button>
+
+          <button className="profile-more-menu-item" onClick={closeMenu}>
+            <IconV2 name="key-regular" size={18} color="neutral-strong" />
+            <span className="profile-more-menu-label">Reset User's Password</span>
+          </button>
+
+          <Divider />
+
+          <button className="profile-more-menu-item" onClick={closeMenu}>
+            <IconV2 name="person-to-door-regular" size={18} color="neutral-strong" />
+            <div className="profile-more-menu-label-group">
+              <span className="profile-more-menu-label">End Employment</span>
+              <span className="profile-more-menu-sublabel">Termination or Resignation</span>
+            </div>
+          </button>
+
+          <button className="profile-more-menu-item profile-more-menu-item--danger" onClick={closeMenu}>
+            <IconV2 name="user-xmark-regular" size={18} color="error-strong" />
+            <span className="profile-more-menu-label">Delete Employee...</span>
+          </button>
+        </div>,
+        document.body
+      )}
     </div>
   );
 };

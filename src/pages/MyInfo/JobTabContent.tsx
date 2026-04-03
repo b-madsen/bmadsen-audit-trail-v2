@@ -1,582 +1,420 @@
-import { IconV2 } from '@bamboohr/fabric';
-import { Button, TextInput, Checkbox } from '../../components';
+import { useState } from 'react';
+import {
+  Section,
+  Button,
+  TextButton,
+  IconV2,
+  Headline,
+  TextField,
+  SelectField,
+  Checkbox,
+} from '@bamboohr/fabric';
 
 interface JobTabContentProps {
   employeeName: string;
 }
 
+const directReports = ['Alan Nguyen', 'Chris Downs', 'Melinda Pittman', 'Tony Fonseca'];
+
+const employmentStatus = [
+  { effectiveDate: 'Jan 1, 2023', status: 'Full-Time', comment: 'N/A', current: true },
+];
+
+const jobHistory = [
+  {
+    effective: 'Dec 1, 2024',
+    location: 'Lindon, UT United States',
+    division: 'Sales',
+    department: 'Sales',
+    teams: 'Sales Dept 1, +1 more',
+    jobTitle: 'Sales Rep',
+    reportsTo: 'Lucy Samuels',
+    current: true,
+  },
+  {
+    effective: 'Apr 21, 2023',
+    location: 'Lindon, UT United States',
+    division: 'Sales',
+    department: 'Sales',
+    teams: '+1 more',
+    jobTitle: 'Sales Rep',
+    reportsTo: 'Thomas Davis',
+    current: false,
+  },
+  {
+    effective: 'Nov 1, 2021',
+    location: 'Lindon, UT United States',
+    division: 'Sales',
+    department: 'Sales',
+    teams: '—',
+    jobTitle: 'Sales Rep',
+    reportsTo: 'Thomas Davis',
+    current: false,
+  },
+];
+
+const compensation = [
+  {
+    effectiveDate: 'Jan 1, 2023',
+    paySchedule: 'Twice a month',
+    payType: 'Salary',
+    payRate: '$125,000.00 / Year',
+    overtime: 'Exempt',
+    changeReason: 'Promotion',
+    comment: 'Promoted',
+    current: true,
+  },
+  {
+    effectiveDate: 'Nov 1, 2021',
+    paySchedule: 'Twice a month',
+    payType: 'Salary',
+    payRate: '$100,000.00 / Year',
+    overtime: 'Exempt',
+    changeReason: 'New Hire',
+    comment: '',
+    current: false,
+  },
+];
+
+const bonuses = [
+  { date: 'Jan 1, 2023', amount: '$10,000.00', reason: 'Engineering Home', comment: 'Top Performer Award' },
+  { date: 'Jan 1, 2023', amount: '$5,000.00', reason: 'Performance', comment: '' },
+];
+
+const commissions = [
+  { date: 'Jan 1, 2023', amount: '$93.00', comment: 'Demo-Referral' },
+  { date: 'Jan 1, 2023', amount: '$100.00', comment: 'N/A' },
+];
+
+const equity = [
+  {
+    grantType: 'ISO',
+    grantDate: 'Apr 17, 2024',
+    grantQty: '50,000',
+    vestingStart: 'Apr 17, 2024',
+    vestingMonths: '48',
+    strikePrice: '$120',
+    vestingSchedule: 'Monthly',
+    callMonths: '24',
+  },
+];
+
+function CurrentDot() {
+  return <span className="job-current-dot" />;
+}
+
 export function JobTabContent({ employeeName }: JobTabContentProps) {
-  void employeeName; // Reserved for future use
-  // Mock data for job information
-  const jobData = {
-    hireDate: '11/1/2021',
-    ethnicity: 'White',
-    eeoJobCategory: 'Professional',
-    workerStatus: {
-      activeDutyMilitary: false,
-      armedForcesService: true,
-      disabled: false,
-      protectedVeteran: false,
-    },
-    directReports: ['Alan Nguyen', 'Jeff Hawkins', 'Melinda Pittman', 'Tony Fonseca'],
-    employmentStatus: [
-      { effectiveDate: '01/01/2023', status: 'Full-Time', comment: 'N/A' },
-    ],
-    jobInformation: [
-      {
-        effective: '12/01/2024',
-        location: 'Lindon, UT United States of America',
-        division: 'Sales',
-        department: 'Sales',
-        teams: 'Sales Dept 1 + 1 more',
-        jobTitle: 'Sales Rep',
-        reportsTo: 'Lucy Samuels',
-      },
-      {
-        effective: '04/21/2023',
-        location: 'Lindon, UT United States of America',
-        division: 'Sales',
-        department: 'Sales Rep',
-        teams: '+ 1 more',
-        jobTitle: 'Sales Rep',
-        reportsTo: 'Thomas Davis',
-      },
-    ],
-    compensation: [
-      {
-        effectiveDate: '01/01/2023',
-        paySchedule: 'Twice a month',
-        payType: 'Salary',
-        payRate: '$125,000.00 / Year',
-        overtime: 'Exempt',
-        changeReason: 'Promotion',
-        comment: 'Promoted',
-      },
-    ],
-    bonus: [
-      { date: '01/01/2023', amount: '$10,000.00', reason: 'Engineering Home', comment: 'Top Performer Award' },
-      { date: '01/01/2023', amount: '$5,000.00', reason: 'Performance', comment: '' },
-    ],
-    commission: [
-      { date: '01/01/2023', amount: '$93.00', comment: 'Demo-Referral' },
-      { date: '01/01/2023', amount: '$100.00', comment: 'N/A' },
-    ],
-    equity: [
-      { grantType: 'ISO', grantDate: '04/17/2024', grantQty: '50,000', vestingStart: '04/17/2024', vestingMonths: '48', strikePrice: '$120', vestingSchedule: 'Monthly', callMonths: '24' },
-    ],
-  };
+  void employeeName;
+  const [vetActive, setVetActive] = useState(false);
+  const [vetArmed, setVetArmed] = useState(true);
+  const [vetDisabled, setVetDisabled] = useState(false);
+  const [vetSeparated, setVetSeparated] = useState(false);
 
   return (
-    <>
-      {/* Section Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <IconV2 name="id-badge-solid" size={24} color="primary-strong" />
-          <h2
-            className="text-[26px] font-semibold text-[var(--color-primary-strong)]"
-            style={{ fontFamily: 'Fields, system-ui, sans-serif', lineHeight: '34px' }}
-          >
-            Job
-          </h2>
+    <div className="my-info-sections">
+      {/* Section header */}
+      <div className="my-info-section-header">
+        <div className="my-info-section-header-left">
+          <IconV2 name="briefcase-solid" size={20} color="primary-strong" />
+          <Headline size="medium" color="primary">Job</Headline>
         </div>
-        <Button variant="text" icon="grid-2-plus" iconPosition="left" showCaret={true}>
+        <TextButton
+          startIcon={<IconV2 name="grid-2-plus-solid" size={16} />}
+          endIcon={<IconV2 name="chevron-down-solid" size={12} />}
+        >
           Customize Layout
-        </Button>
+        </TextButton>
       </div>
 
-      {/* Main Job Section */}
-      <div className="bg-[var(--surface-neutral-white)] rounded-[var(--radius-small)] border border-[var(--border-neutral-x-weak)] p-6 mb-8">
-        <div className="mb-6 max-w-[200px]">
-          <TextInput label="Hire Date" value={jobData.hireDate} type="date" />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 mb-6 max-w-[416px]">
-          <TextInput label="Ethnicity" value={jobData.ethnicity} type="dropdown" />
-          <TextInput label="EEO Job Category" value={jobData.eeoJobCategory} type="dropdown" />
-        </div>
-
-        <div className="mb-6">
-          <label className="text-[14px] font-medium leading-[20px] text-[var(--text-neutral-x-strong)] mb-4 block">
-            Veteran Status
-          </label>
-          <div className="flex flex-col gap-3">
-            <Checkbox
-              label="Active Duty Wartime or Campaign Badge Veteran"
-              checked={jobData.workerStatus.activeDutyMilitary}
-            />
-            <Checkbox
-              label="Armed Forces Service Medal Veteran"
-              checked={jobData.workerStatus.armedForcesService}
-            />
-            <Checkbox
-              label="Disabled Veteran"
-              checked={jobData.workerStatus.disabled}
-            />
-            <Checkbox
-              label="Recently Separated Veteran"
-              checked={jobData.workerStatus.protectedVeteran}
-            />
+      {/* Hire Date + EEO + Veteran + Direct Reports */}
+      <Section>
+        <div className="my-info-form-fields">
+          <div className="my-info-field-row">
+            <TextField label="Hire Date" value="Nov 1, 2021" onChange={() => {}} />
+          </div>
+          <div className="my-info-form-grid-2">
+            <SelectField label="Ethnicity" value="White" onChange={() => {}}>
+              <option value="White">White</option>
+              <option value="Hispanic or Latino">Hispanic or Latino</option>
+              <option value="Black or African American">Black or African American</option>
+              <option value="Asian">Asian</option>
+              <option value="Two or More Races">Two or More Races</option>
+              <option value="Prefer not to say">Prefer not to say</option>
+            </SelectField>
+            <SelectField label="EEO Job Category" value="Professional" onChange={() => {}}>
+              <option value="Executive/Senior Level Officials and Managers">Executive/Senior Level Officials and Managers</option>
+              <option value="First/Mid-Level Officials and Managers">First/Mid-Level Officials and Managers</option>
+              <option value="Professional">Professional</option>
+              <option value="Technician">Technician</option>
+              <option value="Sales Workers">Sales Workers</option>
+            </SelectField>
+          </div>
+          <div className="job-field-group">
+            <p className="job-field-label">Veteran Status</p>
+            <div className="job-item-stack">
+              <Checkbox id="vet-active" label="Active Duty Wartime or Campaign Badge Veteran" checked={vetActive} onChange={() => setVetActive(!vetActive)} />
+              <Checkbox id="vet-armed" label="Armed Forces Service Medal Veteran" checked={vetArmed} onChange={() => setVetArmed(!vetArmed)} />
+              <Checkbox id="vet-disabled" label="Disabled Veteran" checked={vetDisabled} onChange={() => setVetDisabled(!vetDisabled)} />
+              <Checkbox id="vet-separated" label="Recently Separated Veteran" checked={vetSeparated} onChange={() => setVetSeparated(!vetSeparated)} />
+            </div>
+          </div>
+          <div className="job-field-group">
+            <p className="job-field-label">Direct Reports</p>
+            <div className="job-direct-reports-list">
+              {directReports.map((name) => (
+                <TextButton key={name}>{name}</TextButton>
+              ))}
+            </div>
           </div>
         </div>
+      </Section>
 
-        <div>
-          <label className="text-[14px] font-medium leading-[20px] text-[var(--text-neutral-x-strong)] mb-4 block">
-            Direct Reports
-          </label>
-          <div className="flex flex-col gap-2">
-            {jobData.directReports.map((report, index) => (
-              <a
-                key={index}
-                href="#"
-                className="text-[15px] text-blue-600 hover:underline cursor-pointer"
-              >
-                {report}
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Employment Status Section */}
-      <div className="bg-[var(--surface-neutral-white)] rounded-[var(--radius-small)] border border-[var(--border-neutral-x-weak)] p-8 mb-8">
-        <div className="flex items-start gap-4 mb-6">
-          <div className="flex items-center justify-center w-10 h-10 bg-[var(--surface-neutral-x-weak)] rounded-[var(--radius-x-small)] shrink-0">
-            <IconV2 name="id-badge-solid" size={16} color="primary-strong" />
-          </div>
-          <div className="flex items-center justify-between flex-1">
-            <h3
-              className="text-[24px] font-semibold text-[var(--color-primary-strong)]"
-              style={{ fontFamily: 'Fields, system-ui, sans-serif', lineHeight: '30px' }}
-            >
-              Employment Status
-            </h3>
-            <Button variant="outlined" size="small">
-              Add Entry
-            </Button>
-          </div>
-        </div>
-
-        <div>
-          <table className="w-full">
+      {/* Employment Status */}
+      <Section>
+        <Section.Header
+          title="Employment Status"
+          icon="id-badge-solid"
+          actions={[
+            <Button key="add" variant="outlined" color="primary" size="small" className="my-info-add-entry-btn">Add Entry</Button>,
+          ]}
+        />
+        <div className="my-info-table-wrapper">
+          <table className="my-info-table">
             <thead>
-              <tr className="bg-[var(--surface-neutral-x-weak)]">
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)] rounded-l-[var(--radius-xx-small)]">
-                  Effective Date
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Employment Status
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)] rounded-r-[var(--radius-xx-small)]">
-                  Comment
-                </th>
+              <tr>
+                <th>Effective Date</th>
+                <th>Employment Status</th>
+                <th>Comment</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--border-neutral-xx-weak)]">
-              {jobData.employmentStatus.map((status, index) => (
-                <tr key={index} className="hover:bg-[var(--surface-neutral-xx-weak)] transition-colors">
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    <div className="flex items-center gap-2">
-                      {index === 0 && <IconV2 name="circle-solid" size={10} color="primary-strong" />}
-                      {status.effectiveDate}
-                    </div>
+            <tbody>
+              {employmentStatus.map((row, i) => (
+                <tr key={i}>
+                  <td>
+                    <span className="job-date-cell">
+                      {row.current && <CurrentDot />}
+                      {row.effectiveDate}
+                    </span>
                   </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {status.status}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {status.comment}
-                  </td>
+                  <td>{row.status}</td>
+                  <td>{row.comment}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </Section>
 
-      {/* Job Information Section */}
-      <div className="bg-[var(--surface-neutral-white)] rounded-[var(--radius-small)] border border-[var(--border-neutral-x-weak)] p-8 mb-8">
-        <div className="flex items-start gap-4 mb-6">
-          <div className="flex items-center justify-center w-10 h-10 bg-[var(--surface-neutral-x-weak)] rounded-[var(--radius-x-small)] shrink-0">
-            <IconV2 name="id-badge-solid" size={16} color="primary-strong" />
-          </div>
-          <div className="flex items-center justify-between flex-1">
-            <h3
-              className="text-[24px] font-semibold text-[var(--color-primary-strong)]"
-              style={{ fontFamily: 'Fields, system-ui, sans-serif', lineHeight: '30px' }}
-            >
-              Job Information
-            </h3>
-            <Button variant="outlined" size="small">
-              Add Entry
-            </Button>
-          </div>
-        </div>
-
-        <div>
-          <table className="w-full">
+      {/* Job Information */}
+      <Section>
+        <Section.Header
+          title="Job Information"
+          icon="briefcase-solid"
+          actions={[
+            <Button key="add" variant="outlined" color="primary" size="small" className="my-info-add-entry-btn">Add Entry</Button>,
+          ]}
+        />
+        <div className="my-info-table-wrapper">
+          <table className="my-info-table">
             <thead>
-              <tr className="bg-[var(--surface-neutral-x-weak)]">
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)] rounded-l-[var(--radius-xx-small)]">
-                  Effective
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Location
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Division
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Department
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Teams
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Job Title
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)] rounded-r-[var(--radius-xx-small)]">
-                  Reports To
-                </th>
+              <tr>
+                <th>Effective</th>
+                <th>Location</th>
+                <th>Division</th>
+                <th>Department</th>
+                <th>Teams</th>
+                <th>Job Title</th>
+                <th>Reports To</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--border-neutral-xx-weak)]">
-              {jobData.jobInformation.map((job, index) => (
-                <tr key={index} className="hover:bg-[var(--surface-neutral-xx-weak)] transition-colors">
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    <div className="flex items-center gap-2">
-                      {index === 0 && <IconV2 name="circle-solid" size={10} color="primary-strong" />}
-                      {job.effective}
-                    </div>
+            <tbody>
+              {jobHistory.map((row, i) => (
+                <tr key={i}>
+                  <td>
+                    <span className="job-date-cell">
+                      {row.current && <CurrentDot />}
+                      {row.effective}
+                    </span>
                   </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)] max-w-[200px] truncate">
-                    {job.location}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {job.division}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {job.department}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-blue-600 hover:underline cursor-pointer">
-                    {job.teams}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {job.jobTitle}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-blue-600 hover:underline cursor-pointer">
-                    {job.reportsTo}
-                  </td>
+                  <td>{row.location}</td>
+                  <td>{row.division}</td>
+                  <td>{row.department}</td>
+                  <td className="job-link-cell">{row.teams}</td>
+                  <td>{row.jobTitle}</td>
+                  <td className="job-link-cell">{row.reportsTo}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </Section>
 
-      {/* Compensation Section */}
-      <div className="bg-[var(--surface-neutral-white)] rounded-[var(--radius-small)] border border-[var(--border-neutral-x-weak)] p-8 mb-8">
-        <div className="flex items-start gap-4 mb-6">
-          <div className="flex items-center justify-center w-10 h-10 bg-[var(--surface-neutral-x-weak)] rounded-[var(--radius-x-small)] shrink-0">
-            <IconV2 name="circle-dollar-solid" size={16} color="primary-strong" />
-          </div>
-          <div className="flex items-center justify-between flex-1">
-            <h3
-              className="text-[24px] font-semibold text-[var(--color-primary-strong)]"
-              style={{ fontFamily: 'Fields, system-ui, sans-serif', lineHeight: '30px' }}
-            >
-              Compensation
-            </h3>
-            <Button variant="outlined" size="small">
-              Add Entry
-            </Button>
-          </div>
-        </div>
-
-        <div>
-          <table className="w-full">
+      {/* Compensation */}
+      <Section>
+        <Section.Header
+          title="Compensation"
+          icon="circle-dollar-solid"
+          actions={[
+            <Button key="add" variant="outlined" color="primary" size="small" className="my-info-add-entry-btn">Add Entry</Button>,
+          ]}
+        />
+        <div className="my-info-table-wrapper">
+          <table className="my-info-table">
             <thead>
-              <tr className="bg-[var(--surface-neutral-x-weak)]">
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)] rounded-l-[var(--radius-xx-small)]">
-                  Effective Date
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Pay Schedule
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Pay Type
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Pay Rate
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Overtime
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Change Reason
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)] rounded-r-[var(--radius-xx-small)]">
-                  Comment
-                </th>
+              <tr>
+                <th>Effective Date</th>
+                <th>Pay Schedule</th>
+                <th>Pay Type</th>
+                <th>Pay Rate</th>
+                <th>Overtime Status</th>
+                <th>Change Reason</th>
+                <th>Comment</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--border-neutral-xx-weak)]">
-              {jobData.compensation.map((comp, index) => (
-                <tr key={index} className="hover:bg-[var(--surface-neutral-xx-weak)] transition-colors">
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    <div className="flex items-center gap-2">
-                      {index === 0 && <IconV2 name="circle-solid" size={10} color="primary-strong" />}
-                      {comp.effectiveDate}
-                    </div>
+            <tbody>
+              {compensation.map((row, i) => (
+                <tr key={i}>
+                  <td>
+                    <span className="job-date-cell">
+                      {row.current && <CurrentDot />}
+                      {row.effectiveDate}
+                    </span>
                   </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {comp.paySchedule}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {comp.payType}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {comp.payRate}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {comp.overtime}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {comp.changeReason}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {comp.comment}
-                  </td>
+                  <td>{row.paySchedule}</td>
+                  <td>{row.payType}</td>
+                  <td>{row.payRate}</td>
+                  <td>{row.overtime}</td>
+                  <td>{row.changeReason}</td>
+                  <td>{row.comment}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </Section>
 
-      {/* Potential Bonus Section */}
-      <div className="bg-[var(--surface-neutral-white)] rounded-[var(--radius-small)] border border-[var(--border-neutral-x-weak)] p-6 mb-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex items-center justify-center w-10 h-10 bg-[var(--surface-neutral-x-weak)] rounded-[var(--radius-x-small)] shrink-0">
-            <IconV2 name="circle-dollar-solid" size={16} color="primary-strong" />
-          </div>
-          <h3
-            className="text-[22px] font-semibold text-[var(--color-primary-strong)]"
-            style={{ fontFamily: 'Fields, system-ui, sans-serif', lineHeight: '30px' }}
-          >
-            Potential Bonus
-          </h3>
-        </div>
-
-        <div className="mb-4 max-w-[200px]">
-          <TextInput label="Hire Level" value="25" type="dropdown" />
-        </div>
-
-        <div className="max-w-[200px]">
-          <TextInput label="Annual Amount" value="" placeholder="Enter amount" />
-        </div>
-      </div>
-
-      {/* Bonus Section */}
-      <div className="bg-[var(--surface-neutral-white)] rounded-[var(--radius-small)] border border-[var(--border-neutral-x-weak)] p-8 mb-8">
-        <div className="flex items-start gap-4 mb-6">
-          <div className="flex items-center justify-center w-10 h-10 bg-[var(--surface-neutral-x-weak)] rounded-[var(--radius-x-small)] shrink-0">
-            <IconV2 name="circle-dollar-solid" size={16} color="primary-strong" />
-          </div>
-          <div className="flex items-center justify-between flex-1">
-            <h3
-              className="text-[24px] font-semibold text-[var(--color-primary-strong)]"
-              style={{ fontFamily: 'Fields, system-ui, sans-serif', lineHeight: '30px' }}
-            >
-              Bonus
-            </h3>
-            <Button variant="outlined" size="small">
-              Add Entry
-            </Button>
+      {/* Potential Bonus */}
+      <Section>
+        <Section.Header title="Potential Bonus" icon="circle-dollar-solid" />
+        <div className="my-info-form-fields">
+          <div className="my-info-form-grid-2">
+            <SelectField label="Hire Level" value="25%" onChange={() => {}}>
+              <option value="10%">10%</option>
+              <option value="15%">15%</option>
+              <option value="20%">20%</option>
+              <option value="25%">25%</option>
+              <option value="30%">30%</option>
+            </SelectField>
+            <TextField label="Annual Amount" value="" onChange={() => {}} placeholder="—" />
           </div>
         </div>
+      </Section>
 
-        <div>
-          <table className="w-full">
+      {/* Bonus */}
+      <Section>
+        <Section.Header
+          title="Bonus"
+          icon="circle-dollar-solid"
+          actions={[
+            <Button key="add" variant="outlined" color="primary" size="small" className="my-info-add-entry-btn">Add Entry</Button>,
+          ]}
+        />
+        <div className="my-info-table-wrapper">
+          <table className="my-info-table">
             <thead>
-              <tr className="bg-[var(--surface-neutral-x-weak)]">
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)] rounded-l-[var(--radius-xx-small)]">
-                  Date
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Amount
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Reason
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)] rounded-r-[var(--radius-xx-small)]">
-                  Comment
-                </th>
+              <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Reason</th>
+                <th>Comment</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--border-neutral-xx-weak)]">
-              {jobData.bonus.map((bonus, index) => (
-                <tr key={index} className="hover:bg-[var(--surface-neutral-xx-weak)] transition-colors">
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {bonus.date}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {bonus.amount}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {bonus.reason}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {bonus.comment}
-                  </td>
+            <tbody>
+              {bonuses.map((row, i) => (
+                <tr key={i}>
+                  <td>{row.date}</td>
+                  <td>{row.amount}</td>
+                  <td>{row.reason}</td>
+                  <td>{row.comment}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </Section>
 
-      {/* Commission Section */}
-      <div className="bg-[var(--surface-neutral-white)] rounded-[var(--radius-small)] border border-[var(--border-neutral-x-weak)] p-8 mb-8">
-        <div className="flex items-start gap-4 mb-6">
-          <div className="flex items-center justify-center w-10 h-10 bg-[var(--surface-neutral-x-weak)] rounded-[var(--radius-x-small)] shrink-0">
-            <IconV2 name="circle-dollar-solid" size={16} color="primary-strong" />
-          </div>
-          <div className="flex items-center justify-between flex-1">
-            <h3
-              className="text-[24px] font-semibold text-[var(--color-primary-strong)]"
-              style={{ fontFamily: 'Fields, system-ui, sans-serif', lineHeight: '30px' }}
-            >
-              Commission
-            </h3>
-            <Button variant="outlined" size="small">
-              Add Entry
-            </Button>
-          </div>
-        </div>
-
-        <div>
-          <table className="w-full">
+      {/* Commission */}
+      <Section>
+        <Section.Header
+          title="Commission"
+          icon="circle-dollar-solid"
+          actions={[
+            <Button key="add" variant="outlined" color="primary" size="small" className="my-info-add-entry-btn">Add Entry</Button>,
+          ]}
+        />
+        <div className="my-info-table-wrapper">
+          <table className="my-info-table">
             <thead>
-              <tr className="bg-[var(--surface-neutral-x-weak)]">
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)] rounded-l-[var(--radius-xx-small)]">
-                  Date
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Amount
-                </th>
-                <th className="px-4 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)] rounded-r-[var(--radius-xx-small)]">
-                  Comment
-                </th>
+              <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Comment</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--border-neutral-xx-weak)]">
-              {jobData.commission.map((comm, index) => (
-                <tr key={index} className="hover:bg-[var(--surface-neutral-xx-weak)] transition-colors">
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {comm.date}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {comm.amount}
-                  </td>
-                  <td className="px-4 py-4 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {comm.comment}
-                  </td>
+            <tbody>
+              {commissions.map((row, i) => (
+                <tr key={i}>
+                  <td>{row.date}</td>
+                  <td>{row.amount}</td>
+                  <td>{row.comment}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </Section>
 
-      {/* Equity Section */}
-      <div className="bg-[var(--surface-neutral-white)] rounded-[var(--radius-small)] border border-[var(--border-neutral-x-weak)] p-8">
-        <div className="flex items-start gap-4 mb-6">
-          <div className="flex items-center justify-center w-10 h-10 bg-[var(--surface-neutral-x-weak)] rounded-[var(--radius-x-small)] shrink-0">
-            <IconV2 name="chart-line-solid" size={16} color="primary-strong" />
-          </div>
-          <div className="flex items-center justify-between flex-1">
-            <h3
-              className="text-[24px] font-semibold text-[var(--color-primary-strong)]"
-              style={{ fontFamily: 'Fields, system-ui, sans-serif', lineHeight: '30px' }}
-            >
-              Equity
-            </h3>
-            <Button variant="outlined" size="small">
-              Add Entry
-            </Button>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto -mx-8 px-8">
-          <table className="w-full min-w-[1000px]">
+      {/* Equity */}
+      <Section>
+        <Section.Header
+          title="Equity"
+          icon="chart-line-solid"
+          actions={[
+            <Button key="add" variant="outlined" color="primary" size="small" className="my-info-add-entry-btn">Add Entry</Button>,
+          ]}
+        />
+        <div className="my-info-table-wrapper">
+          <table className="my-info-table">
             <thead>
-              <tr className="bg-[var(--surface-neutral-x-weak)]">
-                <th className="px-3 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)] rounded-l-[var(--radius-xx-small)]">
-                  Grant Type
-                </th>
-                <th className="px-3 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Current Grant...
-                </th>
-                <th className="px-3 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Grant Date
-                </th>
-                <th className="px-3 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Grant Qty
-                </th>
-                <th className="px-3 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Vesting Start
-                </th>
-                <th className="px-3 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  # of Grant...
-                </th>
-                <th className="px-3 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Strike Price
-                </th>
-                <th className="px-3 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)]">
-                  Vesting Sche...
-                </th>
-                <th className="px-3 py-3 text-left text-[15px] font-semibold text-[var(--text-neutral-strong)] rounded-r-[var(--radius-xx-small)]">
-                  Call Months
-                </th>
+              <tr>
+                <th>Grant Type</th>
+                <th>Grant Date</th>
+                <th>Grant Qty</th>
+                <th>Vesting Start</th>
+                <th># of Vesting Months</th>
+                <th>Strike Price</th>
+                <th>Vesting Schedule</th>
+                <th>Call Months</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--border-neutral-xx-weak)]">
-              {jobData.equity.map((eq, index) => (
-                <tr key={index} className="hover:bg-[var(--surface-neutral-xx-weak)] transition-colors">
-                  <td className="px-3 py-3 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {eq.grantType}
-                  </td>
-                  <td className="px-3 py-3 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {eq.grantType}
-                  </td>
-                  <td className="px-3 py-3 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {eq.grantDate}
-                  </td>
-                  <td className="px-3 py-3 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {eq.grantQty}
-                  </td>
-                  <td className="px-3 py-3 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {eq.vestingStart}
-                  </td>
-                  <td className="px-3 py-3 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {eq.vestingMonths}
-                  </td>
-                  <td className="px-3 py-3 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {eq.strikePrice}
-                  </td>
-                  <td className="px-3 py-3 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {eq.vestingSchedule}
-                  </td>
-                  <td className="px-3 py-3 text-[15px] text-[var(--text-neutral-x-strong)]">
-                    {eq.callMonths}
-                  </td>
+            <tbody>
+              {equity.map((row, i) => (
+                <tr key={i}>
+                  <td>{row.grantType}</td>
+                  <td>{row.grantDate}</td>
+                  <td>{row.grantQty}</td>
+                  <td>{row.vestingStart}</td>
+                  <td>{row.vestingMonths}</td>
+                  <td>{row.strikePrice}</td>
+                  <td>{row.vestingSchedule}</td>
+                  <td>{row.callMonths}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-    </>
+      </Section>
+    </div>
   );
 }
 

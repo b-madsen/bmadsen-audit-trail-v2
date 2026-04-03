@@ -84,6 +84,103 @@
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+/* Ellipsis trigger button (native — matches dark icon button style) */
+.profile-more-menu-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s;
+}
+
+.profile-more-menu-trigger:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* More (ellipsis) dropdown menu */
+.profile-more-menu {
+  position: fixed;
+  z-index: 9999;
+  min-width: 280px;
+  background: #ffffff;
+  border: 1px solid var(--fabric-border-color-neutral-weak, #e4e3e0);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  overflow: hidden;
+  padding: 4px 0;
+}
+
+.profile-more-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.12s;
+}
+
+.profile-more-menu-item:hover {
+  background-color: var(--fabric-surface-color-neutral-xx-weak, #f5f5f3);
+}
+
+.profile-more-menu-item--highlighted {
+  background-color: var(--fabric-surface-color-neutral-xx-weak, #f5f5f3);
+}
+
+.profile-more-menu-item--has-sub {
+  justify-content: flex-start;
+}
+
+.profile-more-menu-item--has-sub > span:last-child,
+.profile-more-menu-item--has-sub > [data-icon]:last-child {
+  margin-left: auto;
+}
+
+.profile-more-menu-label-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.profile-more-menu-label {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--fabric-text-color-neutral-strong, #38312f);
+  line-height: 1.4;
+}
+
+.profile-more-menu-sublabel {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--fabric-text-color-neutral-weak, #8a8583);
+  line-height: 1.3;
+}
+
+.profile-more-menu-item--danger .profile-more-menu-label {
+  color: var(--fabric-text-color-error-strong, #c0392b);
+}
+
+/* Push the chevron to the far right on Download Forms */
+.profile-more-menu-item--has-sub {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  gap: 14px;
 }
 
 /* Content area below the profile header */

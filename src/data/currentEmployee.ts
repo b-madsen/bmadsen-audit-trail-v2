@@ -74,7 +74,7 @@ export const currentEmployee: CurrentEmployee = {
   },
   directReports: [
     'Alan Nguyen',
-    'Jeff Hawkins',
+    'Chris Downs',
     'Melinda Pittman',
     'Tony Fonseca',
   ],

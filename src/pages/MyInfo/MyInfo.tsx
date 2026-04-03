@@ -16,6 +16,8 @@ import {
 import { currentEmployee } from '../../data/currentEmployee';
 import { PerformanceTabContent } from './PerformanceTabContent';
 import { JobTabContent } from './JobTabContent';
+import { TimeOffTabContent } from './TimeOffTabContent';
+import { DocumentsTabContent } from './DocumentsTabContent';
 import './MyInfo.css';
 
 const profileTabs = [
@@ -206,6 +208,10 @@ export function MyInfo() {
             <PerformanceTabContent employeeName={employee.preferredName} />
           ) : activeTab === 'job' ? (
             <JobTabContent employeeName={employee.preferredName} />
+          ) : activeTab === 'time-off' ? (
+            <TimeOffTabContent />
+          ) : activeTab === 'documents' ? (
+            <DocumentsTabContent />
           ) : (
             <div className="my-info-sections">
               {/* Personal section header */}

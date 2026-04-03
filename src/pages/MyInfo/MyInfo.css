@@ -287,6 +287,15 @@
   max-width: 288px;
 }
 
+.my-info-field-wide {
+  margin-bottom: 20px;
+  max-width: 288px;
+}
+
+.my-info-table-wrapper {
+  margin-top: 16px;
+}
+
 /* Table */
 .my-info-table {
   width: 100%;
