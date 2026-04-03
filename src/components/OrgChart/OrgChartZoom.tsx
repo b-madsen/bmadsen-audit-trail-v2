@@ -1,4 +1,4 @@
-import { IconV2 } from '@bamboohr/fabric';
+import { IconButton } from '@bamboohr/fabric';
 
 interface OrgChartZoomProps {
   zoomLevel: number;
@@ -19,26 +19,31 @@ export function OrgChartZoom({
   const canZoomOut = zoomLevel > minZoom;
 
   return (
-    <div className="absolute right-6 top-6 flex flex-col gap-2 z-10">
-      {/* Zoom In */}
-      <button
+    <div style={{
+      position: 'absolute',
+      right: 24,
+      top: 24,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 8,
+      zIndex: 10,
+    }}>
+      <IconButton
+        icon="magnifying-glass-plus-regular"
+        aria-label="Zoom in"
+        variant="outlined"
+        color="secondary"
         onClick={onZoomIn}
         disabled={!canZoomIn}
-        className="w-12 h-12 rounded-full bg-[var(--fabric-surface-color-neutral-white)] border border-[var(--fabric-border-color-neutral-medium)] flex items-center justify-center transition-all shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
-        aria-label="Zoom in"
-      >
-        <IconV2 name="magnifying-glass-plus-solid" size={20} color="neutral-strong" />
-      </button>
-
-      {/* Zoom Out */}
-      <button
+      />
+      <IconButton
+        icon="magnifying-glass-minus-regular"
+        aria-label="Zoom out"
+        variant="outlined"
+        color="secondary"
         onClick={onZoomOut}
         disabled={!canZoomOut}
-        className="w-12 h-12 rounded-full bg-[var(--fabric-surface-color-neutral-white)] border border-[var(--fabric-border-color-neutral-medium)] flex items-center justify-center transition-all shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
-        aria-label="Zoom out"
-      >
-        <IconV2 name="magnifying-glass-minus-solid" size={20} color="neutral-strong" />
-      </button>
+      />
     </div>
   );
 }

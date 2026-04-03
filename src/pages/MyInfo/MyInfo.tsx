@@ -1,6 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
-import { IconV2 } from '@bamboohr/fabric';
-import { Button, TextInput } from '../../components';
+import {
+  IconV2,
+  Avatar,
+  Button,
+  IconButton,
+  TextButton,
+  Tabs,
+  Tab,
+  Headline,
+  BodyText,
+  Section,
+  TextField,
+  SelectField,
+} from '@bamboohr/fabric';
 import { currentEmployee } from '../../data/currentEmployee';
 import { PerformanceTabContent } from './PerformanceTabContent';
 import { JobTabContent } from './JobTabContent';
@@ -9,7 +21,7 @@ import './MyInfo.css';
 const profileTabs = [
   { id: 'personal', label: 'Personal' },
   { id: 'job', label: 'Job' },
-  { id: 'time-off', label: 'Time off' },
+  { id: 'time-off', label: 'Time Off' },
   { id: 'documents', label: 'Documents' },
   { id: 'timesheets', label: 'Timesheets' },
   { id: 'performance', label: 'Performance' },
@@ -17,337 +29,126 @@ const profileTabs = [
   { id: 'training', label: 'Training' },
 ];
 
-const MORE_TAB = { id: 'more', label: 'More' };
-
 export function MyInfo() {
   const [activeTab, setActiveTab] = useState('personal');
   const [showFloatingHeader, setShowFloatingHeader] = useState(false);
   const [floatingHeaderHeight, setFloatingHeaderHeight] = useState<number | null>(null);
-  const [visibleTabCount, setVisibleTabCount] = useState(profileTabs.length);
-  const [floatingVisibleTabCount, setFloatingVisibleTabCount] = useState(profileTabs.length);
-  const [showMoreDropdown, setShowMoreDropdown] = useState(false);
-  const [showFloatingMoreDropdown, setShowFloatingMoreDropdown] = useState(false);
-  const [tabWidths, setTabWidths] = useState<number[]>([]);
   const headerRef = useRef<HTMLDivElement>(null);
-  const tabContainerRef = useRef<HTMLDivElement>(null);
-  const floatingTabContainerRef = useRef<HTMLDivElement>(null);
-  const measurementTabsRef = useRef<HTMLDivElement>(null);
-  const moreButtonRef = useRef<HTMLDivElement>(null);
-  const floatingMoreButtonRef = useRef<HTMLDivElement>(null);
+  const floatingRef = useRef<HTMLDivElement>(null);
   const employee = currentEmployee;
-
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (moreButtonRef.current && !moreButtonRef.current.contains(event.target as Node)) {
-        setShowMoreDropdown(false);
-      }
-      if (floatingMoreButtonRef.current && !floatingMoreButtonRef.current.contains(event.target as Node)) {
-        setShowFloatingMoreDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowFloatingHeader(!entry.isIntersecting);
-      },
-      {
-        root: null,
-        threshold: 0,
-        rootMargin: '-1px 0px 0px 0px',
-      }
+      ([entry]) => setShowFloatingHeader(!entry.isIntersecting),
+      { root: null, threshold: 0, rootMargin: '-1px 0px 0px 0px' }
     );
-
-    const headerElement = headerRef.current;
-    if (headerElement) {
-      observer.observe(headerElement);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
+    const el = headerRef.current;
+    if (el) observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    const headerElement = headerRef.current;
-    if (!headerElement) {
-      return;
-    }
-
-    const updateHeight = () => {
-      setFloatingHeaderHeight(Math.ceil(headerElement.getBoundingClientRect().height));
-    };
-
-    updateHeight();
-    const resizeObserver = new ResizeObserver(updateHeight);
-    resizeObserver.observe(headerElement);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, []);
-
-  // Measure tab widths once on mount
-  useEffect(() => {
-    const measurementContainer = measurementTabsRef.current;
-    if (!measurementContainer) return;
-
-    const tabs = Array.from(measurementContainer.children) as HTMLElement[];
-    const widths = tabs.map((tab) => tab.offsetWidth);
-    setTabWidths(widths);
-  }, []);
-
-  // Responsive tabs for main header
-  useEffect(() => {
-    const container = tabContainerRef.current;
-    if (!container || tabWidths.length === 0) return;
-
-    const calculateVisibleTabs = () => {
-      const computedStyle = getComputedStyle(container);
-      const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
-      const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
-      const contentWidth = container.offsetWidth - paddingLeft - paddingRight;
-
-      const GAP = 4;
-      const MORE_BUTTON_WIDTH = 90;
-
-      let totalWidth = MORE_BUTTON_WIDTH;
-      let visibleCount = 0;
-
-      for (let i = 0; i < tabWidths.length; i++) {
-        const tabWidth = tabWidths[i];
-        const gapWidth = GAP;
-
-        if (totalWidth + tabWidth + gapWidth <= contentWidth) {
-          totalWidth += tabWidth + gapWidth;
-          visibleCount++;
-        } else {
-          break;
-        }
-      }
-
-      setVisibleTabCount(Math.max(0, visibleCount));
-    };
-
-    calculateVisibleTabs();
-
-    const resizeObserver = new ResizeObserver(() => {
-      requestAnimationFrame(calculateVisibleTabs);
-    });
-    resizeObserver.observe(container);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [tabWidths]);
-
-  // Responsive tabs for floating header
-  useEffect(() => {
-    const container = floatingTabContainerRef.current;
-    if (!container || !showFloatingHeader || tabWidths.length === 0) return;
-
-    const calculateVisibleTabs = () => {
-      const computedStyle = getComputedStyle(container);
-      const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
-      const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
-      const contentWidth = container.offsetWidth - paddingLeft - paddingRight;
-
-      const GAP = 4;
-      const MORE_BUTTON_WIDTH = 90;
-
-      let totalWidth = MORE_BUTTON_WIDTH;
-      let visibleCount = 0;
-
-      for (let i = 0; i < tabWidths.length; i++) {
-        const tabWidth = tabWidths[i];
-        const gapWidth = GAP;
-
-        if (totalWidth + tabWidth + gapWidth <= contentWidth) {
-          totalWidth += tabWidth + gapWidth;
-          visibleCount++;
-        } else {
-          break;
-        }
-      }
-
-      setFloatingVisibleTabCount(Math.max(0, visibleCount));
-    };
-
-    calculateVisibleTabs();
-
-    const resizeObserver = new ResizeObserver(() => {
-      requestAnimationFrame(calculateVisibleTabs);
-    });
-    resizeObserver.observe(container);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [showFloatingHeader, tabWidths]);
+    const el = floatingRef.current;
+    if (!el) return;
+    const update = () => setFloatingHeaderHeight(Math.ceil(el.getBoundingClientRect().height));
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [showFloatingHeader]);
 
   return (
     <div className="my-info-page">
-      {/* Floating Compact Header */}
+      {/* Sticky Floating Header */}
       {showFloatingHeader && (
         <div
+          ref={floatingRef}
           className="my-info-floating-header"
           style={floatingHeaderHeight ? { minHeight: `${floatingHeaderHeight}px` } : undefined}
         >
           <div className="my-info-floating-content">
             <div className="my-info-floating-row">
-              <img
-                src={employee.avatar}
-                alt={`${employee.preferredName} ${employee.lastName}`}
-                className="my-info-floating-avatar"
-              />
-              <h2 className="my-info-floating-name">
-                {employee.preferredName} {employee.lastName}
-              </h2>
-
-              <div ref={floatingTabContainerRef} className="my-info-floating-tabs">
-                <div className="my-info-floating-tabs-container">
-                  {profileTabs.slice(0, floatingVisibleTabCount).map((tab) => {
-                    const isActive = tab.id === activeTab;
-                    return (
-                      <button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`my-info-tab ${isActive ? 'my-info-tab--active' : 'my-info-tab--inactive'}`}
-                      >
-                        {tab.label}
-                      </button>
-                    );
-                  })}
-
-                  <div ref={floatingMoreButtonRef} className="my-info-more-dropdown">
-                    <button
-                      onClick={() => setShowFloatingMoreDropdown(!showFloatingMoreDropdown)}
-                      className="my-info-tab my-info-tab--inactive"
-                    >
-                      {MORE_TAB.label}
-                      <IconV2 name="caret-down-solid" size={10} />
-                    </button>
-
-                    {showFloatingMoreDropdown && floatingVisibleTabCount < profileTabs.length && (
-                      <>
-                        <div
-                          className="my-info-dropdown-overlay"
-                          onClick={() => setShowFloatingMoreDropdown(false)}
-                        />
-                        <div className="my-info-dropdown-menu my-info-dropdown-menu--right">
-                          {profileTabs.slice(floatingVisibleTabCount).map((tab) => {
-                            const isActive = tab.id === activeTab;
-                            return (
-                              <button
-                                key={tab.id}
-                                onClick={() => {
-                                  setActiveTab(tab.id);
-                                  setShowFloatingMoreDropdown(false);
-                                }}
-                                className={`my-info-dropdown-option ${isActive ? 'my-info-dropdown-option--active' : ''}`}
-                              >
-                                {tab.label}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
+              <div className="my-info-floating-left">
+                <Avatar
+                  src={employee.avatar}
+                  alt={`${employee.preferredName} ${employee.lastName}`}
+                  size={40}
+                />
+                <span className="my-info-floating-name">
+                  {employee.preferredName} {employee.lastName}
+                </span>
+              </div>
+              <div className="my-info-floating-tabs">
+                <Tabs
+                  value={activeTab}
+                  onChange={(value) => setActiveTab(value as string)}
+                  mode="fill"
+                  dark
+                >
+                  {profileTabs.map((tab) => (
+                    <Tab key={tab.id} label={tab.label} value={tab.id} />
+                  ))}
+                </Tabs>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Profile Header - Green Banner */}
+      {/* Profile Header — Edge-to-Edge Green Banner */}
       <div ref={headerRef} className="my-info-header">
+        {/* Profile photo — absolutely positioned, overlaps banner bottom */}
+        <div className="my-info-avatar-wrapper">
+          <Avatar
+            src={employee.avatar}
+            alt={`${employee.preferredName} ${employee.lastName}`}
+            size={224}
+          />
+        </div>
+
+        {/* Header content — indented to clear the photo */}
         <div className="my-info-header-contents">
           <div className="my-info-header-top">
             <div className="my-info-name-section">
-              <h1 className="my-info-name">
+              <h1 className="my-info-employee-name">
                 {employee.preferredName} ({employee.firstName}) {employee.lastName}
               </h1>
-              <p className="my-info-subtitle">
+              <BodyText size="medium" color="neutral-inverted">
                 {employee.pronouns} · {employee.title}
-              </p>
+              </BodyText>
             </div>
-
             <div className="my-info-header-actions">
-              <button className="my-info-request-button">
+              <Button
+                variant="contained"
+                size="medium"
+                dark
+                endIcon={<IconV2 name="caret-down-solid" size={12} color="primary-strong" />}
+              >
                 Request a Change
-                <IconV2 name="caret-down-solid" size={10} color="primary-strong" />
-              </button>
-              <button className="my-info-ellipsis-button">
-                <IconV2 name="ellipsis-solid" size={16} color="primary-strong" />
-              </button>
+              </Button>
+              <IconButton
+                icon={<IconV2 name="ellipsis-solid" size={16} />}
+                aria-label="More options"
+                dark
+              />
             </div>
           </div>
-
-          <div ref={tabContainerRef} className="my-info-tabs">
-            <div className="my-info-tabs-container">
-              {profileTabs.slice(0, visibleTabCount).map((tab) => {
-                const isActive = tab.id === activeTab;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`my-info-tab ${isActive ? 'my-info-tab--active' : 'my-info-tab--inactive'}`}
-                  >
-                    {tab.label}
-                  </button>
-                );
-              })}
-
-              <div ref={moreButtonRef} className="my-info-more-dropdown">
-                <button
-                  onClick={() => setShowMoreDropdown(!showMoreDropdown)}
-                  className="my-info-tab my-info-tab--inactive"
-                >
-                  {MORE_TAB.label}
-                  <IconV2 name="caret-down-solid" size={10} />
-                </button>
-
-                {showMoreDropdown && visibleTabCount < profileTabs.length && (
-                  <div className="my-info-dropdown-menu">
-                    {profileTabs.slice(visibleTabCount).map((tab) => {
-                      const isActive = tab.id === activeTab;
-                      return (
-                        <button
-                          key={tab.id}
-                          onClick={() => {
-                            setActiveTab(tab.id);
-                            setShowMoreDropdown(false);
-                          }}
-                          className={`my-info-dropdown-option ${isActive ? 'my-info-dropdown-option--active' : ''}`}
-                        >
-                          {tab.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <Tabs
+            value={activeTab}
+            onChange={(value) => setActiveTab(value as string)}
+            mode="fill"
+            dark
+          >
+            {profileTabs.map((tab) => (
+              <Tab key={tab.id} label={tab.label} value={tab.id} />
+            ))}
+          </Tabs>
         </div>
-
-        <img
-          src={employee.avatar}
-          alt={`${employee.preferredName} ${employee.lastName}`}
-          className="my-info-avatar"
-        />
       </div>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <div className="my-info-content">
-        {/* Left Sidebar - Vitals */}
+        {/* Left Sidebar — Vitals */}
         <aside className="my-info-sidebar">
           <div className="my-info-sidebar-section">
             <h3 className="my-info-sidebar-title">Vitals</h3>
@@ -399,109 +200,118 @@ export function MyInfo() {
           </div>
         </aside>
 
-        {/* Main Content */}
+        {/* Tab Content */}
         <main className="my-info-main">
           {activeTab === 'performance' ? (
             <PerformanceTabContent employeeName={employee.preferredName} />
           ) : activeTab === 'job' ? (
             <JobTabContent employeeName={employee.preferredName} />
           ) : (
-            <>
+            <div className="my-info-sections">
+              {/* Personal section header */}
               <div className="my-info-section-header">
                 <div className="my-info-section-header-left">
-                  <IconV2 name="address-card-solid" size={24} color="primary-strong" />
-                  <h2 className="my-info-section-title">Personal</h2>
+                  <IconV2 name="address-card-solid" size={20} color="primary-strong" />
+                  <Headline size="small" color="primary">Personal</Headline>
                 </div>
-                <Button variant="text" icon="grid-2-plus" iconPosition="left" showCaret={true}>
+                <TextButton
+                  startIcon={<IconV2 name="grid-2-plus-solid" size={16} />}
+                  endIcon={<IconV2 name="chevron-down-solid" size={12} />}
+                >
                   Customize Layout
-                </Button>
+                </TextButton>
               </div>
 
-              {/* Basic Information Card */}
-              <div className="my-info-card">
-                <div className="my-info-card-header">
-                  <div className="my-info-card-icon">
-                    <IconV2 name="address-card-solid" size={16} color="primary-strong" />
-                  </div>
-                  <h3 className="my-info-card-title">Basic Information</h3>
-                </div>
-
+              {/* Basic Information */}
+              <Section>
+                <Section.Header title="Basic Information" icon="address-card-solid" />
                 <div className="my-info-form-grid-4">
-                  <TextInput label="Name" value={employee.firstName} />
-                  <TextInput label="Middle Name" value={employee.middleName} placeholder="" />
-                  <TextInput label="Last Name" value={employee.lastName} />
-                  <TextInput label="Preferred Name" value={employee.preferredName} />
+                  <TextField label="Name" value={employee.firstName} onChange={() => {}} />
+                  <TextField label="Middle Name" value={employee.middleName} onChange={() => {}} placeholder="—" />
+                  <TextField label="Last Name" value={employee.lastName} onChange={() => {}} />
+                  <TextField label="Preferred Name" value={employee.preferredName} onChange={() => {}} />
                 </div>
-
-                <div className="my-info-form-field">
-                  <TextInput label="Birth Date" value={employee.birthDate} type="date" />
+                <div className="my-info-field-row">
+                  <TextField label="Birth Date" value={employee.birthDate} onChange={() => {}} />
                 </div>
-
-                <div className="my-info-form-field">
-                  <TextInput label="SSN" value={employee.ssn} />
+                <div className="my-info-field-row">
+                  <TextField label="SSN" value={employee.ssn} onChange={() => {}} />
                 </div>
-
                 <div className="my-info-form-grid-3">
-                  <TextInput label="Gender" value={employee.gender} type="dropdown" />
-                  <TextInput label="Gender Identity" value={employee.genderIdentity} type="dropdown" />
-                  <TextInput label="Pronouns" value={employee.pronouns} type="dropdown" />
+                  <SelectField label="Gender" value={employee.gender} onChange={() => {}} variant="single">
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Non-binary">Non-binary</option>
+                    <option value="Other">Other</option>
+                  </SelectField>
+                  <SelectField label="Gender Identity" value={employee.genderIdentity} onChange={() => {}} variant="single">
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Non-binary">Non-binary</option>
+                    <option value="Other">Other</option>
+                  </SelectField>
+                  <SelectField label="Pronouns" value={employee.pronouns} onChange={() => {}} variant="single">
+                    <option value="She/Her">She/Her</option>
+                    <option value="He/Him">He/Him</option>
+                    <option value="They/Them">They/Them</option>
+                  </SelectField>
                 </div>
-
-                <div className="my-info-form-field">
-                  <TextInput label="Marital Status" value={employee.maritalStatus} type="dropdown" />
+                <div className="my-info-field-row">
+                  <SelectField label="Marital Status" value={employee.maritalStatus} onChange={() => {}} variant="single">
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Widowed">Widowed</option>
+                  </SelectField>
                 </div>
-              </div>
+              </Section>
 
-              {/* Contact Card */}
-              <div className="my-info-card">
-                <div className="my-info-card-header">
-                  <div className="my-info-card-icon">
-                    <IconV2 name="phone-solid" size={16} color="primary-strong" />
-                  </div>
-                  <h3 className="my-info-card-title">Contact</h3>
+              {/* Contact */}
+              <Section>
+                <Section.Header title="Contact" icon="phone-solid" />
+                <div className="my-info-field-narrow">
+                  <TextField label="Home Phone" value="648-555-2415" onChange={() => {}} />
                 </div>
-
-                <div className="my-info-form-field-narrow">
-                  <TextInput label="Home Phone" value="648-555-2415" icon="phone" />
+                <div className="my-info-field-narrow">
+                  <TextField label="Work Phone" value={employee.workPhone} onChange={() => {}} />
                 </div>
-
-                <div className="my-info-form-field-narrow">
-                  <TextInput label="Work Phone" value={employee.workPhone} icon="building" />
+                <div className="my-info-field-narrow">
+                  <TextField label="Mobile Phone" value={employee.mobilePhone} onChange={() => {}} />
                 </div>
-
-                <div className="my-info-form-field-narrow">
-                  <TextInput label="Mobile Phone" value={employee.mobilePhone} icon="mobile" />
+                <div className="my-info-field-wide">
+                  <TextField label="Home Email" value={employee.personalEmail} onChange={() => {}} />
                 </div>
-
-                <div className="my-info-form-field-wide">
-                  <TextInput label="Home Email" value={employee.personalEmail} icon="envelope" />
+                <div className="my-info-field-wide">
+                  <TextField label="Work Email" value={employee.workEmail} onChange={() => {}} />
                 </div>
-
-                <div className="my-info-form-field-wide">
-                  <TextInput label="Work Email" value={employee.workEmail} icon="envelope" />
+                <div className="my-info-field-narrow">
+                  <SelectField label="T-Shirt Size" value={employee.tshirtSize} onChange={() => {}} variant="single">
+                    <option value="XS">XS</option>
+                    <option value="S">S</option>
+                    <option value="Medium">Medium</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                  </SelectField>
                 </div>
-
-                <div className="my-info-form-field-narrow">
-                  <TextInput label="T-shirt Size" value={employee.tshirtSize} type="dropdown" />
+                <div className="my-info-field-narrow">
+                  <SelectField label="Favorite Cold Cereal" value={employee.favoriteCereal} onChange={() => {}} variant="single">
+                    <option value="Crispix">Crispix</option>
+                    <option value="Frosted Flakes">Frosted Flakes</option>
+                    <option value="Cheerios">Cheerios</option>
+                    <option value="Lucky Charms">Lucky Charms</option>
+                  </SelectField>
                 </div>
+              </Section>
 
-                <div className="my-info-form-field-narrow">
-                  <TextInput label="Favorite Cold Cereal" value={employee.favoriteCereal} type="dropdown" />
-                </div>
-              </div>
-
-              {/* Visa Information Section */}
-              <div className="my-info-card" style={{ padding: 32 }}>
-                <div className="my-info-card-header" style={{ marginBottom: 24 }}>
-                  <div className="my-info-card-icon">
-                    <IconV2 name="passport-solid" size={16} color="primary-strong" />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flex: 1 }}>
-                    <h3 className="my-info-card-title" style={{ fontSize: 24 }}>Visa Information</h3>
-                    <Button variant="outlined" size="small">Add Entry</Button>
-                  </div>
-                </div>
-
+              {/* Visa Information */}
+              <Section>
+                <Section.Header
+                  title="Visa Information"
+                  icon="passport-solid"
+                  actions={[
+                    <Button key="add" variant="outlined" size="small">Add Entry</Button>,
+                  ]}
+                />
                 <table className="my-info-table">
                   <thead>
                     <tr>
@@ -522,25 +332,15 @@ export function MyInfo() {
                     ))}
                   </tbody>
                 </table>
-              </div>
-            </>
+              </Section>
+            </div>
           )}
         </main>
-      </div>
-
-      {/* Hidden measurement container for tab widths */}
-      <div ref={measurementTabsRef} className="my-info-measurement" aria-hidden="true">
-        {profileTabs.map((tab) => (
-          <button key={tab.id} className="my-info-tab my-info-tab--inactive">
-            {tab.label}
-          </button>
-        ))}
       </div>
     </div>
   );
 }
 
-// Helper component for vital items
 function VitalItem({ icon, text }: { icon: string; text: string }) {
   return (
     <div className="my-info-vital-item">

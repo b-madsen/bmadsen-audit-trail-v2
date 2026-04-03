@@ -1,65 +1,708 @@
+/* ========== Page Layout ========== */
 .home-page {
   padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .home-profile-header h2 {
   font-size: 48px;
 }
 
-/* Profile Header */
+/* ========== Profile Header ========== */
 .home-profile-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 40px;
+  margin-bottom: 12px;
 }
 
 .home-profile-info {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 20px;
 }
 
 .home-profile-text {
   display: flex;
   flex-direction: column;
+  gap: 4px;
 }
 
-.home-back-link {
+.home-header-actions {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
-  background: none;
-  border: none;
+}
+
+/* ========== Top Dashboard (2-col grid) ========== */
+.home-dashboard {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 20px;
+  /* default align-items: stretch — makes both cols equal height */
+}
+
+.home-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.home-right-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Stretch the Fabric Gridlet and its internals to fill the right col */
+.home-right-col > [data-fabric-component="Gridlet"],
+.home-right-col > [data-fabric-component="Gridlet"] > section,
+.home-right-col > [data-fabric-component="Gridlet"] > section > div {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== Widget Body ========== */
+.home-widget-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+.home-widget-body--no-pad {
+  gap: 0;
   padding: 0;
+}
+
+/* ========== My Time ========== */
+.home-time-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  padding: 8px 0 4px;
+}
+
+.home-clock-in-btn {
+  width: 100%;
+}
+
+.home-clock-in-btn > * {
+  width: 100%;
+}
+
+.home-time-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.home-time-entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.home-week-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.home-week-stats {
+  display: flex;
+  gap: 24px;
+}
+
+.home-week-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ========== Time Off ========== */
+.home-timeoff-balances {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.home-timeoff-balance {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.home-timeoff-amount {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-timeoff-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ========== My Stuff ========== */
+.home-stuff-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.home-stuff-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: var(--fabric-color-surface-neutral-x-weak, #f5f4f1);
+  flex-shrink: 0;
+}
+
+.home-stuff-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ========== Feed Widget ========== */
+.home-feed-widget {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.home-feed-tabs {
+  border-bottom: 1px solid var(--fabric-color-border-neutral-x-weak, #e4e3e0);
+}
+
+.home-tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.home-feed-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.home-feed-content--empty {
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.home-feed-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 8px;
+  border-bottom: 1px solid var(--fabric-color-border-neutral-x-weak, #e4e3e0);
+  margin-bottom: 4px;
+}
+
+.home-feed-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ========== Post List ========== */
+.home-post-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-post-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--fabric-color-border-neutral-x-weak, #e4e3e0);
+  border-radius: 4px;
+  transition: background-color 0.1s ease;
   cursor: pointer;
 }
 
-.home-back-link:hover {
-  opacity: 0.8;
+.home-post-item--hovered {
+  background-color: var(--fabric-color-surface-neutral-x-weak, #f5f4f1);
 }
 
-.home-profile-subtitle {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 22px;
-  color: var(--text-neutral-medium);
+.home-post-item:last-child {
+  border-bottom: none;
 }
 
-/* Gridlet Dashboard */
-.home-dashboard {
+.home-post-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.home-post-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.home-post-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.home-post-hover-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ========== What's Happening items ========== */
+.home-happening-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background-color: var(--fabric-color-surface-neutral-x-weak, #f5f4f1);
+}
+
+.home-happening-icon--circle {
+  border-radius: 50%;
+}
+
+.home-happening-icon--square {
+  border-radius: 8px;
+}
+
+.home-happening-subtitle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.home-happening-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ========== Full-width row ========== */
+.home-full-row {
+  width: 100%;
+}
+
+/* ========== My Direct Reports ========== */
+.home-team-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.home-team-avatars {
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+  align-items: flex-start;
+}
+
+.home-team-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.home-team-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.home-team-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.home-team-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  background: transparent;
+  transition: background-color 0.1s ease;
+  width: 100%;
+}
+
+.home-team-nav-item:hover:not(.home-team-nav-item--active) {
+  background-color: var(--fabric-color-surface-neutral-x-weak, #f5f4f1);
+}
+
+.home-team-nav-item--active {
+  background-color: var(--fabric-color-surface-primary-strong, #2e7918);
+}
+
+/* ========== Bottom row (3 equal columns) ========== */
+.home-bottom-row {
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  grid-template-columns: repeat(3, minmax(300px, 1fr));
-  grid-template-rows: auto;
+  align-items: start;
 }
 
-.home-dashboard-item--span-2-cols {
-  grid-column: span 2;
+/* ========== Who's Out ========== */
+.home-whosout-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
 }
 
-.home-dashboard-item--span-2-rows {
-  grid-row: span 2;
+.home-whosout-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.home-avatar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.home-whosout-footer {
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+/* ========== Celebrations ========== */
+.home-celebrations-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-celebration-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.home-celebration-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ========== Onboarding ========== */
+.home-onboarding-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.home-onboarding-card {
+  background-color: var(--fabric-color-surface-neutral-x-weak, #f5f4f1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.home-onboarding-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-onboarding-footer {
+  margin-top: 4px;
+}
+
+/* ========== Divisions ========== */
+.home-divisions-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.home-divisions-chart {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 200px;
+}
+
+.home-divisions-ring {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #2e7918 0% 65%,
+    #4a7cc7 65% 85%,
+    #c0392b 85% 95%,
+    #e07b39 95% 100%
+  );
+  mask: radial-gradient(transparent 62px, black 63px);
+  -webkit-mask: radial-gradient(transparent 62px, black 63px);
+}
+
+.home-divisions-center {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ========== Company Holidays ========== */
+.home-holidays-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-holiday-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.home-holiday-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: var(--fabric-color-surface-neutral-x-weak, #f5f4f1);
+  flex-shrink: 0;
+}
+
+.home-holiday-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ========== Time to Hire ========== */
+.home-tth-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.home-tth-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ========== Incomplete Trainings ========== */
+.home-trainings-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.home-trainings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.home-training-card {
+  background-color: var(--fabric-color-surface-neutral-x-weak, #f5f4f1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.home-training-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.home-trainings-footer {
+  padding-top: 12px;
+}
+
+/* ========== Welcome ========== */
+.home-welcome-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 0;
+}
+
+.home-welcome-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.home-welcome-avatars {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ========== People Without Pay Raise ========== */
+.home-stat-card-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.home-stat-card {
+  flex: 1;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.home-stat-card-number {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ========== Benefit Plan Enrollment ========== */
+.home-benefit-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.home-benefit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.home-benefit-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.home-benefit-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-benefit-footer {
+  padding-top: 12px;
+}
+
+/* ========== Time Off Used ========== */
+.home-tou-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.home-tou-chart {
+  width: 100%;
+  height: 120px;
+}
+
+/* ========== Time Off Requests ========== */
+.home-tofr-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.home-tofr-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.home-tofr-stat-number {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ========== Company Links ========== */
+.home-links-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.home-links-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.home-links-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.home-links-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.home-links-footer {
+  padding-top: 12px;
+  margin-top: 8px;
 }

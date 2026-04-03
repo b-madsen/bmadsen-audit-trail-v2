@@ -7,6 +7,8 @@ import {
   Link,
   Avatar,
   SelectField,
+  Checkbox,
+  AccordionV2,
 } from '@bamboohr/fabric';
 import { Pagination } from './Pagination';
 import type { Employee } from '../data/employees';
@@ -15,6 +17,8 @@ import './PeopleListView.css';
 interface PeopleListViewProps {
   employees: Employee[];
 }
+
+const EMPLOYMENT_TYPE_OPTIONS = ['Contractor', 'Full-Time', 'Intern', 'Part-Time', 'Terminated'];
 
 export function PeopleListView({ employees }: PeopleListViewProps) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,7 +39,7 @@ export function PeopleListView({ employees }: PeopleListViewProps) {
   }, []);
 
   const statusOptions = [
-    { value: 'all', label: 'Employees' },
+    { value: 'all', label: 'All Employees' },
     { value: 'Full-Time', label: 'Full-Time' },
     { value: 'Part-Time', label: 'Part-Time' },
     { value: 'Contractor', label: 'Contractor' },
@@ -47,18 +51,41 @@ export function PeopleListView({ employees }: PeopleListViewProps) {
     { value: 'all', label: 'All' },
   ];
 
+  const departments = useMemo(
+    () => [...new Set(employees.map((e) => e.department))].sort(),
+    [employees]
+  );
+
+  const locations = useMemo(
+    () => [...new Set(employees.map((e) => e.location).filter(Boolean))].sort(),
+    [employees]
+  );
+
   const filteredEmployees = useMemo(() => {
     let result = employees;
-    if (filterStatus !== 'all') {
-      result = result.filter((emp) => emp.employmentStatus === filterStatus);
-    }
+
     if (showingFilter === 'active') {
       result = result.filter((emp) => emp.employmentStatus !== 'Inactive');
     } else if (showingFilter === 'inactive') {
       result = result.filter((emp) => emp.employmentStatus === 'Inactive');
     }
+
+    if (selectedEmploymentTypes.size > 0) {
+      result = result.filter((emp) => selectedEmploymentTypes.has(emp.employmentType));
+    } else if (filterStatus !== 'all') {
+      result = result.filter((emp) => emp.employmentType === filterStatus);
+    }
+
+    if (selectedDepartments.size > 0) {
+      result = result.filter((emp) => selectedDepartments.has(emp.department));
+    }
+
+    if (selectedLocations.size > 0) {
+      result = result.filter((emp) => selectedLocations.has(emp.location));
+    }
+
     return result;
-  }, [employees, filterStatus, showingFilter]);
+  }, [employees, filterStatus, showingFilter, selectedEmploymentTypes, selectedDepartments, selectedLocations]);
 
   const totalItems = filteredEmployees.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -75,9 +102,10 @@ export function PeopleListView({ employees }: PeopleListViewProps) {
           <IconButton
             icon="sliders-solid"
             aria-label="Filter"
-            variant="outlined"
-            color="secondary"
+            variant={isFilterOpen || hasActiveFilters ? 'contained' : 'outlined'}
+            color={isFilterOpen || hasActiveFilters ? 'primary' : 'secondary'}
             size="medium"
+            onClick={() => setIsFilterOpen((prev) => !prev)}
           />
 
           <div className="people-list-select-filter">
@@ -173,18 +201,122 @@ export function PeopleListView({ employees }: PeopleListViewProps) {
           </table>
         </div>
 
-        {totalPages > 1 && (
-          <div className="people-list-pagination">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              itemsPerPage={itemsPerPage}
-              onPageChange={setCurrentPage}
-            />
+              <AccordionV2
+                title="Locations"
+                subtitle={`${locations.length}`}
+                variant="border-bottom"
+              >
+                <div className="people-list-sidebar-checks">
+                  {locations.map((loc) => (
+                    <Checkbox
+                      key={loc}
+                      label={loc}
+                      value={loc}
+                      checked={selectedLocations.has(loc)}
+                      onChange={({ value }) => {
+                        setSelectedLocations((prev) => toggleSet(prev, String(value)));
+                        setCurrentPage(1);
+                      }}
+                    />
+                  ))}
+                </div>
+              </AccordionV2>
+
+              <AccordionV2 title="Pay Range" variant="border-bottom">
+                <div className="people-list-sidebar-checks">
+                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
+                </div>
+              </AccordionV2>
+
+              <AccordionV2 title="Pay Type" variant="border-bottom">
+                <div className="people-list-sidebar-checks">
+                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
+                </div>
+              </AccordionV2>
+
+              <AccordionV2 title="Tenure" variant="border-bottom">
+                <div className="people-list-sidebar-checks">
+                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
+                </div>
+              </AccordionV2>
+
+              <AccordionV2 title="Age" variant="border-bottom">
+                <div className="people-list-sidebar-checks">
+                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
+                </div>
+              </AccordionV2>
+
+              <AccordionV2 title="Gender" variant="border-bottom">
+                <div className="people-list-sidebar-checks">
+                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
+                </div>
+              </AccordionV2>
+
+              <AccordionV2 title="Ethnicity" variant="border-bottom">
+                <div className="people-list-sidebar-checks">
+                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
+                </div>
+              </AccordionV2>
+
+              <AccordionV2 title="More" variant="border-bottom">
+                <div className="people-list-sidebar-checks">
+                  <BodyText size="small" color="neutral-weak">Coming soon</BodyText>
+                </div>
+              </AccordionV2>
+            </div>
           </div>
         )}
-      </Section>
+
+        {/* Table area */}
+        <div className="people-list-main">
+          <Section>
+            <div className="people-list-table-container">
+              <table className="people-list-table">
+                <thead>
+                  <tr>
+                    <th>Employee Photo</th>
+                    <th>Employee #</th>
+                    <th>Last Name, First Name</th>
+                    <th>Job Title</th>
+                    <th>Location</th>
+                    <th>Employment Status</th>
+                    <th>Hire Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentEmployees.map((employee) => (
+                    <tr key={employee.id}>
+                      <td><Avatar src={employee.avatar} alt={employee.name} size={64} /></td>
+                      <td><BodyText size="medium">{employee.employeeNumber}</BodyText></td>
+                      <td>
+                        <Link href={`/employees/${employee.id}`}>
+                          {employee.lastName}, {employee.firstName}
+                        </Link>
+                      </td>
+                      <td><BodyText size="medium" color="neutral-medium">{employee.jobTitle}</BodyText></td>
+                      <td><BodyText size="medium" color="neutral-medium">{employee.location}</BodyText></td>
+                      <td><BodyText size="medium" color="neutral-medium">{employee.employmentStatus}</BodyText></td>
+                      <td><BodyText size="medium" color="neutral-medium">{employee.hireDate}</BodyText></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {totalPages > 1 && (
+              <div className="people-list-pagination">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
+            )}
+          </Section>
+        </div>
+      </div>
     </div>
   );
 }

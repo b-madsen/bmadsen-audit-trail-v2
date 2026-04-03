@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import type { Employee } from '../../data/employees';
-import { IconV2 } from '@bamboohr/fabric';
+import { IconV2, TextField, SelectField, IconButton, Button, Avatar, BodyText } from '@bamboohr/fabric';
 
 interface OrgChartControlsProps {
   employees: Employee[];
@@ -24,42 +24,33 @@ export function OrgChartControls({
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
-  const [depthDropdownOpen, setDepthDropdownOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
-  const depthRef = useRef<HTMLDivElement>(null);
 
-  // Filter employees based on search query
   const searchResults = searchQuery.trim()
     ? employees.filter((emp) =>
         emp.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
 
-  // Reset highlighted index when search results change
   useEffect(() => {
     setHighlightedIndex(0);
   }, [searchResults.length]);
 
-  // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!showSearchResults || searchResults.length === 0) return;
-
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setHighlightedIndex((prev) =>
-          prev < searchResults.length - 1 ? prev + 1 : prev
-        );
+        setHighlightedIndex((prev) => Math.min(prev + 1, searchResults.length - 1));
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : 0));
+        setHighlightedIndex((prev) => Math.max(prev - 1, 0));
         break;
       case 'Enter':
         e.preventDefault();
-        const selectedEmployee = searchResults[highlightedIndex];
-        if (selectedEmployee) {
-          onEmployeeJump(selectedEmployee.id);
+        if (searchResults[highlightedIndex]) {
+          onEmployeeJump(searchResults[highlightedIndex].id);
           setSearchQuery('');
           setShowSearchResults(false);
         }
@@ -70,66 +61,52 @@ export function OrgChartControls({
     }
   };
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowSearchResults(false);
       }
-      if (depthRef.current && !depthRef.current.contains(event.target as Node)) {
-        setDepthDropdownOpen(false);
-      }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const depthOptions = [
-    { value: 1, label: '1' },
-    { value: 2, label: '2' },
-    { value: 3, label: '3' },
-    { value: 4, label: '4' },
-    { value: 5, label: '5' },
-    { value: 'all' as const, label: 'All' },
-  ];
-
-  const currentDepthLabel = depth === 'all' ? 'All' : (depth ?? 'all').toString();
+  const depthValue = depth === 'all' ? 'all' : String(depth);
 
   return (
-    <div className="flex items-center gap-3 px-0 pt-0 pb-3 border-b border-gray-200 dark:border-neutral-700">
-      {/* Left: Search */}
-      <div ref={searchRef} className="relative" style={{ width: '350px' }}>
-        <div className="relative">
-          <IconV2 name="circle-user-solid" size={16} color="neutral-medium" />
-          <input
-            type="text"
-            placeholder="Jump to an Employee..."
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setShowSearchResults(true);
-            }}
-            onFocus={() => setShowSearchResults(true)}
-            onKeyDown={handleKeyDown}
-            className="w-full h-10 pl-11 pr-4 rounded-full
-                     bg-white dark:bg-neutral-800
-                     border border-gray-300 dark:border-neutral-600
-                     focus:outline-none focus:ring-2 focus:ring-blue-500
-                     placeholder:text-[#777270] text-gray-900 dark:text-neutral-100"
-            style={{
-              fontSize: '15px',
-              lineHeight: '22px',
-              padding: '8px 16px 8px 44px'
-            }}
-          />
-        </div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingBottom: 16 }}>
+      {/* Jump to employee */}
+      <div ref={searchRef} style={{ position: 'relative', width: 300, flexShrink: 0 }}>
+        <TextField
+          label=""
+          placeholder="Jump to an employee..."
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setShowSearchResults(true);
+          }}
+          onFocus={() => { if (searchQuery) setShowSearchResults(true); }}
+          onKeyDown={handleKeyDown}
+          startIcon={<IconV2 name="circle-user-regular" size={16} />}
+          styling="single"
+          size="medium"
+        />
 
-        {/* Search Results Dropdown */}
         {showSearchResults && searchResults.length > 0 && (
-          <div
-            className="absolute left-0 top-full mt-1 w-full rounded-lg shadow-lg py-1 z-50 max-h-64 overflow-y-auto bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700"
-          >
+          <div style={{
+            position: 'absolute',
+            left: 0,
+            top: '100%',
+            marginTop: 4,
+            width: '100%',
+            background: 'var(--fabric-surface-color-neutral-white)',
+            border: '1px solid var(--fabric-border-color-neutral-weak)',
+            borderRadius: 8,
+            boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+            zIndex: 200,
+            maxHeight: 260,
+            overflowY: 'auto',
+          }}>
             {searchResults.map((emp, index) => (
               <button
                 key={emp.id}
@@ -139,24 +116,26 @@ export function OrgChartControls({
                   setShowSearchResults(false);
                 }}
                 onMouseEnter={() => setHighlightedIndex(index)}
-                className={`w-full px-3 py-2 text-left text-sm flex items-center gap-3 ${
-                  index === highlightedIndex
-                    ? 'bg-gray-100 dark:bg-neutral-700'
-                    : 'hover:bg-gray-100 dark:hover:bg-neutral-700'
-                }`}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  textAlign: 'left',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  background: index === highlightedIndex
+                    ? 'var(--fabric-surface-color-neutral-xx-weak)'
+                    : 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
               >
-                <img
-                  src={emp.avatar}
-                  alt={emp.name}
-                  className="w-8 h-8 rounded-full"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-gray-900 dark:text-neutral-100 truncate">
-                    {emp.name}
-                  </div>
-                  <div className="text-xs text-gray-500 dark:text-neutral-400 truncate">
+                <Avatar src={emp.avatar} alt={emp.name} size={32} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <BodyText size="small" weight="medium">{emp.name}</BodyText>
+                  <BodyText size="extra-small" color="neutral-weak">
                     {emp.title} · {emp.department}
-                  </div>
+                  </BodyText>
                 </div>
               </button>
             ))}
@@ -164,86 +143,62 @@ export function OrgChartControls({
         )}
       </div>
 
-      {/* Center: Depth Selector and Up Arrow */}
-      <div className="flex items-center gap-2">
-        {/* Depth Dropdown */}
-        <div ref={depthRef} className="relative">
-          <button
-            onClick={() => setDepthDropdownOpen(!depthDropdownOpen)}
-            className="h-10 rounded-full bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-600 flex items-center text-sm font-normal transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700"
-            style={{ width: '88px', padding: '8px 16px', gap: '16px' }}
-          >
-            <span className="flex-1 text-left text-gray-900 dark:text-neutral-100">{currentDepthLabel}</span>
-            <div className="flex items-center gap-3 h-full">
-              <div className="w-px h-full bg-gray-300 dark:bg-neutral-600"></div>
-              <span className={`transition-transform duration-150 inline-flex ${depthDropdownOpen ? 'rotate-180' : ''}`}><IconV2 name="caret-down-solid" size={12} color="neutral-medium" /></span>
-            </div>
-          </button>
-
-          {depthDropdownOpen && (
-            <div
-              className="absolute left-0 top-full mt-1 w-24 rounded-lg shadow-lg py-1 z-50 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700"
-            >
-              {depthOptions.map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => {
-                    onDepthChange(option.value);
-                    setDepthDropdownOpen(false);
-                  }}
-                  className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-neutral-700 text-gray-900 dark:text-neutral-100"
-                  style={{
-                    backgroundColor:
-                      depth === option.value ? (document.documentElement.classList.contains('dark') ? '#404040' : '#f3f4f6') : 'transparent',
-                  }}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Up Arrow */}
-        {onGoUp && (
-          <button
-            onClick={onGoUp}
-            className="h-10 w-10 rounded-full bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-600 flex items-center justify-center transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700"
-            aria-label="Go to parent"
-            style={{ width: '48px' }}
-          >
-            <IconV2 name="chevron-up-solid" size={16} color="neutral-strong" />
-          </button>
-        )}
+      {/* Depth selector — Fabric SelectField */}
+      <div style={{ flexShrink: 0 }}>
+        <SelectField
+          label="Levels"
+          labelPlacement="inline"
+          size="medium"
+          variant="single"
+          value={depthValue}
+          onChange={(e) => {
+            const val = e.target.value;
+            onDepthChange(val === 'all' ? 'all' : Number(val));
+          }}
+        >
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="all">All</option>
+        </SelectField>
       </div>
 
-      {/* Right: Filter and Export */}
-      {(onFilterOpen || onExportOpen) && (
-        <div className="flex items-center gap-2 ml-auto">
-          {/* Filter Button */}
-          {onFilterOpen && (
-            <button
-              onClick={onFilterOpen}
-              className="h-10 px-4 rounded-full bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-600 flex items-center gap-2 text-sm font-medium transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700 text-gray-900 dark:text-neutral-100"
-            >
-              <IconV2 name="sliders-solid" size={16} color="neutral-strong" />
-              <IconV2 name="caret-down-solid" size={10} color="neutral-strong" />
-            </button>
-          )}
-
-          {/* Export Button */}
-          {onExportOpen && (
-            <button
-              onClick={onExportOpen}
-              className="h-10 px-4 rounded-full bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-600 flex items-center gap-2 text-sm font-medium transition-colors hover:bg-gray-50 dark:hover:bg-neutral-700 text-gray-900 dark:text-neutral-100"
-            >
-              <IconV2 name="file-export-solid" size={16} color="neutral-strong" />
-              <span className="font-semibold">Export</span>
-              <IconV2 name="caret-down-solid" size={10} color="neutral-strong" />
-            </button>
-          )}
-        </div>
+      {/* Go up a level */}
+      {onGoUp && (
+        <IconButton
+          icon="angles-up-regular"
+          aria-label="Go up a level"
+          variant="outlined"
+          color="secondary"
+          onClick={onGoUp}
+        />
       )}
+
+      {/* Right: Filter + Export */}
+      <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
+        {onFilterOpen && (
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={onFilterOpen}
+            startIcon={<IconV2 name="sliders-regular" size={16} />}
+            endIcon={<IconV2 name="caret-down-solid" size={12} />}
+          />
+        )}
+        {onExportOpen && (
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={onExportOpen}
+            startIcon={<IconV2 name="file-export-regular" size={16} />}
+            endIcon={<IconV2 name="caret-down-solid" size={12} />}
+          >
+            Export
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

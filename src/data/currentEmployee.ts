@@ -1,3 +1,5 @@
+import avatarLarge from '../assets/images/avatar-large.png';
+
 export interface CurrentEmployee {
   id: number;
   firstName: string;
@@ -47,7 +49,7 @@ export const currentEmployee: CurrentEmployee = {
   preferredName: 'Jess',
   pronouns: 'She/Her',
   title: 'Director, Demand Generation in Marketing',
-  avatar: 'https://i.pravatar.cc/216?u=jess',
+  avatar: avatarLarge,
   workPhone: '801-763-1893 x 6109',
   mobilePhone: '801-344-1998',
   workEmail: 'jcordova@bamboohr.com',

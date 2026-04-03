@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { IconV2, BodyText, Avatar } from '@bamboohr/fabric';
 import { useTheme } from '../contexts/ThemeContext';
-import avatarSmall from '../../assets/images/avatar-small.png';
+import avatarLarge from '../assets/images/avatar-large.png';
 
 const NAV_STORAGE_KEY = 'bhr-nav-expanded';
 
@@ -119,7 +119,7 @@ export function GlobalNav({ className = '' }: GlobalNavProps) {
           to="/my-info"
           className={`flex items-center bg-[var(--fabric-surface-color-neutral-extra-weak)] rounded-lg transition-colors duration-200 hover:bg-[var(--fabric-surface-color-neutral-weak)] ${effectiveExpanded ? 'gap-4 px-4 py-3' : 'w-14 h-14 justify-center'}`}
         >
-          <Avatar src={avatarSmall} alt="Account" size={32} />
+          <Avatar src={avatarLarge} alt="Account" size={32} />
           <span
             className={`transition-opacity duration-300 ${effectiveExpanded ? 'opacity-100 delay-[50ms]' : 'opacity-0 w-0 overflow-hidden delay-0'}`}
           >

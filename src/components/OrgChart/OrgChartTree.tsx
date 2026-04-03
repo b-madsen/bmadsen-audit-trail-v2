@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useRef, useEffect } from 'react';
 import type { Employee } from '../../data/employees';
+import { IconV2 } from '@bamboohr/fabric';
 import { OrgChartNode } from './OrgChartNode';
 import { buildVisibleTree, calculateTreeLayout } from '../../utils/orgChartLayout';
 import type { TreeNode } from '../../utils/orgChartLayout';
@@ -129,7 +130,7 @@ export function OrgChartTree({
       node.children.forEach((child) => {
         // Line from parent bottom to child top
         const parentX = node.x;
-        const parentY = node.y + 140; // NODE_HEIGHT (total card + avatar height)
+        const parentY = node.y + 185; // NODE_HEIGHT (total card + avatar height)
         const childX = child.x;
         const childY = child.y;
 
@@ -179,11 +180,8 @@ export function OrgChartTree({
 
   if (!layout.root) {
     return (
-      <div className="flex items-center justify-center h-full text-gray-500">
-        <div className="text-center">
-          <i className="fa-solid fa-users text-4xl mb-4"></i>
-          <p>No org chart data available</p>
-        </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+        <IconV2 name="users-regular" size={40} color="neutral-weak" />
       </div>
     );
   }
@@ -191,39 +189,44 @@ export function OrgChartTree({
   return (
     <div
       ref={containerRef}
-      className="w-full h-full overflow-hidden relative"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
       onWheel={handleWheel}
-      style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+      style={{
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        position: 'relative',
+        cursor: isDragging ? 'grabbing' : 'grab',
+      }}
     >
       <div
-        className="absolute"
         style={{
+          position: 'absolute',
           transform: `translate(${panX}px, ${panY}px) scale(${zoomLevel})`,
           transformOrigin: '0 0',
-          transition: isDragging ? 'none' : 'transform 0.2s ease-out',
+          transition: isDragging ? 'none' : 'transform 0.15s ease-out',
         }}
       >
-        {/* SVG for connecting lines */}
+        {/* SVG connecting lines */}
         <svg
           width={viewWidth}
           height={viewHeight}
-          className="absolute top-0 left-0 pointer-events-none"
+          style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}
         >
           {renderConnections(visibleNodes)}
         </svg>
 
-        {/* Render nodes */}
-        <div className="relative" style={{ width: viewWidth, height: viewHeight }}>
+        {/* Nodes */}
+        <div style={{ position: 'relative', width: viewWidth, height: viewHeight }}>
           {visibleNodes.map((node) => (
             <div
               key={node.employee.id}
-              className="absolute"
               style={{
-                left: node.x - 92.5, // Half of card width (185 / 2)
+                position: 'absolute',
+                left: node.x - 92.5,
                 top: node.y,
                 pointerEvents: 'auto',
               }}
@@ -233,10 +236,7 @@ export function OrgChartTree({
                 isSelected={selectedEmployee === node.employee.id}
                 isFocused={focusedEmployee === node.employee.id}
                 onPinClick={onNodePin}
-                onExpandClick={(id) => {
-                  console.log('OrgChartTree onExpandClick called with id:', id);
-                  onNodeExpand?.(id);
-                }}
+                onExpandClick={onNodeExpand}
                 onNodeClick={onNodeSelect}
                 showPhoto={showPhotos}
                 compact={compact}

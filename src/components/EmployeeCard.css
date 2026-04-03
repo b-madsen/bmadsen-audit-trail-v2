@@ -17,8 +17,9 @@
 .employee-card-content {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
+  grid-template-columns: 2fr 1.5fr 1.5fr;
+  gap: 32px;
+  align-items: start;
 }
 
 /* Left column - basic info */
@@ -30,7 +31,7 @@
 
 .employee-card-name {
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--fabric-theme-color-primary-strong, #2e7918);
 }
@@ -39,11 +40,20 @@
   margin-top: 8px;
 }
 
-/* Right column - contact info */
+/* Middle column - contact */
 .employee-card-contact {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+/* Right column - reporting */
+.employee-card-reporting {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 2px;
 }
 
 .employee-card-contact-item {
@@ -52,13 +62,20 @@
   gap: 8px;
 }
 
-.employee-card-contact-item--spaced {
-  margin-top: 8px;
-}
-
 /* ============================================
    RESPONSIVE STYLES
    ============================================ */
+
+@media (max-width: 960px) {
+  .employee-card-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .employee-card-reporting {
+    grid-column: 1 / -1;
+  }
+}
 
 @media (max-width: 768px) {
   .employee-card-content {

@@ -65,17 +65,24 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
     });
   }, [searchQuery, filterDepartment]);
 
+  // Build employee ID → name map for resolving manager names
+  const employeeNameMap = useMemo(() => {
+    const map: Record<number, string> = {};
+    employees.forEach((e) => { map[e.id] = e.name; });
+    return map;
+  }, []);
+
   // Group employees
   const groupedEmployees = useMemo(() => {
     if (groupBy === 'name') {
       const groups: Record<string, typeof filteredEmployees> = {};
       filteredEmployees.forEach((employee) => {
-        const key = employee.name.charAt(0).toUpperCase();
+        const key = employee.lastName.charAt(0).toUpperCase();
         if (!groups[key]) groups[key] = [];
         groups[key].push(employee);
       });
       Object.keys(groups).forEach((key) => {
-        groups[key].sort((a, b) => a.name.localeCompare(b.name));
+        groups[key].sort((a, b) => a.lastName.localeCompare(b.lastName));
       });
       return groups;
     }
@@ -87,7 +94,7 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
       groups[key].push(employee);
     });
     Object.keys(groups).forEach((key) => {
-      groups[key].sort((a, b) => a.name.localeCompare(b.name));
+      groups[key].sort((a, b) => a.lastName.localeCompare(b.lastName));
     });
     return groups;
   }, [filteredEmployees, groupBy]);
@@ -102,7 +109,9 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
       />
       {/* Page Header */}
       <div className="people-header">
-        <Headline size="large" color="primary" weight="bold">People</Headline>
+        <Headline size="large" color="primary" weight="bold">
+          {viewMode === 'orgChart' ? 'Org Chart' : viewMode === 'directory' ? 'Directory' : 'People'}
+        </Headline>
         <Link href="#" onClick={(e: React.MouseEvent) => e.preventDefault()}>
           <span className="people-header-link">
             <IconV2 name="square-arrow-up-right-regular" size={16} />
@@ -153,10 +162,11 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
             <div className="people-directory-search">
               <TextField
                 label=""
-                placeholder="Search Directory..."
+                placeholder="Search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                startIcon={<IconV2 name="magnifying-glass-solid" size={16} />}
+                startIcon={<IconV2 name="magnifying-glass-regular" size={16} />}
+                styling="single"
                 size="medium"
               />
             </div>
@@ -166,7 +176,7 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
               <SelectField
                 label="Group by"
                 labelPlacement="inline"
-                size="small"
+                size="medium"
                 variant="single"
                 value={groupBy}
                 onChange={(e) => setGroupBy(e.target.value as GroupBy)}
@@ -183,7 +193,7 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
               <SelectField
                 label="Filter by"
                 labelPlacement="inline"
-                size="small"
+                size="medium"
                 variant="single"
                 value={filterDepartment}
                 onChange={(e) => setFilterDepartment(e.target.value)}
@@ -195,27 +205,33 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
             </div>
           </div>
 
-          {/* Employee Groups */}
-          <div className="people-groups">
-            {Object.entries(groupedEmployees).map(([groupName, groupEmployees]) => (
-              <Section key={groupName}>
-                <div className="people-group-header">
-                  <Headline size="small" color="primary">{groupName}</Headline>
-                </div>
-                <div className="people-group-list">
-                  {groupEmployees.map((employee) => (
-                    <EmployeeCard key={employee.id} employee={employee} />
-                  ))}
-                </div>
-              </Section>
-            ))}
+          {/* Employee Directory */}
+          <Section>
+            {Object.entries(groupedEmployees)
+              .sort(([a], [b]) => a.localeCompare(b))
+              .map(([letter, groupEmployees]) => (
+                <Fragment key={letter}>
+                  <div className="people-directory-letter-row">
+                    <Headline size="small" color="primary">{letter}</Headline>
+                  </div>
+                  <div className="people-directory-group-rows">
+                    {groupEmployees.map((employee) => (
+                      <EmployeeCard
+                        key={employee.id}
+                        employee={employee}
+                        reportsToName={employee.reportsTo != null ? employeeNameMap[employee.reportsTo] : undefined}
+                      />
+                    ))}
+                  </div>
+                </Fragment>
+              ))}
 
             {filteredEmployees.length === 0 && (
               <div className="people-empty">
                 <Headline size="small" color="neutral-weak">No employees found</Headline>
               </div>
             )}
-          </div>
+          </Section>
         </>
       )}
 

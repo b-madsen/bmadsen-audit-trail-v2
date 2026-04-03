@@ -3,252 +3,171 @@ import type { Employee } from '../../data/employees';
 import { OrgChartTree } from './OrgChartTree';
 import { OrgChartControls } from './OrgChartControls';
 import { OrgChartZoom } from './OrgChartZoom';
-import { Card } from '../Card';
 
 interface OrgChartViewProps {
   employees: Employee[];
 }
 
 export function OrgChartView({ employees }: OrgChartViewProps) {
-  // Local state for UI
   const canvasRef = useRef<HTMLDivElement>(null);
   const [selectedEmployee, setSelectedEmployee] = useState<number | undefined>();
 
-  // Track the root of the visible tree (who appears at top)
-  const [rootEmployee, setRootEmployee] = useState<number | 'all'>(() => {
-    const ceo = employees.find((emp) => emp.reportsTo === null);
-    return ceo ? ceo.id : 'all';
-  });
+  const ceo = useMemo(
+    () => employees.find((e) => e.reportsTo === null),
+    [employees]
+  );
 
-  // Initialize expanded nodes to show CEO's direct reports
-  const [expandedNodes, setExpandedNodes] = useState<Set<number>>(() => {
-    const ceo = employees.find((emp) => emp.reportsTo === null);
-    return new Set(ceo ? [ceo.id] : []);
-  });
+  const [rootEmployee, setRootEmployee] = useState<number | 'all'>(
+    () => ceo?.id ?? 'all'
+  );
 
-  // Helper: get direct reports of an employee
-  const getDirectReports = useCallback((employeeId: number) => {
-    return employees.filter(e => e.reportsTo === employeeId);
-  }, [employees]);
+  const [expandedNodes, setExpandedNodes] = useState<Set<number>>(
+    () => new Set(ceo ? [ceo.id] : [])
+  );
 
-  // Helper: expand all nodes to a given depth from root
-  const expandToDepth = useCallback((rootId: number, targetDepth: number | 'all') => {
-    const newExpanded = new Set<number>();
+  const getDirectReports = useCallback(
+    (id: number) => employees.filter((e) => e.reportsTo === id),
+    [employees]
+  );
 
-    const expandLevel = (id: number, currentDepth: number) => {
-      const reports = getDirectReports(id);
-      if (reports.length === 0) return;
+  const expandToDepth = useCallback(
+    (rootId: number, target: number | 'all') => {
+      const next = new Set<number>();
+      const walk = (id: number, cur: number) => {
+        const reports = getDirectReports(id);
+        if (!reports.length) return;
+        if (target === 'all' || cur < target) {
+          next.add(id);
+          reports.forEach((r) => walk(r.id, cur + 1));
+        }
+      };
+      walk(rootId, 0);
+      return next;
+    },
+    [getDirectReports]
+  );
 
-      if (targetDepth === 'all' || currentDepth < targetDepth) {
-        newExpanded.add(id);
-        reports.forEach(report => {
-          expandLevel(report.id, currentDepth + 1);
-        });
-      }
-    };
+  // Explicit depth state so the SelectField always has a concrete initial value
+  const [selectedDepth, setSelectedDepth] = useState<number | 'all'>(1);
 
-    expandLevel(rootId, 0);
-    return newExpanded;
-  }, [getDirectReports]);
-
-  // Calculate current visible depth from expanded nodes
-  const currentDepth = useMemo(() => {
-    if (typeof rootEmployee !== 'number') return 1;
-
-    let maxDepth = 0;
-
-    const measureDepth = (id: number, depth: number) => {
-      if (!expandedNodes.has(id)) {
-        maxDepth = Math.max(maxDepth, depth);
-        return;
-      }
-
-      const reports = getDirectReports(id);
-      if (reports.length === 0) {
-        maxDepth = Math.max(maxDepth, depth);
-        return;
-      }
-
-      reports.forEach(report => {
-        measureDepth(report.id, depth + 1);
-      });
-    };
-
-    measureDepth(rootEmployee, 0);
-    return maxDepth || 1;
-  }, [rootEmployee, expandedNodes, getDirectReports]);
   const [zoomLevel, setZoomLevel] = useState(1);
-  const [panX, setPanX] = useState(0);
-  const [panY, setPanY] = useState(0);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [panX, setPanX] = useState(40);
+  const [panY, setPanY] = useState(80);
+  const [centered, setCentered] = useState(false);
 
-  // Center the tree on initial mount
+  // Re-center whenever root changes
   useEffect(() => {
-    if (canvasRef.current && !isInitialized) {
-      const rect = canvasRef.current.getBoundingClientRect();
-      // Estimate tree width around 800px, center it
-      const estimatedTreeWidth = 800;
-      const centerX = (rect.width - estimatedTreeWidth) / 2;
-      setPanX(Math.max(centerX, 50));
-      setPanY(50);
-      setIsInitialized(true);
-    }
-  }, [isInitialized]);
+    setCentered(false);
+  }, [rootEmployee]);
 
-  // Handle node expansion
+  // Center after DOM settles
+  useEffect(() => {
+    if (centered) return;
+    const frame = requestAnimationFrame(() => {
+      if (!canvasRef.current) return;
+      const { width } = canvasRef.current.getBoundingClientRect();
+      if (width === 0) return;
+      const root = typeof rootEmployee === 'number'
+        ? employees.find((e) => e.id === rootEmployee)
+        : ceo;
+      const numReports = root ? getDirectReports(root.id).length : 0;
+      const treeW = Math.max((numReports || 1) * 210, 210);
+      setPanX(Math.max((width - treeW) / 2, 40));
+      setPanY(80);
+      setCentered(true);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [centered, rootEmployee, employees, ceo, getDirectReports]);
+
   const handleNodeExpand = (id: number) => {
-    const newExpanded = new Set(expandedNodes);
-    if (newExpanded.has(id)) {
-      newExpanded.delete(id);
-    } else {
-      newExpanded.add(id);
-    }
-    setExpandedNodes(newExpanded);
+    const next = new Set(expandedNodes);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setExpandedNodes(next);
   };
 
-  // Handle node click: select the node and expand it to show direct reports
-  // Keep ancestors open, close siblings (accordion behavior)
   const handleNodeClick = (id: number) => {
     setSelectedEmployee(id);
-
-    // Build new expanded set
-    const newExpanded = new Set<number>();
-
-    // Get all ancestors of the clicked node (path from CEO to clicked node)
-    const clickedEmployee = employees.find(e => e.id === id);
-    if (clickedEmployee) {
-      let currentId: number | null = clickedEmployee.reportsTo;
-      while (currentId !== null) {
-        newExpanded.add(currentId);
-        const manager = employees.find((e) => e.id === currentId);
-        currentId = manager?.reportsTo ?? null;
-      }
+    const next = new Set<number>();
+    let cur: number | null = employees.find((e) => e.id === id)?.reportsTo ?? null;
+    while (cur !== null) {
+      next.add(cur);
+      cur = employees.find((e) => e.id === cur)?.reportsTo ?? null;
     }
-
-    // Expand the newly clicked node if it has direct reports
-    if (clickedEmployee && clickedEmployee.directReports > 0) {
-      newExpanded.add(id);
-    }
-
-    setExpandedNodes(newExpanded);
+    const emp = employees.find((e) => e.id === id);
+    if (emp && emp.directReports > 0) next.add(id);
+    setExpandedNodes(next);
   };
 
-  // Handle jump to employee - make them the root of the visible tree
-  const handleEmployeeJump = (id: number) => {
+  const handleJump = (id: number) => {
     setSelectedEmployee(id);
     setRootEmployee(id);
-
-    // Only expand the target employee to show their direct reports
-    const newExpanded = new Set<number>();
-    const targetEmployee = employees.find(e => e.id === id);
-
-    if (targetEmployee && targetEmployee.directReports > 0) {
-      newExpanded.add(id);
-    }
-
-    setExpandedNodes(newExpanded);
-
-    // Center the view - employee will be at top center
-    if (canvasRef.current) {
-      const rect = canvasRef.current.getBoundingClientRect();
-      const estimatedTreeWidth = 185; // Single node width initially
-      const centerX = (rect.width - estimatedTreeWidth) / 2;
-      setPanX(Math.max(centerX, 50));
-      setPanY(50);
-    }
+    const emp = employees.find((e) => e.id === id);
+    setExpandedNodes(new Set(emp && emp.directReports > 0 ? [id] : []));
   };
 
-  // Handle depth change - expand/collapse to match selected depth
-  const handleDepthChange = (newDepth: number | 'all') => {
-    if (typeof rootEmployee === 'number') {
-      const newExpanded = expandToDepth(rootEmployee, newDepth);
-      setExpandedNodes(newExpanded);
-    }
-  };
-
-  // Handle go up (navigate to parent of current root)
   const handleGoUp = () => {
-    if (typeof rootEmployee === 'number') {
-      const currentRoot = employees.find(e => e.id === rootEmployee);
-      if (currentRoot?.reportsTo) {
-        handleEmployeeJump(currentRoot.reportsTo);
-      }
-    }
-  };
-
-  // Handle filter open (placeholder)
-  const handleFilterOpen = () => {
-    console.log('Filter menu opened');
-    // Future: open filter modal/dropdown
-  };
-
-  // Handle export open (placeholder)
-  const handleExportOpen = () => {
-    console.log('Export menu opened');
-    // Future: open export modal with PNG/PDF options
-  };
-
-  // Handle zoom
-  const handleZoomIn = () => {
-    setZoomLevel((prev) => Math.min(prev + 0.1, 2));
-  };
-
-  const handleZoomOut = () => {
-    setZoomLevel((prev) => Math.max(prev - 0.1, 0.5));
-  };
-
-  // Handle pan
-  const handlePanChange = (x: number, y: number) => {
-    setPanX(x);
-    setPanY(y);
+    if (typeof rootEmployee !== 'number') return;
+    const emp = employees.find((e) => e.id === rootEmployee);
+    if (emp?.reportsTo) handleJump(emp.reportsTo);
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Controls Bar */}
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {/* Controls */}
       <OrgChartControls
         employees={employees}
-        depth={currentDepth}
-        onDepthChange={handleDepthChange}
-        onEmployeeJump={handleEmployeeJump}
+        depth={selectedDepth}
+        onDepthChange={(d) => {
+          setSelectedDepth(d);
+          if (typeof rootEmployee === 'number') {
+            setExpandedNodes(expandToDepth(rootEmployee, d));
+          }
+        }}
+        onEmployeeJump={handleJump}
         onGoUp={handleGoUp}
-        onFilterOpen={handleFilterOpen}
-        onExportOpen={handleExportOpen}
+        onFilterOpen={() => {}}
+        onExportOpen={() => {}}
       />
 
-      {/* Main Canvas */}
-      <Card className="flex-1 relative overflow-hidden">
+      {/* White canvas card */}
+      <div style={{
+        flex: 1,
+        position: 'relative',
+        overflow: 'hidden',
+        background: '#ffffff',
+        border: '1px solid #e4e3e0',
+        borderRadius: 12,
+        minHeight: 400,
+      }}>
         <div
           ref={canvasRef}
-          className="w-full h-full relative overflow-hidden"
+          style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}
         >
           <OrgChartTree
             employees={employees}
             rootEmployee={rootEmployee}
             depth="all"
-            focusedEmployee={undefined}
             selectedEmployee={selectedEmployee}
             expandedNodes={expandedNodes}
             onNodeSelect={handleNodeClick}
             onNodeExpand={handleNodeExpand}
-            onNodePin={() => {}} // No-op for pin functionality
+            onNodePin={() => {}}
             showPhotos={true}
             compact={false}
             zoomLevel={zoomLevel}
             panX={panX}
             panY={panY}
-            onPanChange={handlePanChange}
+            onPanChange={(x, y) => { setPanX(x); setPanY(y); }}
             onZoomChange={setZoomLevel}
           />
 
-          {/* Zoom Controls */}
           <OrgChartZoom
             zoomLevel={zoomLevel}
-            onZoomIn={handleZoomIn}
-            onZoomOut={handleZoomOut}
+            onZoomIn={() => setZoomLevel((z) => Math.min(z + 0.1, 2))}
+            onZoomOut={() => setZoomLevel((z) => Math.max(z - 0.1, 0.5))}
           />
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
