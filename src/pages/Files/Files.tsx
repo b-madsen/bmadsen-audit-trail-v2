@@ -1,16 +1,21 @@
 import { useState, useMemo } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import {
   Section,
   IconV2,
-  Headline,
   BodyText,
   Checkbox,
   SelectField,
-  SideNavigation,
+  PageHeaderV2,
 } from '@bamboohr/fabric';
-import { getCategoryLabel, getFilesByCategory, fileCategories } from '../../data/files';
+import { getCategoryLabel, getFilesByCategory } from '../../data/files';
 import './Files.css';
+
+/**
+ * Files Page
+ *
+ * Files page content without GlobalNavigation/Header (handled by App layout).
+ * Category is controlled by the GlobalNav accordion - no sidebar needed.
+ */
 
 type SortOption = 'name-asc' | 'name-desc' | 'date-recent' | 'date-oldest';
 
@@ -19,6 +24,7 @@ interface FilesProps {
 }
 
 export function Files({ category = 'all' }: FilesProps) {
+  // Files page state - category comes from props (controlled by GlobalNav)
   const [selectedFiles, setSelectedFiles] = useState<Set<number>>(new Set());
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
 
@@ -29,88 +35,73 @@ export function Files({ category = 'all' }: FilesProps) {
     { value: 'date-oldest', label: 'Date: Oldest First' },
   ];
 
-  const filteredFiles = useMemo(() => getFilesByCategory(category), [category]);
+  // Get filtered files based on category prop
+  const filteredFiles = useMemo(() => {
+    return getFilesByCategory(category);
+  }, [category]);
 
   const sortedFiles = useMemo(() => {
     const sorted = [...filteredFiles];
     switch (sortBy) {
-      case 'name-asc': return sorted.sort((a, b) => a.name.localeCompare(b.name));
-      case 'name-desc': return sorted.sort((a, b) => b.name.localeCompare(a.name));
-      case 'date-recent': return sorted.sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime());
-      case 'date-oldest': return sorted.sort((a, b) => new Date(a.addedDate).getTime() - new Date(b.addedDate).getTime());
-      default: return sorted;
+      case 'name-asc':
+        return sorted.sort((a, b) => a.name.localeCompare(b.name));
+      case 'name-desc':
+        return sorted.sort((a, b) => b.name.localeCompare(a.name));
+      case 'date-recent':
+        return sorted.sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime());
+      case 'date-oldest':
+        return sorted.sort((a, b) => new Date(a.addedDate).getTime() - new Date(b.addedDate).getTime());
+      default:
+        return sorted;
     }
   }, [sortBy, filteredFiles]);
 
+  // Get current category label for header
   const currentCategoryLabel = getCategoryLabel(category);
+
   const allSelected = selectedFiles.size === filteredFiles.length && filteredFiles.length > 0;
 
   const toggleSelectAll = () => {
-    if (allSelected) setSelectedFiles(new Set());
-    else setSelectedFiles(new Set(filteredFiles.map(f => f.id)));
+    if (allSelected) {
+      setSelectedFiles(new Set());
+    } else {
+      setSelectedFiles(new Set(filteredFiles.map(f => f.id)));
+    }
   };
 
   const toggleFileSelection = (fileId: number) => {
     const newSelection = new Set(selectedFiles);
-    if (newSelection.has(fileId)) newSelection.delete(fileId);
-    else newSelection.add(fileId);
+    if (newSelection.has(fileId)) {
+      newSelection.delete(fileId);
+    } else {
+      newSelection.add(fileId);
+    }
     setSelectedFiles(newSelection);
   };
 
   const getFileIcon = (type: string) => {
     switch (type) {
       case 'pdf':
-        return { name: 'file-lines-regular' as const, color: 'neutral-strong' as const };
+        return { name: 'file-pdf-solid' as const, color: 'error-strong' as const };
       case 'image':
-        return { name: 'file-image-regular' as const, color: 'neutral-strong' as const };
+        return { name: 'file-image-solid' as const, color: 'info-strong' as const };
       case 'audio':
-        return { name: 'file-regular' as const, color: 'neutral-strong' as const };
+        return { name: 'file-video-solid' as const, color: 'error-strong' as const };
       default:
-        return { name: 'file-regular' as const, color: 'neutral-strong' as const };
+        return { name: 'file-solid' as const, color: 'neutral-medium' as const };
     }
   };
 
-  const navItems = [
-    <SideNavigation.Link
-      key="all"
-      // @ts-ignore – component prop enables React Router usage
-      component={RouterLink}
-      to="/files"
-      active={category === 'all'}
-      icon={<IconV2 name="folders-regular" size={16} color="neutral-medium" />}
-      activeIcon={<IconV2 name="folders-solid" size={16} color="neutral-inverted" />}
-    >
-      All Files
-    </SideNavigation.Link>,
-    ...fileCategories.filter(c => c.id !== 'all').map(cat => (
-      <SideNavigation.Link
-        key={cat.id}
-        // @ts-ignore – component prop enables React Router usage
-        component={RouterLink}
-        to={`/files/${cat.id}`}
-        active={category === cat.id}
-        icon={<IconV2 name="folder-regular" size={16} color="neutral-medium" />}
-        activeIcon={<IconV2 name="folder-solid" size={16} color="neutral-inverted" />}
-      >
-        {cat.label}
-      </SideNavigation.Link>
-    )),
-    <SideNavigation.Divider key="divider" />,
-  ];
-
   return (
-    <div className="files-page">
-      <div className="files-title">
-        <Headline size="large" color="primary">Files</Headline>
-      </div>
+    <div className="files-page files-page--no-sidebar">
+      {/* Page Title */}
+      <PageHeaderV2 title={currentCategoryLabel} />
 
-      <div className="files-layout">
-        <SideNavigation items={navItems} />
-
-        <div className="files-main">
+      {/* Main Content - Full Width */}
+      <div className="files-main">
           <Section>
             <Section.Header
-              title={currentCategoryLabel}
+              title="Files"
               size="medium"
               actions={[
                 <SelectField
@@ -132,6 +123,7 @@ export function Files({ category = 'all' }: FilesProps) {
               ]}
             />
 
+            {/* Select All Row */}
             <div className="files-select-all">
               <Checkbox
                 value="select-all"
@@ -141,6 +133,7 @@ export function Files({ category = 'all' }: FilesProps) {
               />
             </div>
 
+            {/* File Rows */}
             {sortedFiles.map((file, index) => {
               const icon = getFileIcon(file.type);
               const isSelected = selectedFiles.has(file.id);
@@ -154,23 +147,23 @@ export function Files({ category = 'all' }: FilesProps) {
                       checked={isSelected}
                       onChange={() => toggleFileSelection(file.id)}
                     />
-                    <IconV2 name={icon.name} size={30} color={icon.color} />
+                    <IconV2 name={icon.name} size={24} color={icon.color} />
                     <div className="file-info">
                       <div className="file-name-row">
                         <a href="#" className="file-name" onClick={(e) => e.preventDefault()}>
-                          {file.name.replace(/_/g, ' ')}
+                          {file.name.replace(/_/g, ' ').replace('.pdf', '.pdf').replace('.mp4', '.mp4')}
                         </a>
-                        <IconV2 name="circle-user-regular" size={12} color="neutral-medium" />
+                        <IconV2 name="circle-info-solid" size={12} color="neutral-weak" />
                       </div>
                       <div className="file-meta">
-                        <IconV2 name="folder-arrow-up-regular" size={16} color="neutral-medium" />
-                        <BodyText size="extra-small" color="neutral-weak">
+                        <IconV2 name="arrow-up-from-bracket-solid" size={12} color="neutral-medium" />
+                        <BodyText size="small" color="neutral-medium">
                           Added {file.addedDate} by {file.addedBy} ({file.size})
                         </BodyText>
                         {showCategory && (
                           <>
-                            <IconV2 name="folder-regular" size={16} color="neutral-medium" />
-                            <BodyText size="extra-small" color="neutral-weak">{file.category}</BodyText>
+                            <IconV2 name="folder-solid" size={12} color="neutral-medium" />
+                            <BodyText size="small" color="neutral-medium">{file.category}</BodyText>
                           </>
                         )}
                       </div>
@@ -188,7 +181,6 @@ export function Files({ category = 'all' }: FilesProps) {
             })}
           </Section>
         </div>
-      </div>
     </div>
   );
 }
