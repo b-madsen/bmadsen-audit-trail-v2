@@ -1,3 +1,9 @@
+export interface FavoriteReport {
+  id: string;
+  name: string;
+  icon: string;
+}
+
 export interface Insight {
   id: string;
   icon: 'document' | 'circle-info' | 'graduation-cap';
@@ -11,6 +17,27 @@ export interface RecentReport {
   owner: string;
   lastViewed: string;
 }
+
+export interface StandardReport {
+  id: string;
+  name: string;
+  icon: string;
+  lastViewed?: string;
+}
+
+export interface StandardReportGroup {
+  id: string;
+  label: string;
+  icon: string;
+  reports: StandardReport[];
+}
+
+export const favoriteReports: FavoriteReport[] = [
+  { id: '1', name: 'Headcount', icon: 'chart-column' },
+  { id: '2', name: 'Employee Turnover', icon: 'chart-column' },
+  { id: '3', name: 'Additions & Terminations', icon: 'chart-line' },
+  { id: '4', name: 'Time Off Used', icon: 'table' },
+];
 
 export const insights: Insight[] = [
   {
@@ -34,11 +61,57 @@ export const insights: Insight[] = [
 ];
 
 export const recentReports: RecentReport[] = [
-  { id: '1', name: 'Headcount Report', owner: 'System', lastViewed: 'Today' },
-  { id: '2', name: 'Age Profile', owner: 'HR Team', lastViewed: 'Yesterday' },
-  { id: '3', name: 'Compensation Summary', owner: 'Finance', lastViewed: '2 days ago' },
-  { id: '4', name: 'Time Off Balances', owner: 'System', lastViewed: '3 days ago' },
-  { id: '5', name: 'New Hires Report', owner: 'Recruiting', lastViewed: 'Last week' },
+  { id: '1', name: 'Headcount', owner: 'BambooHR', lastViewed: 'Mar 23' },
+  { id: '2', name: 'Age Profile', owner: 'HR Team', lastViewed: 'Mar 22' },
+  { id: '3', name: 'Compensation Summary', owner: 'Finance', lastViewed: 'Mar 21' },
+  { id: '4', name: 'Time Off Balances', owner: 'BambooHR', lastViewed: 'Mar 20' },
+  { id: '5', name: 'New Hires Report', owner: 'Recruiting', lastViewed: 'Mar 15' },
+];
+
+export const standardReportGroups: StandardReportGroup[] = [
+  {
+    id: 'benefits',
+    label: 'Benefits',
+    icon: 'heart-pulse',
+    reports: [
+      { id: 'b1', name: 'Plan Year Election Summary', icon: 'table' },
+      { id: 'b2', name: 'Benefit Summary', icon: 'table' },
+      { id: 'b3', name: 'Enrollment Window Election Summary', icon: 'table' },
+      { id: 'b4', name: 'Benefit Election Changes', icon: 'table' },
+    ],
+  },
+  {
+    id: 'compensation',
+    label: 'Compensation',
+    icon: 'circle-dollar',
+    reports: [
+      { id: 'c1', name: 'Pay by Department', icon: 'chart-line' },
+      { id: 'c2', name: 'Pay by Location', icon: 'chart-line' },
+      { id: 'c3', name: 'Pay by Job Title', icon: 'chart-line' },
+      { id: 'c4', name: 'Pay by Employment Status', icon: 'chart-line' },
+    ],
+  },
+  {
+    id: 'headcount',
+    label: 'Headcount',
+    icon: 'users',
+    reports: [
+      { id: 'h1', name: 'Headcount Summary', icon: 'chart-column' },
+      { id: 'h2', name: 'New Hires', icon: 'chart-column' },
+      { id: 'h3', name: 'Terminations', icon: 'chart-column' },
+      { id: 'h4', name: 'Additions & Terminations', icon: 'chart-column' },
+    ],
+  },
+  {
+    id: 'time-off',
+    label: 'Time Off',
+    icon: 'clock',
+    reports: [
+      { id: 't1', name: 'Time Off Balances', icon: 'table' },
+      { id: 't2', name: 'Time Off Usage', icon: 'table' },
+      { id: 't3', name: 'Accrual Summary', icon: 'table' },
+    ],
+  },
 ];
 
 export const suggestionQuestions = [
