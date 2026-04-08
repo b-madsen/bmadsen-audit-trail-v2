@@ -28,11 +28,11 @@ export interface PayrollDetail {
 }
 
 export const payrollDates: PayrollDate[] = [
-  { id: '1', day: '15', month: 'Feb', dayOfWeek: 'Saturday', isSelected: true, badge: 'Current' },
-  { id: '2', day: '28', month: 'Feb', dayOfWeek: 'Friday', isSelected: false },
-  { id: '3', day: '15', month: 'Mar', dayOfWeek: 'Saturday', isSelected: false },
-  { id: '4', day: '31', month: 'Mar', dayOfWeek: 'Monday', isSelected: false },
-  { id: '5', day: '15', month: 'Apr', dayOfWeek: 'Tuesday', isSelected: false },
+  { id: '1', day: '19', month: 'January', dayOfWeek: 'Friday', isSelected: false },
+  { id: '2', day: '26', month: 'January', dayOfWeek: 'Friday', isSelected: true },
+  { id: '3', day: '2', month: 'February', dayOfWeek: 'Friday', isSelected: false, badge: '9' },
+  { id: '4', day: '16', month: 'February', dayOfWeek: 'Friday', isSelected: false },
+  { id: '5', day: '22', month: 'February', dayOfWeek: 'Friday', isSelected: false },
 ];
 
 export const payrollStats: PayrollStat[] = [
@@ -56,7 +56,7 @@ export const payrollDetails: PayrollDetail[] = [
   { id: '4', icon: 'building', value: 'Bi-weekly', label: 'Schedule' },
 ];
 
-export const payrollTitle = 'February 15, 2026 Payroll';
-export const dueDate = 'Due by Feb 13, 2026';
+export const payrollTitle = 'January 26 Payroll';
+export const dueDate = 'Due by Jan 13, 2026';
 export const payrollId = 'Payroll ID: PR-2026-0215';
 export const updatesText = '12 employees have changes that may affect this payroll, including new hires, terminations, and compensation changes.';

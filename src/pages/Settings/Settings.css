@@ -2,7 +2,7 @@
   min-height: 100%;
 }
 
-/* No-sidebar layout */
+/* No-sidebar layout (kept for backwards compat) */
 .settings-page--no-sidebar .settings-layout {
   display: block;
 }
@@ -12,7 +12,7 @@
 }
 
 .settings-header {
-  padding: 32px 0 24px;
+  padding: 0;
 }
 
 .settings-header h2 {
@@ -67,6 +67,10 @@
 .settings-nav-item--active:hover {
   background-color: var(--color-primary-strong);
   color: white;
+}
+
+.settings-nav-item--active svg {
+  color: white !important;
 }
 
 /* Main Content */
@@ -253,4 +257,437 @@
   align-items: center;
   gap: 8px;
   margin-top: 4px;
+}
+
+/* ===== Company Ownership Form ===== */
+
+.co-description {
+  margin: 16px 0 24px;
+}
+
+.co-contact-link {
+  color: var(--color-primary-strong);
+  text-decoration: underline;
+}
+
+.co-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.co-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.co-field-note {
+  margin-top: 2px;
+}
+
+/* Select (native dropdown) */
+.co-select-wrapper {
+  position: relative;
+}
+
+.co-select {
+  width: 100%;
+  padding: 8px 36px 8px 12px;
+  font-size: 15px;
+  line-height: 22px;
+  border: 1px solid var(--border-neutral-medium);
+  border-radius: var(--radius-xx-small);
+  background: var(--surface-neutral-white);
+  color: var(--text-neutral-strong);
+  appearance: none;
+  cursor: pointer;
+}
+
+.co-select:disabled {
+  background: var(--surface-neutral-xx-weak);
+  color: var(--text-neutral-medium);
+  cursor: default;
+}
+
+.co-select-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+}
+
+/* Text input */
+.co-input-wrapper {
+  position: relative;
+}
+
+.co-input {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 15px;
+  line-height: 22px;
+  border: 1px solid var(--border-neutral-medium);
+  border-radius: var(--radius-xx-small);
+  background: var(--surface-neutral-white);
+  color: var(--text-neutral-strong);
+  box-sizing: border-box;
+}
+
+.co-input:disabled {
+  background: var(--surface-neutral-xx-weak);
+  color: var(--text-neutral-medium);
+  cursor: default;
+}
+
+.co-input-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+}
+
+/* Radio group */
+.co-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.co-radio-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.co-radio-input {
+  margin-top: 3px;
+  accent-color: var(--color-primary-strong);
+}
+
+.co-radio-text {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-neutral-strong);
+}
+
+/* Toggle (US Citizen / Non US Citizen) */
+.co-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border-neutral-medium);
+  border-radius: var(--radius-xx-small);
+  overflow: hidden;
+}
+
+.co-toggle-option {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  background: var(--surface-neutral-white);
+  color: var(--text-neutral-medium);
+}
+
+.co-toggle-option--active {
+  background: var(--color-primary-strong);
+  color: white;
+}
+
+.co-toggle-option:disabled {
+  cursor: default;
+}
+
+/* Manager section */
+.co-manager-section {
+  margin-top: 8px;
+  padding: 24px;
+  background: var(--surface-neutral-xx-weak);
+  border: 1px solid var(--border-neutral-x-weak);
+  border-radius: var(--radius-medium);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.co-manager-section .co-field {
+  margin-bottom: 12px;
+}
+
+/* Field row (City / State / Zip) */
+.co-field-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.co-field-row .co-field {
+  margin-bottom: 0;
+}
+
+.co-field--flex {
+  flex: 1;
+}
+
+.co-field--small {
+  width: 120px;
+  flex-shrink: 0;
+}
+
+/* Save button */
+.co-save {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* ===== Access Levels Page ===== */
+
+.al-layout {
+  display: flex;
+  gap: 32px;
+}
+
+/* Left sidebar */
+.al-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border-neutral-x-weak);
+  padding-right: 24px;
+}
+
+.al-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.al-sidebar-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.al-gear-wrapper {
+  position: relative;
+}
+
+/* Gear dropdown menu */
+.al-gear-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 100;
+  min-width: 260px;
+  background: var(--surface-neutral-white);
+  border: 1px solid var(--border-neutral-x-weak);
+  border-radius: var(--radius-small);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  padding: 4px 0;
+  margin-top: 4px;
+}
+
+.al-gear-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s;
+}
+
+.al-gear-menu-item:hover {
+  background-color: var(--surface-neutral-xx-weak);
+}
+
+.al-gear-menu-item--highlighted {
+  background-color: var(--surface-neutral-xx-weak);
+}
+
+.al-gear-menu-icon {
+  display: flex;
+  align-items: center;
+  width: 20px;
+  justify-content: center;
+}
+
+.al-gear-menu-divider {
+  height: 1px;
+  background: var(--border-neutral-x-weak);
+  margin: 4px 0;
+}
+
+/* Navigation items */
+.al-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.al-nav-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: var(--radius-xx-small);
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s;
+}
+
+.al-nav-item:hover {
+  background-color: var(--surface-neutral-xx-weak);
+}
+
+.al-nav-item--active {
+  background-color: var(--surface-primary-weak);
+}
+
+.al-nav-section {
+  padding: 12px 12px 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Right content area */
+.al-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.al-content-header {
+  margin-bottom: 20px;
+}
+
+.al-content-description {
+  margin-top: 4px;
+}
+
+/* Toolbar */
+.al-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.al-search {
+  width: 240px;
+}
+
+.al-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Table */
+.al-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.al-table-th {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--border-neutral-x-weak);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-neutral-strong);
+}
+
+.al-table-row {
+  transition: background-color 0.15s;
+}
+
+.al-table-row:hover {
+  background-color: var(--surface-neutral-xx-weak);
+}
+
+.al-table-td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-neutral-x-weak);
+  vertical-align: middle;
+}
+
+.al-employee-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Pagination */
+.al-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0 4px;
+}
+
+.al-pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.al-pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-neutral-x-weak);
+  border-radius: var(--radius-xx-small);
+  background: var(--surface-neutral-white);
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-neutral-strong);
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.al-pagination-btn:hover {
+  background-color: var(--surface-neutral-xx-weak);
+  border-color: var(--border-neutral-medium);
+}
+
+.al-pagination-btn--active {
+  background-color: var(--color-primary-strong);
+  border-color: var(--color-primary-strong);
+  color: white;
+}
+
+.al-pagination-btn--active:hover {
+  background-color: var(--color-primary-strong);
+  border-color: var(--color-primary-strong);
+  color: white;
+}
+
+.al-pagination-btn--next {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  color: var(--color-primary-strong);
+}
+
+.al-pagination-btn--next:disabled {
+  opacity: 0.5;
+  cursor: default;
 }

@@ -1,0 +1,278 @@
+.payroll-detail-page {
+  min-height: 100%;
+}
+
+/* Header meta info row */
+.payroll-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.payroll-detail-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.payroll-detail-meta-label {
+  color: var(--text-neutral-medium);
+}
+
+.payroll-detail-meta-value {
+  color: var(--text-neutral-x-strong);
+}
+
+/* Tabs container */
+.payroll-detail-tabs {
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-neutral-x-weak);
+}
+
+.payroll-detail-tab-bar {
+  display: flex;
+  gap: 4px;
+  padding: 0 24px;
+}
+
+.payroll-detail-tab-button {
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-neutral-medium);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.payroll-detail-tab-button:hover {
+  color: var(--text-neutral-strong);
+}
+
+.payroll-detail-tab-button--active {
+  color: var(--color-primary-strong);
+  font-weight: 600;
+  border-bottom-color: var(--color-primary-strong);
+}
+
+/* Timesheets action bar */
+.payroll-detail-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  flex-wrap: wrap;
+}
+
+.payroll-detail-filter {
+  flex: 1;
+  min-width: 240px;
+  max-width: 400px;
+}
+
+.payroll-detail-filter-input {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid var(--border-neutral-medium);
+  border-radius: var(--radius-xx-small);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.payroll-detail-filter-input:focus {
+  border-color: var(--color-primary-strong);
+}
+
+.payroll-detail-status-text {
+  flex: 1;
+  min-width: 200px;
+}
+
+.payroll-detail-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Two-column layout for timesheets */
+.payroll-detail-content {
+  display: flex;
+  gap: 24px;
+  padding: 0 24px 24px;
+}
+
+.payroll-detail-table-area {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Timesheets table */
+.payroll-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payroll-detail-table thead th {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-neutral-x-weak);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-neutral-strong);
+  line-height: 19px;
+}
+
+.payroll-detail-table tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-neutral-x-weak);
+  vertical-align: middle;
+}
+
+.payroll-detail-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.payroll-detail-employee-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.payroll-detail-avatar {
+  border-radius: var(--radius-xx-small);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.payroll-detail-employee-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.payroll-detail-department-link {
+  color: var(--text-link);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.payroll-detail-department-link:hover {
+  text-decoration: underline;
+}
+
+.payroll-detail-hours-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.payroll-detail-hours-detail {
+  color: var(--text-neutral-medium);
+}
+
+.payroll-detail-status-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Hours breakdown sidebar */
+.payroll-detail-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.payroll-detail-hours-card {
+  background: var(--surface-neutral-white);
+  border: 1px solid var(--border-neutral-x-weak);
+  border-radius: var(--radius-small);
+  padding: 24px;
+  box-shadow: var(--shadow-300);
+}
+
+.payroll-detail-hours-title {
+  margin-bottom: 20px;
+}
+
+.payroll-detail-hours-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.payroll-detail-hours-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.payroll-detail-hours-divider {
+  height: 1px;
+  background: var(--border-neutral-x-weak);
+  margin: 8px 0;
+}
+
+.payroll-detail-hours-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4px;
+}
+
+/* Status pills */
+.payroll-detail-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.payroll-detail-status-pill--success {
+  background: var(--surface-success-weak, #e8f5e9);
+  color: var(--text-success-strong, #2e7d32);
+}
+
+.payroll-detail-status-pill--warning {
+  background: var(--surface-warning-weak, #fff3e0);
+  color: var(--text-warning-strong, #e65100);
+}
+
+/* Empty state */
+.payroll-detail-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 64px 24px;
+  gap: 16px;
+}
+
+.payroll-detail-empty-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background: var(--surface-neutral-xx-weak);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+/* Placeholder tab content */
+.payroll-detail-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+  gap: 12px;
+}

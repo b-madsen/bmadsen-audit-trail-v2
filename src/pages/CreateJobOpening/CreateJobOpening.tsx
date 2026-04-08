@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { IconV2, Headline } from '@bamboohr/fabric';
+import { IconV2, PageHeaderV2 } from '@bamboohr/fabric';
 import { JobWizardSidebar } from '../../components/JobWizardSidebar';
 import { JobInformationForm } from '../../components/JobInformationForm';
 import './CreateJobOpening.css';
@@ -36,16 +36,15 @@ export function CreateJobOpening() {
 
   return (
     <div className="create-job-page">
-      {/* Back button */}
-      <button onClick={handleBackToJobOpenings} className="create-job-back-button">
-        <IconV2 name="angle-left-solid" size={16} color="neutral-strong" />
-        Job Openings
-      </button>
-
-      {/* Page title */}
-      <div className="create-job-header">
-        <Headline size="large">Create Job Opening</Headline>
-      </div>
+      {/* Page Header */}
+      <PageHeaderV2
+        title="Create Job Opening"
+        breadcrumb={
+          <PageHeaderV2.Breadcrumb href="/hiring" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleBackToJobOpenings(); }}>
+            Job Openings
+          </PageHeaderV2.Breadcrumb>
+        }
+      />
 
       {/* Main content: Sidebar + Form */}
       <div className="create-job-content">

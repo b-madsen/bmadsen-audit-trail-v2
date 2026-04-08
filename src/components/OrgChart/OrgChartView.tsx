@@ -3,6 +3,7 @@ import type { Employee } from '../../data/employees';
 import { OrgChartTree } from './OrgChartTree';
 import { OrgChartControls } from './OrgChartControls';
 import { OrgChartZoom } from './OrgChartZoom';
+import './OrgChart.css';
 
 interface OrgChartViewProps {
   employees: Employee[];
@@ -112,8 +113,7 @@ export function OrgChartView({ employees }: OrgChartViewProps) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Controls */}
+    <div className="org-chart-view">
       <OrgChartControls
         employees={employees}
         depth={selectedDepth}
@@ -125,24 +125,10 @@ export function OrgChartView({ employees }: OrgChartViewProps) {
         }}
         onEmployeeJump={handleJump}
         onGoUp={handleGoUp}
-        onFilterOpen={() => {}}
-        onExportOpen={() => {}}
       />
 
-      {/* White canvas card */}
-      <div style={{
-        flex: 1,
-        position: 'relative',
-        overflow: 'hidden',
-        background: '#ffffff',
-        border: '1px solid #e4e3e0',
-        borderRadius: 12,
-        minHeight: 400,
-      }}>
-        <div
-          ref={canvasRef}
-          style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}
-        >
+      <div className="org-chart-canvas">
+        <div ref={canvasRef} className="org-chart-canvas-inner">
           <OrgChartTree
             employees={employees}
             rootEmployee={rootEmployee}

@@ -1,8 +1,7 @@
 import { useState, useMemo, useEffect, type ChangeEvent } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   IconV2,
-  Headline,
   Button,
   Divider,
   Link,
@@ -13,6 +12,8 @@ import {
   SelectField,
   SlidedownPortal,
   SLIDEDOWN_TYPES,
+  PageHeaderV2,
+  Headline,
 } from '@bamboohr/fabric';
 import { EmployeeCard } from '../../components/EmployeeCard';
 import { PeopleListView } from '../../components/PeopleListView';
@@ -29,6 +30,7 @@ interface PeopleProps {
 
 export function People({ defaultTab = 'list' }: PeopleProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<ViewMode>(defaultTab);
   const [toastVisible, setToastVisible] = useState(false);
 
@@ -65,24 +67,17 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
     });
   }, [searchQuery, filterDepartment]);
 
-  // Build employee ID → name map for resolving manager names
-  const employeeNameMap = useMemo(() => {
-    const map: Record<number, string> = {};
-    employees.forEach((e) => { map[e.id] = e.name; });
-    return map;
-  }, []);
-
   // Group employees
   const groupedEmployees = useMemo(() => {
     if (groupBy === 'name') {
       const groups: Record<string, typeof filteredEmployees> = {};
       filteredEmployees.forEach((employee) => {
-        const key = employee.lastName.charAt(0).toUpperCase();
+        const key = employee.name.charAt(0).toUpperCase();
         if (!groups[key]) groups[key] = [];
         groups[key].push(employee);
       });
       Object.keys(groups).forEach((key) => {
-        groups[key].sort((a, b) => a.lastName.localeCompare(b.lastName));
+        groups[key].sort((a, b) => a.name.localeCompare(b.name));
       });
       return groups;
     }
@@ -94,7 +89,7 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
       groups[key].push(employee);
     });
     Object.keys(groups).forEach((key) => {
-      groups[key].sort((a, b) => a.lastName.localeCompare(b.lastName));
+      groups[key].sort((a, b) => a.name.localeCompare(b.name));
     });
     return groups;
   }, [filteredEmployees, groupBy]);
@@ -108,17 +103,17 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
         onDismiss={() => setToastVisible(false)}
       />
       {/* Page Header */}
-      <div className="people-header">
-        <Headline size="large" color="primary" weight="bold">
-          {viewMode === 'orgChart' ? 'Org Chart' : viewMode === 'directory' ? 'Directory' : 'People'}
-        </Headline>
-        <Link href="#" onClick={(e: React.MouseEvent) => e.preventDefault()}>
-          <span className="people-header-link">
-            <IconV2 name="square-arrow-up-right-regular" size={16} />
-            Quick Access to the Directory
-          </span>
-        </Link>
-      </div>
+      <PageHeaderV2
+        title="People"
+        primaryContent={
+          <Link href="#" onClick={(e: React.MouseEvent) => e.preventDefault()}>
+            <span className="people-header-link">
+              <IconV2 name="square-arrow-up-right-regular" size={16} />
+              Quick Access to the Directory
+            </span>
+          </Link>
+        }
+      />
 
       {/* Actions Bar with Tabs */}
       <div className="people-actions-bar">
@@ -129,8 +124,19 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
             size="medium"
             className="people-primary-btn"
             startIcon={<IconV2 name="circle-plus-regular" size={16} />}
+            onClick={() => navigate('/people/new')}
           >
             New Employee
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            size="medium"
+            className="people-primary-btn"
+            startIcon={<IconV2 name="bolt-regular" size={16} />}
+            onClick={() => navigate('/people/power-edit/edit')}
+          >
+            Power Edit
           </Button>
         </div>
 
@@ -138,7 +144,13 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
         <div className="people-tabs">
           <Tabs
             value={viewMode}
-            onChange={(value: unknown, _event: ChangeEvent<Element>) => setViewMode(value as ViewMode)}
+            onChange={(value: unknown, _event: ChangeEvent<Element>) => {
+              const newMode = value as ViewMode;
+              setViewMode(newMode);
+              if (newMode === 'directory') navigate('/people/directory');
+              else if (newMode === 'orgChart') navigate('/people/org-chart');
+              else navigate('/people');
+            }}
             mode="line"
           >
             <Tab label="List" value="list" icon={<IconV2 name="table-list-regular" size={16} />} />
@@ -162,11 +174,9 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
             <div className="people-directory-search">
               <TextField
                 label=""
-                placeholder="Search"
+                placeholder="Search Directory..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                startIcon={<IconV2 name="magnifying-glass-regular" size={16} />}
-                styling="single"
                 size="medium"
               />
             </div>
@@ -176,7 +186,7 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
               <SelectField
                 label="Group by"
                 labelPlacement="inline"
-                size="medium"
+                size="small"
                 variant="single"
                 value={groupBy}
                 onChange={(e) => setGroupBy(e.target.value as GroupBy)}
@@ -193,7 +203,7 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
               <SelectField
                 label="Filter by"
                 labelPlacement="inline"
-                size="medium"
+                size="small"
                 variant="single"
                 value={filterDepartment}
                 onChange={(e) => setFilterDepartment(e.target.value)}
@@ -205,33 +215,27 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
             </div>
           </div>
 
-          {/* Employee Directory */}
-          <Section>
-            {Object.entries(groupedEmployees)
-              .sort(([a], [b]) => a.localeCompare(b))
-              .map(([letter, groupEmployees]) => (
-                <Fragment key={letter}>
-                  <div className="people-directory-letter-row">
-                    <Headline size="small" color="primary">{letter}</Headline>
-                  </div>
-                  <div className="people-directory-group-rows">
-                    {groupEmployees.map((employee) => (
-                      <EmployeeCard
-                        key={employee.id}
-                        employee={employee}
-                        reportsToName={employee.reportsTo != null ? employeeNameMap[employee.reportsTo] : undefined}
-                      />
-                    ))}
-                  </div>
-                </Fragment>
-              ))}
+          {/* Employee Groups */}
+          <div className="people-groups">
+            {Object.entries(groupedEmployees).map(([groupName, groupEmployees]) => (
+              <Section key={groupName}>
+                <div className="people-group-header">
+                  <Headline size="small" color="primary">{groupName}</Headline>
+                </div>
+                <div className="people-group-list">
+                  {groupEmployees.map((employee) => (
+                    <EmployeeCard key={employee.id} employee={employee} />
+                  ))}
+                </div>
+              </Section>
+            ))}
 
             {filteredEmployees.length === 0 && (
               <div className="people-empty">
                 <Headline size="small" color="neutral-weak">No employees found</Headline>
               </div>
             )}
-          </Section>
+          </div>
         </>
       )}
 

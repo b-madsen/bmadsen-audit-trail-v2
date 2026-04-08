@@ -3,7 +3,7 @@
  */
 
 .people-page {
-  padding: 32px 0;
+  padding: 0;
 }
 
 /* Page Header */
@@ -125,7 +125,7 @@
 /* Responsive */
 @media (max-width: 768px) {
   .people-page {
-    padding: 24px 0;
+    padding: 0;
   }
 
 
@@ -148,7 +148,7 @@
 
 @media (max-width: 480px) {
   .people-page {
-    padding: 16px 0;
+    padding: 0;
   }
 
   .people-actions-bar {

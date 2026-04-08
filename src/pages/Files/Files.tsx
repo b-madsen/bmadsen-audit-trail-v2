@@ -2,10 +2,10 @@ import { useState, useMemo } from 'react';
 import {
   Section,
   IconV2,
-  Headline,
   BodyText,
   Checkbox,
   SelectField,
+  PageHeaderV2,
 } from '@bamboohr/fabric';
 import { getCategoryLabel, getFilesByCategory } from '../../data/files';
 import './Files.css';
@@ -95,9 +95,7 @@ export function Files({ category = 'all' }: FilesProps) {
   return (
     <div className="files-page files-page--no-sidebar">
       {/* Page Title */}
-      <div className="files-title">
-        <Headline size="large" color="primary">{currentCategoryLabel}</Headline>
-      </div>
+      <PageHeaderV2 title={currentCategoryLabel} />
 
       {/* Main Content - Full Width */}
       <div className="files-main">

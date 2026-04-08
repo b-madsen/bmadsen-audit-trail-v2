@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Headline, BodyText, IconV2, Divider, TextButton, Avatar } from '@bamboohr/fabric';
+import { BodyText, IconV2, Divider, TextButton, Avatar, PageHeaderV2 } from '@bamboohr/fabric';
 import './InboxTest.css';
 
 // Types
@@ -428,11 +428,7 @@ export function InboxTest() {
       </div>
 
       {/* Page Header */}
-      <div className="inbox-test-header">
-        <Headline size="large" color="primary">
-          Requests
-        </Headline>
-      </div>
+      <PageHeaderV2 title="Requests" />
 
       {/* Main content area */}
       <div className="inbox-test-content">

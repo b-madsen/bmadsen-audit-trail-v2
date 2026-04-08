@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, type ChangeEvent } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   IconV2,
-  Headline,
   Button,
   IconButton,
   BodyText,
@@ -10,6 +9,7 @@ import {
   Section,
   Tabs,
   Tab,
+  PageHeaderV2,
 } from '@bamboohr/fabric';
 import { jobOpenings } from '../../data/jobOpenings';
 import { CandidatesTabContent } from './CandidatesTabContent';
@@ -58,9 +58,7 @@ export function Hiring() {
   return (
     <div className="hiring-page">
       {/* Page Header */}
-      <div className="hiring-header">
-        <Headline size="large" color="primary">Hiring</Headline>
-      </div>
+      <PageHeaderV2 title="Hiring" />
 
       {/* Tabs */}
       <div className="hiring-tabs-container">

@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
+import { IconV2, BodyText, Checkbox, Button, IconButton, TextButton, TextField, Dropdown } from '@bamboohr/fabric';
+// @ts-expect-error Nub is exported from Fabric ESM but not in main type declarations
+import { Nub } from '@bamboohr/fabric/dist/es/Nub.mjs';
 import type { Employee } from '../../data/employees';
-import { IconV2, TextField, SelectField, IconButton, Button, Avatar, BodyText } from '@bamboohr/fabric';
 
 interface OrgChartControlsProps {
   employees: Employee[];
@@ -8,8 +10,20 @@ interface OrgChartControlsProps {
   onDepthChange: (depth: number | 'all') => void;
   onEmployeeJump: (employeeId: number) => void;
   onGoUp?: () => void;
-  onFilterOpen?: () => void;
-  onExportOpen?: () => void;
+  showFilters?: {
+    name: boolean;
+    photo: boolean;
+    department: boolean;
+    division: boolean;
+    location: boolean;
+  };
+  onFilterChange?: (filters: {
+    name: boolean;
+    photo: boolean;
+    department: boolean;
+    division: boolean;
+    location: boolean;
+  }) => void;
 }
 
 export function OrgChartControls({
@@ -18,13 +32,18 @@ export function OrgChartControls({
   onDepthChange,
   onEmployeeJump,
   onGoUp,
-  onFilterOpen,
-  onExportOpen,
+  showFilters = { name: true, photo: true, department: false, division: false, location: false },
+  onFilterChange,
 }: OrgChartControlsProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [filters, setFilters] = useState(showFilters);
   const searchRef = useRef<HTMLDivElement>(null);
+  const filterRef = useRef<HTMLDivElement>(null);
+  const exportRef = useRef<HTMLDivElement>(null);
 
   const searchResults = searchQuery.trim()
     ? employees.filter((emp) =>
@@ -66,47 +85,54 @@ export function OrgChartControls({
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowSearchResults(false);
       }
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setFilterOpen(false);
+      }
+      if (exportRef.current && !exportRef.current.contains(event.target as Node)) {
+        setExportOpen(false);
+      }
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const depthValue = depth === 'all' ? 'all' : String(depth);
+  const handleFilterToggle = (key: keyof typeof filters) => {
+    const updated = { ...filters, [key]: !filters[key] };
+    setFilters(updated);
+    onFilterChange?.(updated);
+  };
+
+  // Clamp depth to valid option values (1-7 or 'all')
+  const depthValue = depth === 'all' ? 'all' : String(Math.max(1, Math.min(7, Number(depth) || 1)));
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingBottom: 16 }}>
-      {/* Jump to employee */}
-      <div ref={searchRef} style={{ position: 'relative', width: 300, flexShrink: 0 }}>
-        <TextField
-          label=""
-          placeholder="Jump to an employee..."
-          value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            setShowSearchResults(true);
-          }}
-          onFocus={() => { if (searchQuery) setShowSearchResults(true); }}
-          onKeyDown={handleKeyDown}
-          startIcon={<IconV2 name="circle-user-regular" size={16} />}
-          styling="single"
-          size="medium"
-        />
+    <div className="org-chart-controls">
+      {/* Search */}
+      <div ref={searchRef} className="org-chart-search-wrapper">
+        <div onKeyDown={handleKeyDown}>
+          <TextField
+            size="medium"
+            variant="single"
+            placeholder="Jump to an employee..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setShowSearchResults(true);
+            }}
+            onFocus={() => setShowSearchResults(true)}
+            InputProps={{
+              startAdornment: (
+                <Nub position="start">
+                  <IconV2 name="circle-user-solid" size={16} color="neutral-medium" />
+                </Nub>
+              ),
+            }}
+          />
+        </div>
 
         {showSearchResults && searchResults.length > 0 && (
-          <div style={{
-            position: 'absolute',
-            left: 0,
-            top: '100%',
-            marginTop: 4,
-            width: '100%',
-            background: 'var(--fabric-surface-color-neutral-white)',
-            border: '1px solid var(--fabric-border-color-neutral-weak)',
-            borderRadius: 8,
-            boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-            zIndex: 200,
-            maxHeight: 260,
-            overflowY: 'auto',
-          }}>
+          <div className="org-chart-search-results">
             {searchResults.map((emp, index) => (
               <button
                 key={emp.id}
@@ -116,26 +142,22 @@ export function OrgChartControls({
                   setShowSearchResults(false);
                 }}
                 onMouseEnter={() => setHighlightedIndex(index)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  textAlign: 'left',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  background: index === highlightedIndex
-                    ? 'var(--fabric-surface-color-neutral-xx-weak)'
-                    : 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                }}
+                className={`org-chart-search-result ${
+                  index === highlightedIndex ? 'org-chart-search-result--highlighted' : ''
+                }`}
               >
-                <Avatar src={emp.avatar} alt={emp.name} size={32} />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <BodyText size="small" weight="medium">{emp.name}</BodyText>
-                  <BodyText size="extra-small" color="neutral-weak">
-                    {emp.title} · {emp.department}
-                  </BodyText>
+                <img
+                  src={emp.avatar}
+                  alt={emp.name}
+                  className="org-chart-search-result-avatar"
+                />
+                <div className="org-chart-search-result-info">
+                  <div className="org-chart-search-result-name">{emp.name}</div>
+                  <span className="org-chart-search-result-meta">
+                    <BodyText size="extra-small" color="neutral-weak">
+                      {emp.title} · {emp.department}
+                    </BodyText>
+                  </span>
                 </div>
               </button>
             ))}
@@ -143,61 +165,122 @@ export function OrgChartControls({
         )}
       </div>
 
-      {/* Depth selector — Fabric SelectField */}
-      <div style={{ flexShrink: 0 }}>
-        <SelectField
-          label="Levels"
-          labelPlacement="inline"
-          size="medium"
-          variant="single"
-          value={depthValue}
-          onChange={(e) => {
-            const val = e.target.value;
+      {/* Depth Selector and Up Arrow */}
+      <div className="org-chart-nav-controls">
+        <Dropdown
+          type="button"
+          ButtonProps={{
+            variant: 'outlined',
+            color: 'secondary',
+            size: 'medium',
+          }}
+          items={[
+            { text: '1', value: '1' },
+            { text: '2', value: '2' },
+            { text: '3', value: '3' },
+            { text: '4', value: '4' },
+            { text: '5', value: '5' },
+            { text: '6', value: '6' },
+            { text: '7', value: '7' },
+            { text: 'All', value: 'all' },
+          ]}
+          onSelect={(val: string) => {
             onDepthChange(val === 'all' ? 'all' : Number(val));
           }}
         >
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="all">All</option>
-        </SelectField>
-      </div>
+          {depthValue === 'all' ? 'All' : depthValue}
+        </Dropdown>
 
-      {/* Go up a level */}
-      {onGoUp && (
-        <IconButton
-          icon="angles-up-regular"
-          aria-label="Go up a level"
-          variant="outlined"
-          color="secondary"
-          onClick={onGoUp}
-        />
-      )}
-
-      {/* Right: Filter + Export */}
-      <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
-        {onFilterOpen && (
-          <Button
+        {onGoUp && (
+          <IconButton
+            icon="angles-up-solid"
+            aria-label="Go to parent"
             variant="outlined"
             color="secondary"
-            onClick={onFilterOpen}
-            startIcon={<IconV2 name="sliders-regular" size={16} />}
-            endIcon={<IconV2 name="caret-down-solid" size={12} />}
+            size="medium"
+            onClick={onGoUp}
           />
         )}
-        {onExportOpen && (
+      </div>
+
+      {/* Right: Filter and Export */}
+      <div className="org-chart-right-controls">
+        {/* Filter Button */}
+        <div ref={filterRef} className="org-chart-action-wrapper">
           <Button
             variant="outlined"
             color="secondary"
-            onClick={onExportOpen}
+            size="medium"
+            startIcon={<IconV2 name="sliders-solid" size={16} />}
+            endIcon={<IconV2 name="caret-down-solid" size={10} />}
+            onClick={() => { setFilterOpen(!filterOpen); setExportOpen(false); }}
+            aria-label="Filter"
+          >
+            {null}
+          </Button>
+
+          {filterOpen && (
+            <div className="org-chart-dropdown">
+              <div className="org-chart-dropdown__title">Show on Org Chart</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 8 }}>
+                {([
+                  { key: 'name' as const, label: 'Name' },
+                  { key: 'photo' as const, label: 'Photo' },
+                  { key: 'department' as const, label: 'Department' },
+                  { key: 'division' as const, label: 'Division' },
+                  { key: 'location' as const, label: 'Location' },
+                ]).map(({ key, label }) => (
+                  <Checkbox
+                    key={key}
+                    label={label}
+                    value={key}
+                    checked={filters[key]}
+                    onChange={() => handleFilterToggle(key)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Export Button */}
+        <div ref={exportRef} className="org-chart-action-wrapper">
+          <Button
+            variant="outlined"
+            color="secondary"
+            size="medium"
             startIcon={<IconV2 name="file-export-regular" size={16} />}
-            endIcon={<IconV2 name="caret-down-solid" size={12} />}
+            endIcon={<IconV2 name="caret-down-solid" size={10} />}
+            onClick={() => { setExportOpen(!exportOpen); setFilterOpen(false); }}
           >
             Export
           </Button>
-        )}
+
+          {exportOpen && (
+            <div className="org-chart-dropdown">
+              <div className="org-chart-dropdown__title">Download Org Chart</div>
+              <div className="org-chart-dropdown__desc">
+                Download a stylized version of the org chart in SVG or PNG format.
+              </div>
+              <div className="org-chart-dropdown__divider" />
+              <div className="org-chart-dropdown__section-label">Download as .csv to import to</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <TextButton onClick={() => setExportOpen(false)}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <IconV2 name="file-lines-regular" size={16} color="neutral-medium" />
+                    Lockchart
+                  </span>
+                </TextButton>
+                <TextButton onClick={() => setExportOpen(false)}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <IconV2 name="file-csv-solid" size={16} color="neutral-medium" />
+                    Unformatted CSV
+                  </span>
+                </TextButton>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

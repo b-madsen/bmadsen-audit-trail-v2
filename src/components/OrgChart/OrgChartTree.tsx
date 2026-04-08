@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useRef, useEffect } from 'react';
+import { IconV2, BodyText } from '@bamboohr/fabric';
 import type { Employee } from '../../data/employees';
-import { IconV2 } from '@bamboohr/fabric';
 import { OrgChartNode } from './OrgChartNode';
 import { buildVisibleTree, calculateTreeLayout } from '../../utils/orgChartLayout';
 import type { TreeNode } from '../../utils/orgChartLayout';
@@ -54,13 +54,12 @@ export function OrgChartTree({
 
   // Handle mouse down for panning
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (e.button === 0) { // Left click
+    if (e.button === 0) {
       setIsDragging(true);
       setDragStart({ x: e.clientX - panX, y: e.clientY - panY });
     }
   };
 
-  // Handle mouse move for panning
   const handleMouseMove = (e: React.MouseEvent) => {
     if (isDragging) {
       const newX = e.clientX - dragStart.x;
@@ -69,12 +68,10 @@ export function OrgChartTree({
     }
   };
 
-  // Handle mouse up
   const handleMouseUp = () => {
     setIsDragging(false);
   };
 
-  // Handle mouse leave
   const handleMouseLeave = () => {
     setIsDragging(false);
   };
@@ -88,16 +85,13 @@ export function OrgChartTree({
     const delta = e.deltaY > 0 ? -0.1 : 0.1;
     const newZoom = Math.max(0.5, Math.min(2, zoomLevel + delta));
 
-    // Get mouse position relative to container
     const rect = containerRef.current.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
 
-    // Calculate the point in world coordinates before zoom
     const worldX = (mouseX - panX) / zoomLevel;
     const worldY = (mouseY - panY) / zoomLevel;
 
-    // Calculate new pan to keep the world point under the mouse
     const newPanX = mouseX - worldX * newZoom;
     const newPanY = mouseY - worldY * newZoom;
 
@@ -105,7 +99,6 @@ export function OrgChartTree({
     onPanChange?.(newPanX, newPanY);
   };
 
-  // Update cursor based on dragging state
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.style.cursor = isDragging ? 'grabbing' : 'grab';
@@ -113,41 +106,68 @@ export function OrgChartTree({
   }, [isDragging]);
 
   // Render connecting lines between nodes
-  const renderConnections = (_nodes: TreeNode[]) => {
+  // Pattern: vertical drop from parent -> horizontal bar across children -> vertical rise to each child
+  const renderConnections = () => {
     const lines: React.JSX.Element[] = [];
-
-    // Detect dark mode
-    const isDarkMode = typeof window !== 'undefined' &&
-      document.documentElement.classList.contains('dark');
-    const lineColor = isDarkMode ? '#737373' : '#cbd5e1'; // neutral-500 for dark, slate-200 for light
+    const lineColor = 'var(--fabric-border-color-neutral-weak)';
 
     const processNode = (node: TreeNode) => {
-      // Only draw connections to children if this node is expanded
       if (!expandedNodes.has(node.employee.id)) {
         return;
       }
 
-      node.children.forEach((child) => {
-        // Line from parent bottom to child top
-        const parentX = node.x;
-        const parentY = node.y + 185; // NODE_HEIGHT (total card + avatar height)
-        const childX = child.x;
-        const childY = child.y;
+      const children = node.children;
+      if (children.length === 0) return;
 
-        // Create path: vertical down from parent, then horizontal, then vertical down to child
-        const midY = (parentY + childY) / 2;
+      const parentCenterX = node.x;
+      const parentBottomY = node.y + 185; // NODE_HEIGHT from layout
+      const midY = (parentBottomY + children[0].y) / 2;
 
+      // 1. Vertical line from parent bottom center down to midpoint
+      lines.push(
+        <line
+          key={`drop-${node.employee.id}`}
+          x1={parentCenterX}
+          y1={parentBottomY}
+          x2={parentCenterX}
+          y2={midY}
+          stroke={lineColor}
+          strokeWidth="1"
+        />
+      );
+
+      // 2. Horizontal bar spanning from leftmost to rightmost child at midpoint
+      if (children.length > 1) {
+        const leftX = Math.min(...children.map(c => c.x));
+        const rightX = Math.max(...children.map(c => c.x));
         lines.push(
-          <path
-            key={`${node.employee.id}-${child.employee.id}`}
-            d={`M ${parentX} ${parentY} L ${parentX} ${midY} L ${childX} ${midY} L ${childX} ${childY}`}
+          <line
+            key={`bar-${node.employee.id}`}
+            x1={leftX}
+            y1={midY}
+            x2={rightX}
+            y2={midY}
             stroke={lineColor}
             strokeWidth="1"
-            fill="none"
+          />
+        );
+      }
+
+      // 3. Vertical line from midpoint down to each child's top center
+      children.forEach((child) => {
+        lines.push(
+          <line
+            key={`rise-${child.employee.id}`}
+            x1={child.x}
+            y1={midY}
+            x2={child.x}
+            y2={child.y}
+            stroke={lineColor}
+            strokeWidth="1"
           />
         );
 
-        // Recursively process this child's connections
+        // Recurse into children
         processNode(child);
       });
     };
@@ -174,14 +194,16 @@ export function OrgChartTree({
 
   const visibleNodes = layout.root ? flattenNodes(layout.root) : [];
 
-  // Calculate view dimensions
   const viewWidth = Math.max(layout.width, 800);
   const viewHeight = Math.max(layout.height, 600);
 
   if (!layout.root) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
-        <IconV2 name="users-regular" size={40} color="neutral-weak" />
+      <div className="org-chart-tree-empty">
+        <div className="org-chart-tree-empty-content">
+          <IconV2 name="users-solid" size={32} color="neutral-medium" />
+          <BodyText color="neutral-weak">No org chart data available</BodyText>
+        </div>
       </div>
     );
   }
@@ -189,46 +211,36 @@ export function OrgChartTree({
   return (
     <div
       ref={containerRef}
+      className={`org-chart-tree ${isDragging ? 'org-chart-tree--dragging' : ''}`}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
       onWheel={handleWheel}
-      style={{
-        width: '100%',
-        height: '100%',
-        overflow: 'hidden',
-        position: 'relative',
-        cursor: isDragging ? 'grabbing' : 'grab',
-      }}
     >
       <div
+        className={`org-chart-tree-transform ${!isDragging ? 'org-chart-tree-transform--smooth' : ''}`}
         style={{
           position: 'absolute',
           transform: `translate(${panX}px, ${panY}px) scale(${zoomLevel})`,
-          transformOrigin: '0 0',
-          transition: isDragging ? 'none' : 'transform 0.15s ease-out',
         }}
       >
-        {/* SVG connecting lines */}
         <svg
           width={viewWidth}
           height={viewHeight}
-          style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}
+          className="org-chart-tree-svg"
         >
-          {renderConnections(visibleNodes)}
+          {renderConnections()}
         </svg>
 
-        {/* Nodes */}
-        <div style={{ position: 'relative', width: viewWidth, height: viewHeight }}>
+        <div className="org-chart-tree-nodes" style={{ width: viewWidth, height: viewHeight }}>
           {visibleNodes.map((node) => (
             <div
               key={node.employee.id}
+              className="org-chart-tree-node"
               style={{
-                position: 'absolute',
                 left: node.x - 92.5,
                 top: node.y,
-                pointerEvents: 'auto',
               }}
             >
               <OrgChartNode
@@ -236,7 +248,7 @@ export function OrgChartTree({
                 isSelected={selectedEmployee === node.employee.id}
                 isFocused={focusedEmployee === node.employee.id}
                 onPinClick={onNodePin}
-                onExpandClick={onNodeExpand}
+                onExpandClick={(id) => onNodeExpand?.(id)}
                 onNodeClick={onNodeSelect}
                 showPhoto={showPhotos}
                 compact={compact}

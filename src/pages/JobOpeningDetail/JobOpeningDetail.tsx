@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { IconV2, Headline, BodyText } from '@bamboohr/fabric';
+import { IconV2, BodyText, PageHeaderV2 } from '@bamboohr/fabric';
 import { Button, Avatar, StarRating } from '../../components';
 import { jobOpenings } from '../../data/jobOpenings';
 import { jobCandidates } from '../../data/jobCandidates';
@@ -28,28 +28,26 @@ export function JobOpeningDetail() {
     <div className="job-detail-page">
       {/* Back link and title */}
       <div className="job-detail-header">
-        <button onClick={() => navigate('/hiring')} className="job-detail-back">
-          <IconV2 name="chevron-left-solid" size={16} color="neutral-strong" />
-          Job Openings
-        </button>
-
-        <div className="job-detail-title-row">
-          <Headline size="large">{job.title}</Headline>
-
-          {nextJob && (
-            <button onClick={() => navigate(`/hiring/job/${nextJob.id}`)} className="job-detail-next-button">
-              <div className="job-detail-next-info">
-                <div className="job-detail-next-title">{nextJob.title}</div>
-                <div>{nextJob.location}</div>
-              </div>
-              <IconV2 name="chevron-right-solid" size={16} color="neutral-strong" />
-            </button>
-          )}
-        </div>
-
-        <p className="job-detail-subtitle">
-          Engineering – {job.location}
-        </p>
+        <PageHeaderV2
+          title={job.title}
+          subtitle={`Engineering – ${job.location}`}
+          breadcrumb={
+            <PageHeaderV2.Breadcrumb href="/hiring" onClick={(e: React.MouseEvent) => { e.preventDefault(); navigate('/hiring'); }}>
+              Job Openings
+            </PageHeaderV2.Breadcrumb>
+          }
+          primaryContent={
+            nextJob ? (
+              <button onClick={() => navigate(`/hiring/job/${nextJob.id}`)} className="job-detail-next-button">
+                <div className="job-detail-next-info">
+                  <div className="job-detail-next-title">{nextJob.title}</div>
+                  <div>{nextJob.location}</div>
+                </div>
+                <IconV2 name="chevron-right-solid" size={16} color="neutral-strong" />
+              </button>
+            ) : undefined
+          }
+        />
       </div>
 
       {/* Action bar */}

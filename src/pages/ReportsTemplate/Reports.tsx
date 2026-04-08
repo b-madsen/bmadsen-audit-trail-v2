@@ -1,53 +1,63 @@
-import { IconV2, Headline } from '@bamboohr/fabric';
-import { TextArea } from '../../components';
-import { insights, recentReports, suggestionQuestions } from '../../data/analytics';
+import { useState } from 'react';
+import { IconV2, PageHeaderV2, Button, SideNavigation } from '@bamboohr/fabric';
+import { insights, recentReports } from '../../data/analytics';
 import './Reports.css';
 
+const reportsNavItems = [
+  { id: 'my-reports', label: 'My Reports', icon: 'chart-pie-simple' },
+  { id: 'company-reports', label: 'Company Reports', icon: 'building' },
+  { id: 'payroll-reports', label: 'Payroll Reports', icon: 'circle-dollar' },
+  { id: 'benefits-reports', label: 'Benefits Reports', icon: 'heart-pulse' },
+  { id: 'time-off-reports', label: 'Time Off Reports', icon: 'clock' },
+  { id: 'performance-reports', label: 'Performance Reports', icon: 'chart-line' },
+  { id: 'hiring-reports', label: 'Hiring Reports', icon: 'id-badge' },
+];
+
 export function Reports() {
+  const [activeNav, setActiveNav] = useState('my-reports');
+
   return (
-    <div className="reports-page reports-page--no-sidebar">
+    <div className="reports-page">
       {/* Header */}
-      <div className="reports-header">
-        <Headline size="large" color="primary">Analytics</Headline>
-        <div className="reports-header-actions">
-          {/* Search */}
-          <div className="reports-search">
-            <IconV2 name="magnifying-glass-solid" size={16} color="neutral-strong" />
-            <input
-              type="text"
-              placeholder="Search reports..."
-              className="reports-search-input"
-            />
-          </div>
-          {/* New Button */}
-          <button className="reports-new-button">
-            <span className="reports-new-button-plus">+</span>
-            <span>New</span>
-            <IconV2 name="chevron-down-solid" size={12} />
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content - Full Width */}
-      <div className="reports-main">
-          {/* Ask a Question Section */}
-          <div className="reports-ask-section">
-            <div className="reports-ask-card">
-              <div className="reports-ask-input">
-                <TextArea placeholder="Ask a question about your data..." />
-              </div>
-
-              {/* Suggestion Questions */}
-              <div className="reports-suggestions">
-                {suggestionQuestions.map((question, index) => (
-                  <button key={index} className="reports-suggestion-button">
-                    {question}
-                  </button>
-                ))}
-              </div>
+      <PageHeaderV2
+        title="Reports"
+        primaryContent={
+          <div className="reports-header-actions">
+            <div className="reports-search">
+              <IconV2 name="magnifying-glass-solid" size={16} color="neutral-strong" />
+              <input
+                type="text"
+                placeholder="Search reports..."
+                className="reports-search-input"
+              />
             </div>
+            <Button variant="contained" color="primary" endIcon={<IconV2 name="chevron-down-solid" size={12} />}>New</Button>
           </div>
+        }
+      />
 
+      <div className="reports-layout">
+        {/* Sidebar */}
+        <SideNavigation
+          ariaLabel="Reports navigation"
+          items={reportsNavItems.map((item) => {
+            const isActive = item.id === activeNav;
+            return (
+              <SideNavigation.Link
+                key={item.id}
+                active={isActive}
+                icon={`${item.icon}-regular` as any}
+                activeIcon={`${item.icon}-solid` as any}
+                onClick={() => setActiveNav(item.id)}
+              >
+                {item.label}
+              </SideNavigation.Link>
+            );
+          })}
+        />
+
+        {/* Main Content */}
+        <div className="reports-main">
           {/* Insights Section */}
           <div className="reports-section">
             <div className="reports-section-header">
@@ -141,6 +151,7 @@ export function Reports() {
             </div>
           </div>
         </div>
+      </div>
     </div>
   );
 }

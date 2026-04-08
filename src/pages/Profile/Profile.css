@@ -40,7 +40,7 @@
 
 /* PageCapsule padding to match other pages */
 .ee-profile-scrollable > [data-fabric-component="PageCapsule"] {
-  padding: 24px 32px 0 32px;
+  padding: 32px;
   margin-bottom: 24px;
   border-radius: 20px 20px 0 0;
 }

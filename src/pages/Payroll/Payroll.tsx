@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { IconV2, Headline } from '@bamboohr/fabric';
+import { useNavigate } from 'react-router-dom';
+import { IconV2, PageHeaderV2, Button } from '@bamboohr/fabric';
 import {
   payrollDates,
   payrollStats,
@@ -18,6 +19,7 @@ const MIN_GAP = 20;
 const BUTTON_WIDTH = 40;
 
 export function Payroll() {
+  const navigate = useNavigate();
   const [reminders, setReminders] = useState<Reminder[]>(initialReminders);
   const [visibleCardCount, setVisibleCardCount] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -52,18 +54,15 @@ export function Payroll() {
   return (
     <div className="payroll-page">
       {/* Header */}
-      <div className="payroll-header">
-        <Headline size="large" color="primary">Payroll</Headline>
-        <div className="payroll-header-actions">
-          <button className="payroll-button payroll-button--secondary">
-            Open TRAXPayroll
-          </button>
-          <button className="payroll-button payroll-button--outlined">
-            <span>+</span>
-            New off-cycle payroll
-          </button>
-        </div>
-      </div>
+      <PageHeaderV2
+        title="Payroll"
+        primaryContent={
+          <div className="payroll-header-actions">
+            <Button variant="outlined" color="secondary">Open TRAXPayroll</Button>
+            <Button variant="outlined" color="primary" startIcon={<IconV2 name="circle-plus-regular" size={16} />}>New off-cycle payroll</Button>
+          </div>
+        }
+      />
 
       {/* Date Selector */}
       <div className="payroll-dates" ref={containerRef}>
@@ -131,7 +130,7 @@ export function Payroll() {
             {/* Reminders Section */}
             <div className="payroll-reminders">
               <div className="payroll-section-header">
-                <IconV2 name="gear-solid" size={20} color="primary-strong" />
+                <IconV2 name="alarm-clock-solid" size={20} color="primary-strong" />
                 <h3 className="payroll-section-title">Reminders</h3>
               </div>
               <div className="payroll-reminders-list">
@@ -170,7 +169,7 @@ export function Payroll() {
         {/* Right Sidebar */}
         <div className="payroll-sidebar">
           <div className="payroll-sidebar-card">
-            <button className="payroll-button payroll-button--primary">
+            <button className="payroll-button payroll-button--primary" onClick={() => navigate('/payroll/1')}>
               Start payroll
             </button>
             <p className="payroll-due-date">

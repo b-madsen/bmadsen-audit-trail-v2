@@ -34,7 +34,7 @@
 /* Scrollable PageCapsule with padding to match other pages */
 .report-main > [data-fabric-component="PageCapsule"] {
   flex: 1;
-  padding: 24px 32px 0 32px;
+  padding: 32px;
   margin-bottom: 24px;
   overflow-y: auto;
   border-radius: 20px 20px 0 0;

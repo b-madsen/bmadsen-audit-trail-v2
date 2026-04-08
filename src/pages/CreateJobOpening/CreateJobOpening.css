@@ -1,7 +1,7 @@
 .create-job-page {
   display: flex;
   flex-direction: column;
-  padding: 40px;
+  padding: 0;
   min-height: 100vh;
 }
 

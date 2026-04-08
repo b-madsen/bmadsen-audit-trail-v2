@@ -19,15 +19,7 @@ export function OrgChartZoom({
   const canZoomOut = zoomLevel > minZoom;
 
   return (
-    <div style={{
-      position: 'absolute',
-      right: 24,
-      top: 24,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 8,
-      zIndex: 10,
-    }}>
+    <div className="org-chart-zoom">
       <IconButton
         icon="magnifying-glass-plus-regular"
         aria-label="Zoom in"

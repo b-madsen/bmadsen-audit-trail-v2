@@ -56,7 +56,7 @@
   flex: 1 !important;
   min-height: 0 !important;
   overflow-y: auto !important;
-  padding: 12px 32px 32px 32px;
+  padding: 32px;
   margin: 0 0 24px 0;
   border-radius: 20px !important;
 }
@@ -66,23 +66,28 @@
   box-shadow: none !important;
 }
 
-/* Header nav icons — GlobalNavigation.FooterItem in idle/white state */
+/* Header nav icons */
 .app-header-nav-icons {
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: 4px;
 }
-.app-header-nav-icons li {
-  list-style: none;
+
+.header-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: var(--radius-small);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
-.app-header-nav-icons * {
-  background: transparent !important;
-  background-color: transparent !important;
-}
-.app-header-nav-icons button:hover,
-.app-header-nav-icons button:hover * {
-  background: var(--surface-neutral-xx-weak) !important;
-  background-color: var(--surface-neutral-xx-weak) !important;
+
+.header-icon-btn:hover {
+  background-color: var(--surface-neutral-xx-weak);
 }
 
 /* Header Ask button — force primary green outlined style */
@@ -118,7 +123,7 @@
 
 .app-minimal > [data-fabric-component="PageCapsule"] {
   flex: 1;
-  padding: 24px 32px;
+  padding: 32px;
 }
 
 /* ============================================

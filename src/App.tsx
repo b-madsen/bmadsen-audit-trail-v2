@@ -1,5 +1,5 @@
 import { useState, Suspense, lazy } from 'react';
-import { Routes, Route, Link, Link as RouterLink, useLocation } from 'react-router-dom';
+import { Routes, Route, Link, Link as RouterLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
   BodyText,
   Headline,
@@ -22,28 +22,58 @@ const Hiring = lazy(() => import('./pages/Hiring/Hiring'));
 const InboxTest = lazy(() => import('./pages/InboxTest/InboxTest'));
 const MyInfo = lazy(() => import('./pages/MyInfo/MyInfo'));
 const Payroll = lazy(() => import('./pages/Payroll/Payroll'));
+const PayrollDetail = lazy(() => import('./pages/PayrollDetail/PayrollDetail'));
 const People = lazy(() => import('./pages/People/People'));
 const Profile = lazy(() => import('./pages/Profile/Profile'));
 const ReportsTemplate = lazy(() => import('./pages/ReportsTemplate/Reports'));
 const Settings = lazy(() => import('./pages/Settings/Settings'));
 
+// Additional pages
+const Chat = lazy(() => import('./pages/Chat/Chat'));
+const CreateJobOpening = lazy(() => import('./pages/CreateJobOpening/CreateJobOpening'));
+const HeadcountReport = lazy(() => import('./pages/HeadcountReport/HeadcountReport'));
 const HomeTemplate = lazy(() => import('./pages/HomeTemplate/Home'));
-
-// Pages requiring additional dependencies (commented out until deps resolved)
-// const Chat = lazy(() => import('./pages/Chat/Chat'));
-// const CreateJobOpening = lazy(() => import('./pages/CreateJobOpening/CreateJobOpening'));
-// const HeadcountReport = lazy(() => import('./pages/HeadcountReport/HeadcountReport'));
-// const HRManagerHome = lazy(() => import('./pages/HRManagerHome/HRManagerHome'));
-// const JobOpeningDetail = lazy(() => import('./pages/JobOpeningDetail/JobOpeningDetail'));
-// const NewEmployeePage = lazy(() => import('./pages/NewEmployeePage/NewEmployeePage'));
+const HRManagerHome = lazy(() => import('./pages/HRManagerHome/HRManagerHome'));
+const JobOpeningDetail = lazy(() => import('./pages/JobOpeningDetail/JobOpeningDetail'));
+const NewEmployeePage = lazy(() => import('./pages/NewEmployeePage/NewEmployeePage'));
 
 // Prototype Index Page
 function PrototypeIndex() {
   const prototypes = [
     {
+      name: 'Home Template',
+      path: '/home',
+      description: 'Dashboard with Gridlets, stats cards, and activity feed',
+      status: 'ready'
+    },
+    {
+      name: 'HR Manager Home',
+      path: '/hr-home',
+      description: 'HR manager dashboard with insights and quick actions',
+      status: 'ready'
+    },
+    {
+      name: 'Chat / AI Assistant',
+      path: '/chat',
+      description: 'AI-powered chat assistant interface',
+      status: 'ready'
+    },
+    {
+      name: 'Create Job Opening',
+      path: '/hiring/create-job',
+      description: 'Wizard flow for creating new job openings',
+      status: 'ready'
+    },
+    {
       name: 'Files',
       path: '/files',
       description: 'File management with sidebar navigation and categories',
+      status: 'ready'
+    },
+    {
+      name: 'Headcount Report',
+      path: '/reports/headcount',
+      description: 'Headcount analytics and reporting dashboard',
       status: 'ready'
     },
     {
@@ -68,6 +98,12 @@ function PrototypeIndex() {
       name: 'Navigation Option A',
       path: '/navigation-option-a',
       description: 'File browser with PageHeader, breadcrumbs, and sortable file list',
+      status: 'ready'
+    },
+    {
+      name: 'New Employee',
+      path: '/new-employee',
+      description: 'New employee onboarding checklist and tasks',
       status: 'ready'
     },
     {
@@ -173,11 +209,12 @@ function PageLoader() {
 function FullLayout({ children, noCapsule }: { children: React.ReactNode; noCapsule?: boolean }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const p = location.pathname;
 
   const isFilesActive = p === '/files' || p.startsWith('/files/');
-  const isPeopleActive = p === '/people' || p.startsWith('/people/');
-  const isHiringActive = p === '/hiring' || p === '/candidates' || p === '/talent-pools';
+  const isPeopleActive = p === '/people' || p.startsWith('/people/') || p === '/new-employee';
+  const isHiringActive = p === '/hiring' || p.startsWith('/hiring/') || p === '/candidates' || p === '/talent-pools';
   const isReportsActive = p === '/reports' || p.startsWith('/reports/');
 
   return (
@@ -191,13 +228,13 @@ function FullLayout({ children, noCapsule }: { children: React.ReactNode; noCaps
           </GlobalNavigation.FooterItem>,
         ]}
         links={[
-          <GlobalNavigation.Link key="home" active={p === '/'} icon="house-regular" activeIcon="house-solid" label="Home" component={RouterLink} to="/" />,
+          <GlobalNavigation.Link key="home" active={p === '/home' || p === '/hr-home'} icon="house-regular" activeIcon="house-solid" label="Home" component={RouterLink} to="/home" />,
           <GlobalNavigation.Link key="my-info" active={p === '/my-info'} icon="circle-user-regular" activeIcon="circle-user-solid" label="My Info" component={RouterLink} to="/my-info" />,
           <GlobalNavigation.Link key="people" active={isPeopleActive} icon="user-group-regular" activeIcon="user-group-solid" label="People" component={RouterLink} to="/people" />,
           <GlobalNavigation.Link key="hiring" active={isHiringActive} icon="id-badge-regular" activeIcon="id-badge-solid" label="Hiring" component={RouterLink} to="/hiring" />,
           <GlobalNavigation.Link key="reports" active={isReportsActive} icon="chart-pie-simple-regular" activeIcon="chart-pie-simple-solid" label="Reports" component={RouterLink} to="/reports" />,
           <GlobalNavigation.Link key="files" active={isFilesActive} icon="file-lines-solid" activeIcon="file-lines-solid" label="Files" component={RouterLink} to="/files" />,
-          <GlobalNavigation.Link key="payroll" active={p === '/payroll'} icon="circle-dollar-regular" activeIcon="circle-dollar-solid" label="Payroll" component={RouterLink} to="/payroll" />,
+          <GlobalNavigation.Link key="payroll" active={p === '/payroll' || p.startsWith('/payroll/')} icon="circle-dollar-regular" activeIcon="circle-dollar-solid" label="Payroll" component={RouterLink} to="/payroll" />,
           <GlobalNavigation.Link key="benefits" active={false} icon="heart-pulse-regular" activeIcon="heart-pulse-solid" label="Benefits" />,
           <GlobalNavigation.Link key="compensation" active={false} icon="money-bill-wave-regular" activeIcon="money-bill-wave-solid" label="Compensation" />,
         ]}
@@ -217,15 +254,15 @@ function FullLayout({ children, noCapsule }: { children: React.ReactNode; noCaps
           }
           actions={[
             <div key="nav-icons" className="app-header-nav-icons">
-              <GlobalNavigation.FooterItem ariaLabel="Inbox" component={RouterLink} to="/inbox">
-                <IconV2 name={p === '/inbox' ? 'inbox-solid' : 'inbox-regular'} size={20} />
-              </GlobalNavigation.FooterItem>
-              <GlobalNavigation.FooterItem ariaLabel="Help">
-                <IconV2 name="circle-question-regular" size={20} />
-              </GlobalNavigation.FooterItem>
-              <GlobalNavigation.FooterItem ariaLabel="Settings" component={RouterLink} to="/settings">
-                <IconV2 name={p === '/settings' ? 'gear-solid' : 'gear-regular'} size={20} />
-              </GlobalNavigation.FooterItem>
+              <button className="header-icon-btn" onClick={() => navigate('/inbox')} aria-label="Inbox">
+                <IconV2 name={p === '/inbox' ? 'inbox-solid' : 'inbox-regular'} size={20} color="neutral-extra-strong" />
+              </button>
+              <button className="header-icon-btn" aria-label="Help">
+                <IconV2 name="circle-question-regular" size={20} color="neutral-extra-strong" />
+              </button>
+              <button className="header-icon-btn" onClick={() => navigate('/settings/account')} aria-label="Settings">
+                <IconV2 name="gear-regular" size={20} color="neutral-extra-strong" />
+              </button>
             </div>,
             <Button key="ask" className="header-ask-btn" variant="outlined" color="primary" startIcon={<IconV2 name="sparkles-solid" size={16} />}>
               Ask
@@ -247,7 +284,7 @@ function App() {
     <DatePickerProvider>
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        <Route path="/" element={<FullLayout><HomeTemplate /></FullLayout>} />
+        <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/index" element={<FullLayout><PrototypeIndex /></FullLayout>} />
         <Route path="/navigation-option-a" element={<FullLayout><NavigationOptionA /></FullLayout>} />
         {/* Files routes - each category has its own route */}
@@ -262,6 +299,7 @@ function App() {
         <Route path="/inbox" element={<FullLayout><InboxTest /></FullLayout>} />
         <Route path="/my-info" element={<FullLayout><MyInfo /></FullLayout>} />
         <Route path="/payroll" element={<FullLayout><Payroll /></FullLayout>} />
+        <Route path="/payroll/:id" element={<FullLayout><PayrollDetail /></FullLayout>} />
         <Route path="/people" element={<FullLayout><People /></FullLayout>} />
         <Route path="/people/directory" element={<FullLayout><People defaultTab="directory" /></FullLayout>} />
         <Route path="/people/org-chart" element={<FullLayout><People defaultTab="orgChart" /></FullLayout>} />
@@ -276,6 +314,31 @@ function App() {
         <Route path="/settings/approval" element={<FullLayout><Settings section="approval" /></FullLayout>} />
         <Route path="/settings/email-templates" element={<FullLayout><Settings section="email-templates" /></FullLayout>} />
         <Route path="/settings/apps" element={<FullLayout><Settings section="apps" /></FullLayout>} />
+        <Route path="/settings/company-ownership" element={<FullLayout><Settings section="company-ownership" /></FullLayout>} />
+        <Route path="/settings/benefits" element={<FullLayout><Settings section="benefits" /></FullLayout>} />
+        <Route path="/settings/company-directory" element={<FullLayout><Settings section="company-directory" /></FullLayout>} />
+        <Route path="/settings/custom-fields" element={<FullLayout><Settings section="custom-fields" /></FullLayout>} />
+        <Route path="/settings/email-alerts" element={<FullLayout><Settings section="email-alerts" /></FullLayout>} />
+        <Route path="/settings/employee-satisfaction" element={<FullLayout><Settings section="employee-satisfaction" /></FullLayout>} />
+        <Route path="/settings/employee-wellbeing" element={<FullLayout><Settings section="employee-wellbeing" /></FullLayout>} />
+        <Route path="/settings/hiring" element={<FullLayout><Settings section="hiring" /></FullLayout>} />
+        <Route path="/settings/holidays" element={<FullLayout><Settings section="holidays" /></FullLayout>} />
+        <Route path="/settings/logo-color" element={<FullLayout><Settings section="logo-color" /></FullLayout>} />
+        <Route path="/settings/offboarding" element={<FullLayout><Settings section="offboarding" /></FullLayout>} />
+        <Route path="/settings/onboarding" element={<FullLayout><Settings section="onboarding" /></FullLayout>} />
+        <Route path="/settings/payroll" element={<FullLayout><Settings section="payroll" /></FullLayout>} />
+        <Route path="/settings/performance" element={<FullLayout><Settings section="performance" /></FullLayout>} />
+        <Route path="/settings/time-off" element={<FullLayout><Settings section="time-off" /></FullLayout>} />
+        <Route path="/settings/time-tracking" element={<FullLayout><Settings section="time-tracking" /></FullLayout>} />
+        <Route path="/settings/training" element={<FullLayout><Settings section="training" /></FullLayout>} />
+        {/* Additional pages */}
+        <Route path="/home" element={<FullLayout><HomeTemplate /></FullLayout>} />
+        <Route path="/hr-home" element={<FullLayout><HRManagerHome /></FullLayout>} />
+        <Route path="/chat" element={<FullLayout><Chat /></FullLayout>} />
+        <Route path="/hiring/create-job" element={<FullLayout><CreateJobOpening /></FullLayout>} />
+        <Route path="/hiring/job/:id" element={<FullLayout><JobOpeningDetail /></FullLayout>} />
+        <Route path="/new-employee" element={<FullLayout><NewEmployeePage /></FullLayout>} />
+        <Route path="/reports/headcount" element={<FullLayout><HeadcountReport /></FullLayout>} />
       </Routes>
     </Suspense>
     </DatePickerProvider>
