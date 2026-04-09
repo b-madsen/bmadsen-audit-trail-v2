@@ -1,4 +1,5 @@
 import { useState, Suspense, lazy } from 'react';
+import { AskPanel } from './components/AskPanel/AskPanel';
 import { Routes, Route, Link, Link as RouterLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
   BodyText,
@@ -210,6 +211,8 @@ function PageLoader() {
 // Full Layout with Fabric GlobalNavigation + Header
 function FullLayout({ children, noCapsule }: { children: React.ReactNode; noCapsule?: boolean }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [isAskOpen, setIsAskOpen] = useState(false);
+  const [isAskExpanded, setIsAskExpanded] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const p = location.pathname;
@@ -267,17 +270,29 @@ function FullLayout({ children, noCapsule }: { children: React.ReactNode; noCaps
                   <IconV2 name="gear-regular" size={20} color="neutral-extra-strong" />
                 </button>
               </div>,
-              <Button key="ask" className="header-ask-btn" variant="outlined" color="primary" startIcon={<IconV2 name="sparkles-solid" size={16} />}>
+              <Button key="ask" className="header-ask-btn" variant="outlined" color="primary" startIcon={<img src="/assets/images/ask-icon.svg" alt="" width={16} height={16} />} onClick={() => setIsAskOpen(prev => !prev)}>
                 Ask
               </Button>,
             ]}
           />
         </div>
-        {noCapsule ? (
-          <div className="app-direct-content">{children}</div>
-        ) : (
-          <PageCapsule>{children}</PageCapsule>
-        )}
+        <div className="app-content-area">
+          {noCapsule ? (
+            <div className="app-direct-content">{children}</div>
+          ) : (
+            <PageCapsule>{children}</PageCapsule>
+          )}
+          {isAskOpen && (
+            <div className="ask-panel-wrapper">
+              <AskPanel
+                isOpen={isAskOpen}
+                onClose={() => { setIsAskOpen(false); setIsAskExpanded(false); }}
+                isExpanded={isAskExpanded}
+                onExpandChange={setIsAskExpanded}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -59,14 +59,38 @@
 }
 
 
+/* Horizontal container: PageCapsule + Ask panel side by side */
+.app-content-area {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  gap: 16px;
+  overflow: hidden;
+  padding-bottom: 24px;
+}
+
 /* Page content - fills remaining viewport height; content scrolls inside */
-.app-main > [data-fabric-component="PageCapsule"] {
+.app-content-area > [data-fabric-component="PageCapsule"] {
   flex: 1 !important;
   min-height: 0 !important;
   overflow-y: auto !important;
   padding: 32px;
-  margin: 0 0 24px 0;
+  margin: 0;
   border-radius: 20px !important;
+}
+
+/* Ask panel wrapper — sits outside and to the right of PageCapsule */
+.ask-panel-wrapper {
+  width: 383px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  transition: width 700ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.ask-panel-wrapper--expanded {
+  width: 600px;
 }
 
 /* Power Edit — suppress ActionFooter's built-in top shadow */
@@ -185,9 +209,13 @@
     width: auto !important;
   }
 
-  .app-main > [data-fabric-component="PageCapsule"] {
+  .app-content-area > [data-fabric-component="PageCapsule"] {
     padding: 0;
     margin-bottom: 0;
+  }
+
+  .ask-panel-wrapper {
+    display: none;
   }
 }
 
@@ -196,7 +224,7 @@
    ============================================ */
 
 @media (max-width: 360px) {
-  .app-main > [data-fabric-component="PageCapsule"] {
+  .app-content-area > [data-fabric-component="PageCapsule"] {
     border-radius: 12px;
     margin-bottom: 12px;
   }
