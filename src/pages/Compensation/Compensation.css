@@ -1,0 +1,43 @@
+.compensation-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.compensation-tabs {
+  padding: 0 32px;
+  border-bottom: 1px solid var(--fabric-border-color-neutral-weak);
+  margin-bottom: 24px;
+}
+
+.compensation-tab-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.compensation-blank-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 64px 24px;
+  gap: 12px;
+}
+
+
+.compensation-blank-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.compensation-btn-primary {
+  color: var(--color-primary-strong) !important;
+  border-color: var(--color-primary-strong) !important;
+}
+.compensation-btn-primary svg,
+.compensation-btn-primary path {
+  color: var(--color-primary-strong) !important;
+  fill: var(--color-primary-strong) !important;
+}

@@ -30,6 +30,7 @@ const People = lazy(() => import('./pages/People/People'));
 const Profile = lazy(() => import('./pages/Profile/Profile'));
 const ReportsTemplate = lazy(() => import('./pages/ReportsTemplate/Reports'));
 const Settings = lazy(() => import('./pages/Settings/Settings'));
+const Compensation = lazy(() => import('./pages/Compensation/Compensation'));
 
 // Additional pages
 const Chat = lazy(() => import('./pages/Chat/Chat'));
@@ -241,7 +242,7 @@ function FullLayout({ children, noCapsule }: { children: React.ReactNode; noCaps
           <GlobalNavigation.Link key="files" active={isFilesActive} icon="file-lines-solid" activeIcon="file-lines-solid" label="Files" component={RouterLink} to="/files" />,
           <GlobalNavigation.Link key="payroll" active={p === '/payroll' || p.startsWith('/payroll/')} icon="circle-dollar-regular" activeIcon="circle-dollar-solid" label="Payroll" component={RouterLink} to="/payroll" />,
           <GlobalNavigation.Link key="benefits" active={false} icon="heart-pulse-regular" activeIcon="heart-pulse-solid" label="Benefits" />,
-          <GlobalNavigation.Link key="compensation" active={false} icon="money-bill-wave-regular" activeIcon="money-bill-wave-solid" label="Compensation" />,
+          <GlobalNavigation.Link key="compensation" active={p === '/compensation'} icon="money-bill-wave-regular" activeIcon="money-bill-wave-solid" label="Compensation" component={RouterLink} to="/compensation" />,
         ]}
       />
       <div className="app-main">
@@ -375,6 +376,7 @@ function App() {
         <Route path="/hiring/job/:id" element={<FullLayout><JobOpeningDetail /></FullLayout>} />
         <Route path="/new-employee" element={<FullLayout><NewEmployeePage /></FullLayout>} />
         <Route path="/reports/headcount" element={<FullLayout><HeadcountReport /></FullLayout>} />
+        <Route path="/compensation" element={<FullLayout><Compensation /></FullLayout>} />
       </Routes>
       </AppShell>
     </Suspense>
