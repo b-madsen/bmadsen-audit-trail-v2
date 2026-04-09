@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import {
   Section,
   IconV2,
+  IconButton,
   PageHeaderV2,
   BodyText,
   Checkbox,
@@ -12,11 +13,20 @@ import {
 import { getCategoryLabel, getFilesByCategory, fileCategories } from '../../data/files';
 import './Files.css';
 
-type SortOption = 'name-asc' | 'name-desc' | 'date-recent' | 'date-oldest';
+type SortOption = 'name-asc' | 'name-desc' | 'date-recent' | 'date-oldest' | 'size-largest' | 'size-smallest';
 
 interface FilesProps {
   category?: string;
 }
+
+const categoryIconMap: Record<string, { icon: string; activeIcon: string }> = {
+  'all': { icon: 'folders-regular', activeIcon: 'folders-solid' },
+  'signature-templates': { icon: 'file-signature-regular', activeIcon: 'file-signature-solid' },
+  'benefits-docs': { icon: 'folder-user-regular', activeIcon: 'folder-user-solid' },
+  'payroll': { icon: 'folder-user-regular', activeIcon: 'folder-user-solid' },
+  'trainings': { icon: 'folder-user-regular', activeIcon: 'folder-user-solid' },
+  'company-policies': { icon: 'folder-user-regular', activeIcon: 'folder-user-solid' },
+};
 
 export function Files({ category = 'all' }: FilesProps) {
   const [selectedFiles, setSelectedFiles] = useState<Set<number>>(new Set());
@@ -27,6 +37,8 @@ export function Files({ category = 'all' }: FilesProps) {
     { value: 'name-desc', label: 'Name: Z - A' },
     { value: 'date-recent', label: 'Date: Recent First' },
     { value: 'date-oldest', label: 'Date: Oldest First' },
+    { value: 'size-largest', label: 'Size: Largest First' },
+    { value: 'size-smallest', label: 'Size: Smallest First' },
   ];
 
   const filteredFiles = useMemo(() => getFilesByCategory(category), [category]);
@@ -38,6 +50,8 @@ export function Files({ category = 'all' }: FilesProps) {
       case 'name-desc': return sorted.sort((a, b) => b.name.localeCompare(a.name));
       case 'date-recent': return sorted.sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime());
       case 'date-oldest': return sorted.sort((a, b) => new Date(a.addedDate).getTime() - new Date(b.addedDate).getTime());
+      case 'size-largest': return sorted.sort((a, b) => b.sizeBytes - a.sizeBytes);
+      case 'size-smallest': return sorted.sort((a, b) => a.sizeBytes - b.sizeBytes);
       default: return sorted;
     }
   }, [sortBy, filteredFiles]);
@@ -60,11 +74,11 @@ export function Files({ category = 'all' }: FilesProps) {
   const getFileIcon = (type: string) => {
     switch (type) {
       case 'pdf':
-        return { name: 'file-lines-regular' as const, color: 'neutral-strong' as const };
+        return { name: 'file-lines-regular' as const, color: 'error-strong' as const };
       case 'image':
-        return { name: 'file-image-regular' as const, color: 'neutral-strong' as const };
+        return { name: 'file-image-regular' as const, color: 'info-strong' as const };
       case 'audio':
-        return { name: 'file-regular' as const, color: 'neutral-strong' as const };
+        return { name: 'file-waveform-regular' as const, color: 'discovery-strong' as const };
       default:
         return { name: 'file-regular' as const, color: 'neutral-strong' as const };
     }
@@ -73,34 +87,45 @@ export function Files({ category = 'all' }: FilesProps) {
   const navItems = [
     <SideNavigation.Link
       key="all"
-      // @ts-ignore – component prop enables React Router usage
       component={RouterLink}
       to="/files"
       active={category === 'all'}
-      icon={<IconV2 name="folders-regular" size={16} color="neutral-medium" />}
-      activeIcon={<IconV2 name="folders-solid" size={16} color="neutral-inverted" />}
+      icon={'cabinet-filing-regular' as any}
+      activeIcon={'cabinet-filing-solid' as any}
     >
       All Files
     </SideNavigation.Link>,
-    ...fileCategories.filter(c => c.id !== 'all').map(cat => (
-      <SideNavigation.Link
-        key={cat.id}
-        // @ts-ignore – component prop enables React Router usage
-        component={RouterLink}
-        to={`/files/${cat.id}`}
-        active={category === cat.id}
-        icon={<IconV2 name="folder-regular" size={16} color="neutral-medium" />}
-        activeIcon={<IconV2 name="folder-solid" size={16} color="neutral-inverted" />}
-      >
-        {cat.label}
-      </SideNavigation.Link>
-    )),
     <SideNavigation.Divider key="divider" />,
+    ...fileCategories.filter(c => c.id !== 'all').map(cat => {
+      const icons = categoryIconMap[cat.id] || { icon: 'folder-regular', activeIcon: 'folder-solid' };
+      return (
+        <SideNavigation.Link
+          key={cat.id}
+          component={RouterLink}
+          to={`/files/${cat.id}`}
+          active={category === cat.id}
+          icon={icons.icon as any}
+          activeIcon={icons.activeIcon as any}
+        >
+          {cat.label}
+        </SideNavigation.Link>
+      );
+    }),
   ];
 
   return (
     <div className="files-page">
-      <PageHeaderV2 title="Files" />
+      <PageHeaderV2
+        title="Files"
+        primaryContent={
+          <IconButton
+            icon="folder-plus-regular"
+            aria-label="New Folder"
+            variant="outlined"
+            color="secondary"
+          />
+        }
+      />
 
       <div className="files-layout">
         <SideNavigation items={navItems} />
@@ -111,22 +136,29 @@ export function Files({ category = 'all' }: FilesProps) {
               title={currentCategoryLabel}
               size="medium"
               actions={[
-                <SelectField
-                  key="sort"
-                  label="Sort by"
-                  labelPlacement="inline"
-                  size="small"
-                  variant="single"
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as SortOption)}
-                  width={10}
-                >
-                  {sortOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </SelectField>,
+                <div key="actions" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <SelectField
+                    label="Sort by"
+                    labelPlacement="inline"
+                    size="small"
+                    variant="single"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    width={7}
+                    items={sortOptions.map((option) => ({
+                      text: option.label,
+                      value: option.value,
+                    }))}
+                  />
+                  <IconButton
+                    icon="arrow-down-to-line-regular"
+                    aria-label="Download"
+                    variant="outlined"
+                    color="secondary"
+                    size="small"
+                    disabled
+                  />
+                </div>,
               ]}
             />
 

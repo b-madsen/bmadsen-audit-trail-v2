@@ -1,5 +1,5 @@
 import { useState, ChangeEvent } from 'react';
-import { IconV2, PageHeaderV2, Button, SideNavigation, Section, BodyText, Tabs, Tab } from '@bamboohr/fabric';
+import { IconV2, IconButton, PageHeaderV2, Button, SideNavigation, Section, BodyText, Tabs, Tab } from '@bamboohr/fabric';
 import { favoriteReports as initialFavorites, recentReports, standardReportGroups } from '../../data/analytics';
 import './Reports.css';
 
@@ -44,7 +44,13 @@ export function Reports() {
                 className="reports-search-input"
               />
             </div>
-            <Button variant="contained" color="primary" endIcon={<IconV2 name="chevron-down-solid" size={12} />}>New</Button>
+            <Button variant="outlined" startIcon={<IconV2 name="circle-plus-solid" size={16} />}>New Report</Button>
+            <IconButton
+              icon="folder-plus-regular"
+              aria-label="New Folder"
+              variant="outlined"
+              color="secondary"
+            />
           </div>
         }
       />
