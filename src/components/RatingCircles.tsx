@@ -1,26 +1,29 @@
 interface RatingCirclesProps {
-  selectedRating: number; // 1-5
-  className?: string;
+  selectedRating: number; // 1–5
 }
 
-export function RatingCircles({ selectedRating, className = '' }: RatingCirclesProps) {
-  const ratings = [1, 2, 3, 4, 5];
-
+export function RatingCircles({ selectedRating }: RatingCirclesProps) {
   return (
-    <div className={`flex items-center gap-[9px] ${className}`}>
-      {ratings.map((rating) => {
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '8px 0' }}>
+      {[1, 2, 3, 4, 5].map((rating) => {
         const isSelected = rating === selectedRating;
         return (
           <div
             key={rating}
-            className={`
-              w-7 h-7 rounded-full flex items-center justify-center text-[14px] leading-[20px]
-              ${
-                isSelected
-                  ? 'bg-[var(--color-primary-strong)] text-white'
-                  : 'bg-white border border-[var(--border-neutral-medium)] text-[var(--text-neutral-medium)]'
-              }
-            `}
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 14,
+              lineHeight: '20px',
+              flexShrink: 0,
+              background: isSelected ? 'var(--color-primary-strong)' : 'white',
+              border: isSelected ? 'none' : '1px solid var(--color-border-neutral-medium)',
+              color: isSelected ? 'white' : 'var(--color-text-neutral-medium)',
+            }}
           >
             {rating}
           </div>

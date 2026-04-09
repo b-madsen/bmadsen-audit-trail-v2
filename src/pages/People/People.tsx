@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, type ChangeEvent } from 'react';
+import { useState, useMemo, useEffect, Fragment, type ChangeEvent } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   IconV2,
@@ -67,6 +67,13 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
     });
   }, [searchQuery, filterDepartment]);
 
+  // Build employee ID → name map for resolving manager names
+  const employeeNameMap = useMemo(() => {
+    const map: Record<number, string> = {};
+    employees.forEach((e) => { map[e.id] = e.name; });
+    return map;
+  }, []);
+
   // Group employees
   const groupedEmployees = useMemo(() => {
     if (groupBy === 'name') {
@@ -127,16 +134,6 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
             onClick={() => navigate('/people/new')}
           >
             New Employee
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            size="medium"
-            className="people-primary-btn"
-            startIcon={<IconV2 name="bolt-regular" size={16} />}
-            onClick={() => navigate('/people/power-edit/edit')}
-          >
-            Power Edit
           </Button>
         </div>
 
@@ -215,27 +212,33 @@ export function People({ defaultTab = 'list' }: PeopleProps) {
             </div>
           </div>
 
-          {/* Employee Groups */}
-          <div className="people-groups">
-            {Object.entries(groupedEmployees).map(([groupName, groupEmployees]) => (
-              <Section key={groupName}>
-                <div className="people-group-header">
-                  <Headline size="small" color="primary">{groupName}</Headline>
-                </div>
-                <div className="people-group-list">
-                  {groupEmployees.map((employee) => (
-                    <EmployeeCard key={employee.id} employee={employee} />
-                  ))}
-                </div>
-              </Section>
-            ))}
+          {/* Employee Directory */}
+          <Section>
+            {Object.entries(groupedEmployees)
+              .sort(([a], [b]) => a.localeCompare(b))
+              .map(([letter, groupEmployees]) => (
+                <Fragment key={letter}>
+                  <div className="people-directory-letter-row">
+                    <Headline size="small" color="primary">{letter}</Headline>
+                  </div>
+                  <div className="people-directory-group-rows">
+                    {groupEmployees.map((employee) => (
+                      <EmployeeCard
+                        key={employee.id}
+                        employee={employee}
+                        reportsToName={employee.reportsTo != null ? employeeNameMap[employee.reportsTo] : undefined}
+                      />
+                    ))}
+                  </div>
+                </Fragment>
+              ))}
 
             {filteredEmployees.length === 0 && (
               <div className="people-empty">
                 <Headline size="small" color="neutral-weak">No employees found</Headline>
               </div>
             )}
-          </div>
+          </Section>
         </>
       )}
 

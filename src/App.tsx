@@ -13,6 +13,8 @@ import {
   GlobalNavigation,
   DatePickerProvider,
 } from '@bamboohr/fabric';
+import { ViewBarProvider, useViewBar } from './contexts/ViewBarContext';
+import { ViewBar } from './components/ViewBar';
 import './App.css';
 
 // Lazy load pages - working pages
@@ -240,35 +242,37 @@ function FullLayout({ children, noCapsule }: { children: React.ReactNode; noCaps
         ]}
       />
       <div className="app-main">
-        <Header
-          logo={<img src="/assets/images/bamboohr-logo.svg" alt="BambooHR" height={30} />}
-          search={
-            <>
-              <div className="header-search-field">
-                <Header.SearchInput placeholder="Search..." />
-              </div>
-              <div className="header-search-icon">
-                <IconButton icon="magnifying-glass-regular" aria-label="Search" variant="outlined" color="secondary" />
-              </div>
-            </>
-          }
-          actions={[
-            <div key="nav-icons" className="app-header-nav-icons">
-              <button className="header-icon-btn" onClick={() => navigate('/inbox')} aria-label="Inbox">
-                <IconV2 name={p === '/inbox' ? 'inbox-solid' : 'inbox-regular'} size={20} color="neutral-extra-strong" />
-              </button>
-              <button className="header-icon-btn" aria-label="Help">
-                <IconV2 name="circle-question-regular" size={20} color="neutral-extra-strong" />
-              </button>
-              <button className="header-icon-btn" onClick={() => navigate('/settings/account')} aria-label="Settings">
-                <IconV2 name="gear-regular" size={20} color="neutral-extra-strong" />
-              </button>
-            </div>,
-            <Button key="ask" className="header-ask-btn" variant="outlined" color="primary" startIcon={<IconV2 name="sparkles-solid" size={16} />}>
-              Ask
-            </Button>,
-          ]}
-        />
+        <div className="header-wrapper">
+          <Header
+            logo={<img src="/assets/images/bamboohr-logo.svg" alt="BambooHR" height={30} />}
+            search={
+              <>
+                <div className="header-search-field">
+                  <Header.SearchInput placeholder="Search..." />
+                </div>
+                <div className="header-search-icon">
+                  <IconButton icon="magnifying-glass-regular" aria-label="Search" variant="outlined" color="secondary" />
+                </div>
+              </>
+            }
+            actions={[
+              <div key="nav-icons" className="app-header-nav-icons">
+                <button className="header-icon-btn" onClick={() => navigate('/inbox')} aria-label="Inbox">
+                  <IconV2 name={p === '/inbox' ? 'inbox-solid' : 'inbox-regular'} size={20} color="neutral-extra-strong" />
+                </button>
+                <button className="header-icon-btn" aria-label="Help">
+                  <IconV2 name="circle-question-regular" size={20} color="neutral-extra-strong" />
+                </button>
+                <button className="header-icon-btn" onClick={() => navigate('/settings/account')} aria-label="Settings">
+                  <IconV2 name="gear-regular" size={20} color="neutral-extra-strong" />
+                </button>
+              </div>,
+              <Button key="ask" className="header-ask-btn" variant="outlined" color="primary" startIcon={<IconV2 name="sparkles-solid" size={16} />}>
+                Ask
+              </Button>,
+            ]}
+          />
+        </div>
         {noCapsule ? (
           <div className="app-direct-content">{children}</div>
         ) : (
@@ -279,10 +283,27 @@ function FullLayout({ children, noCapsule }: { children: React.ReactNode; noCaps
   );
 }
 
+function AppShell({ children }: { children: React.ReactNode }) {
+  const { isVisible } = useViewBar();
+  return (
+    <>
+      <ViewBar />
+      <div
+        className="app-viewport"
+        style={{ paddingTop: isVisible ? '40px' : '0', transition: 'padding-top 0.2s ease' }}
+      >
+        {children}
+      </div>
+    </>
+  );
+}
+
 function App() {
   return (
+    <ViewBarProvider>
     <DatePickerProvider>
     <Suspense fallback={<PageLoader />}>
+      <AppShell>
       <Routes>
         <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/index" element={<FullLayout><PrototypeIndex /></FullLayout>} />
@@ -340,8 +361,10 @@ function App() {
         <Route path="/new-employee" element={<FullLayout><NewEmployeePage /></FullLayout>} />
         <Route path="/reports/headcount" element={<FullLayout><HeadcountReport /></FullLayout>} />
       </Routes>
+      </AppShell>
     </Suspense>
     </DatePickerProvider>
+    </ViewBarProvider>
   );
 }
 

@@ -109,7 +109,7 @@ export function OrgChartTree({
   // Pattern: vertical drop from parent -> horizontal bar across children -> vertical rise to each child
   const renderConnections = () => {
     const lines: React.JSX.Element[] = [];
-    const lineColor = 'var(--fabric-border-color-neutral-weak)';
+    const lineColor = '#cbd5e1';
 
     const processNode = (node: TreeNode) => {
       if (!expandedNodes.has(node.employee.id)) {

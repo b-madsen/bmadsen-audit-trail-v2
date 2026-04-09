@@ -3,6 +3,7 @@ import {
   IconV2,
   Avatar,
   Button,
+  Dropdown,
   IconButton,
   TextButton,
   Tabs,
@@ -18,6 +19,9 @@ import { PerformanceTabContent } from './PerformanceTabContent';
 import { JobTabContent } from './JobTabContent';
 import { TimeOffTabContent } from './TimeOffTabContent';
 import { DocumentsTabContent } from './DocumentsTabContent';
+import { EmergencyTabContent } from './EmergencyTabContent';
+import { TrainingTabContent } from './TrainingTabContent';
+import { TimesheetTabContent } from './TimesheetTabContent';
 import './MyInfo.css';
 
 const profileTabs = [
@@ -120,14 +124,19 @@ export function MyInfo() {
               </BodyText>
             </div>
             <div className="my-info-header-actions">
-              <Button
-                variant="contained"
-                size="medium"
-                dark
-                endIcon={<IconV2 name="caret-down-solid" size={12} color="primary-strong" />}
+              <Dropdown
+                ButtonProps={{ variant: 'contained', size: 'medium', dark: true }}
+                items={[
+                  { text: 'Asset Request...', value: 'asset-request' },
+                  { text: 'Compensation...', value: 'compensation' },
+                  { text: 'Employment Status...', value: 'employment-status' },
+                  { text: 'Job Information...', value: 'job-information' },
+                  { text: 'Promotion...', value: 'promotion' },
+                ]}
+                showCaret
               >
                 Request a Change
-              </Button>
+              </Dropdown>
               <IconButton
                 icon={<IconV2 name="ellipsis-solid" size={16} />}
                 aria-label="More options"
@@ -212,17 +221,23 @@ export function MyInfo() {
             <TimeOffTabContent />
           ) : activeTab === 'documents' ? (
             <DocumentsTabContent />
+          ) : activeTab === 'emergency' ? (
+            <EmergencyTabContent />
+          ) : activeTab === 'training' ? (
+            <TrainingTabContent />
+          ) : activeTab === 'timesheets' ? (
+            <TimesheetTabContent />
           ) : (
             <div className="my-info-sections">
               {/* Personal section header */}
               <div className="my-info-section-header">
                 <div className="my-info-section-header-left">
                   <IconV2 name="address-card-solid" size={20} color="primary-strong" />
-                  <Headline size="small" color="primary">Personal</Headline>
+                  <Headline size="medium" color="primary">Personal</Headline>
                 </div>
                 <TextButton
                   startIcon={<IconV2 name="grid-2-plus-solid" size={16} />}
-                  endIcon={<IconV2 name="chevron-down-solid" size={12} />}
+                  endIcon={<IconV2 name="caret-down-solid" size={12} />}
                 >
                   Customize Layout
                 </TextButton>
@@ -231,6 +246,7 @@ export function MyInfo() {
               {/* Basic Information */}
               <Section>
                 <Section.Header title="Basic Information" icon="address-card-solid" />
+                <div className="my-info-form-fields">
                 <div className="my-info-form-grid-4">
                   <TextField label="Name" value={employee.firstName} onChange={() => {}} />
                   <TextField label="Middle Name" value={employee.middleName} onChange={() => {}} placeholder="—" />
@@ -244,37 +260,39 @@ export function MyInfo() {
                   <TextField label="SSN" value={employee.ssn} onChange={() => {}} />
                 </div>
                 <div className="my-info-form-grid-3">
-                  <SelectField label="Gender" value={employee.gender} onChange={() => {}} variant="single">
+                  <SelectField label="Gender" value={employee.gender} onChange={() => {}}>
                     <option value="Female">Female</option>
                     <option value="Male">Male</option>
                     <option value="Non-binary">Non-binary</option>
                     <option value="Other">Other</option>
                   </SelectField>
-                  <SelectField label="Gender Identity" value={employee.genderIdentity} onChange={() => {}} variant="single">
+                  <SelectField label="Gender Identity" value={employee.genderIdentity} onChange={() => {}}>
                     <option value="Female">Female</option>
                     <option value="Male">Male</option>
                     <option value="Non-binary">Non-binary</option>
                     <option value="Other">Other</option>
                   </SelectField>
-                  <SelectField label="Pronouns" value={employee.pronouns} onChange={() => {}} variant="single">
+                  <SelectField label="Pronouns" value={employee.pronouns} onChange={() => {}}>
                     <option value="She/Her">She/Her</option>
                     <option value="He/Him">He/Him</option>
                     <option value="They/Them">They/Them</option>
                   </SelectField>
                 </div>
                 <div className="my-info-field-row">
-                  <SelectField label="Marital Status" value={employee.maritalStatus} onChange={() => {}} variant="single">
+                  <SelectField label="Marital Status" value={employee.maritalStatus} onChange={() => {}}>
                     <option value="Single">Single</option>
                     <option value="Married">Married</option>
                     <option value="Divorced">Divorced</option>
                     <option value="Widowed">Widowed</option>
                   </SelectField>
                 </div>
+                </div>{/* /my-info-form-fields */}
               </Section>
 
               {/* Contact */}
               <Section>
                 <Section.Header title="Contact" icon="phone-solid" />
+                <div className="my-info-form-fields">
                 <div className="my-info-field-narrow">
                   <TextField label="Home Phone" value="648-555-2415" onChange={() => {}} />
                 </div>
@@ -291,7 +309,7 @@ export function MyInfo() {
                   <TextField label="Work Email" value={employee.workEmail} onChange={() => {}} />
                 </div>
                 <div className="my-info-field-narrow">
-                  <SelectField label="T-Shirt Size" value={employee.tshirtSize} onChange={() => {}} variant="single">
+                  <SelectField label="T-Shirt Size" value={employee.tshirtSize} onChange={() => {}}>
                     <option value="XS">XS</option>
                     <option value="S">S</option>
                     <option value="Medium">Medium</option>
@@ -300,13 +318,14 @@ export function MyInfo() {
                   </SelectField>
                 </div>
                 <div className="my-info-field-narrow">
-                  <SelectField label="Favorite Cold Cereal" value={employee.favoriteCereal} onChange={() => {}} variant="single">
+                  <SelectField label="Favorite Cold Cereal" value={employee.favoriteCereal} onChange={() => {}}>
                     <option value="Crispix">Crispix</option>
                     <option value="Frosted Flakes">Frosted Flakes</option>
                     <option value="Cheerios">Cheerios</option>
                     <option value="Lucky Charms">Lucky Charms</option>
                   </SelectField>
                 </div>
+                </div>{/* /my-info-form-fields */}
               </Section>
 
               {/* Visa Information */}
@@ -315,9 +334,10 @@ export function MyInfo() {
                   title="Visa Information"
                   icon="passport-solid"
                   actions={[
-                    <Button key="add" variant="outlined" size="small">Add Entry</Button>,
+                    <Button key="add" variant="outlined" color="primary" size="small" className="my-info-add-entry-btn">Add Entry</Button>,
                   ]}
                 />
+                <div className="my-info-table-wrapper">
                 <table className="my-info-table">
                   <thead>
                     <tr>
@@ -338,6 +358,7 @@ export function MyInfo() {
                     ))}
                   </tbody>
                 </table>
+                </div>
               </Section>
             </div>
           )}

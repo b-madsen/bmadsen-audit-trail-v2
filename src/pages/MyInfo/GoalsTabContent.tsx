@@ -1,237 +1,169 @@
 import { useState } from 'react';
-import { IconV2 } from '@bamboohr/fabric';
-import { Button, Dropdown, GoalCard } from '../../components';
+import {
+  Button,
+  SelectField,
+  BodyText,
+  Headline,
+  Avatar,
+  StyledBox,
+  IconV2,
+  ProgressBar,
+} from '@bamboohr/fabric';
 
 interface GoalsTabContentProps {
   employeeName: string;
 }
 
-export function GoalsTabContent({ employeeName }: GoalsTabContentProps) {
-  void employeeName; // Reserved for future use
-  const [statusFilter, setStatusFilter] = useState('in-progress');
+interface Collaborator {
+  id: string;
+  name: string;
+  avatar: string;
+}
 
-  // Status filter options
-  const statusOptions = [
-    { value: 'in-progress', label: 'In Progress' },
-    { value: 'completed', label: 'Completed' },
-    { value: 'closed', label: 'Closed' },
-  ];
+interface Goal {
+  id: string;
+  goalText: string;
+  progress: number;
+  dueDate: string;
+  collaborators: Collaborator[];
+}
 
-  // Mock goals data
-  const goals = [
-    {
-      id: '1',
-      goalText:
-        'I would like to reduce the amount of overtime that employees work. This can increase job satisfaction and ensure employees feel well-rested.',
-      progress: 75,
-      dueDate: 'Dec 30, 2024',
-      collaborators: [
-        {
-          id: '1',
-          name: 'Person 1',
-          avatar: 'https://i.pravatar.cc/150?img=1',
-        },
-        {
-          id: '2',
-          name: 'Person 2',
-          avatar: 'https://i.pravatar.cc/150?img=2',
-        },
-        {
-          id: '3',
-          name: 'Person 3',
-          avatar: 'https://i.pravatar.cc/150?img=3',
-        },
-        {
-          id: '4',
-          name: 'Person 4',
-          avatar: 'https://i.pravatar.cc/150?img=4',
-        },
-        {
-          id: '5',
-          name: 'Person 5',
-          avatar: 'https://i.pravatar.cc/150?img=5',
-        },
-        {
-          id: '6',
-          name: 'Person 6',
-          avatar: 'https://i.pravatar.cc/150?img=6',
-        },
-        {
-          id: '7',
-          name: 'Person 7',
-          avatar: 'https://i.pravatar.cc/150?img=7',
-        },
-      ],
-    },
-    {
-      id: '2',
-      goalText: "I want to feel like I've really made a difference in the world.",
-      progress: 75,
-      dueDate: 'Dec 30, 2024',
-      collaborators: [
-        {
-          id: '1',
-          name: 'Person 1',
-          avatar: 'https://i.pravatar.cc/150?img=8',
-        },
-        {
-          id: '2',
-          name: 'Person 2',
-          avatar: 'https://i.pravatar.cc/150?img=9',
-        },
-        {
-          id: '3',
-          name: 'Person 3',
-          avatar: 'https://i.pravatar.cc/150?img=10',
-        },
-        {
-          id: '4',
-          name: 'Person 4',
-          avatar: 'https://i.pravatar.cc/150?img=11',
-        },
-        {
-          id: '5',
-          name: 'Person 5',
-          avatar: 'https://i.pravatar.cc/150?img=12',
-        },
-        {
-          id: '6',
-          name: 'Person 6',
-          avatar: 'https://i.pravatar.cc/150?img=13',
-        },
-        {
-          id: '7',
-          name: 'Person 7',
-          avatar: 'https://i.pravatar.cc/150?img=14',
-        },
-      ],
-    },
-    {
-      id: '3',
-      goalText:
-        "This is what a medium-length goal might look like. It's going to be about three lines, like this.",
-      progress: 0,
-      dueDate: 'Dec 30, 2024',
-      collaborators: [
-        {
-          id: '1',
-          name: 'Person 1',
-          avatar: 'https://i.pravatar.cc/150?img=15',
-        },
-        {
-          id: '2',
-          name: 'Person 2',
-          avatar: 'https://i.pravatar.cc/150?img=16',
-        },
-        {
-          id: '3',
-          name: 'Person 3',
-          avatar: 'https://i.pravatar.cc/150?img=17',
-        },
-        {
-          id: '4',
-          name: 'Person 4',
-          avatar: 'https://i.pravatar.cc/150?img=18',
-        },
-        {
-          id: '5',
-          name: 'Person 5',
-          avatar: 'https://i.pravatar.cc/150?img=19',
-        },
-        {
-          id: '6',
-          name: 'Person 6',
-          avatar: 'https://i.pravatar.cc/150?img=20',
-        },
-        {
-          id: '7',
-          name: 'Person 7',
-          avatar: 'https://i.pravatar.cc/150?img=21',
-        },
-      ],
-    },
-    {
-      id: '4',
-      goalText:
-        "I'm curious what a super long gigantic goal would look like. Goal sounds like coal which reminds me of a coal train which can also be super duper long and can t...",
-      progress: 25,
-      dueDate: 'Dec 30, 2024',
-      collaborators: [
-        {
-          id: '1',
-          name: 'Person 1',
-          avatar: 'https://i.pravatar.cc/150?img=22',
-        },
-        {
-          id: '2',
-          name: 'Person 2',
-          avatar: 'https://i.pravatar.cc/150?img=23',
-        },
-        {
-          id: '3',
-          name: 'Person 3',
-          avatar: 'https://i.pravatar.cc/150?img=24',
-        },
-        {
-          id: '4',
-          name: 'Person 4',
-          avatar: 'https://i.pravatar.cc/150?img=25',
-        },
-        {
-          id: '5',
-          name: 'Person 5',
-          avatar: 'https://i.pravatar.cc/150?img=26',
-        },
-        {
-          id: '6',
-          name: 'Person 6',
-          avatar: 'https://i.pravatar.cc/150?img=27',
-        },
-        {
-          id: '7',
-          name: 'Person 7',
-          avatar: 'https://i.pravatar.cc/150?img=28',
-        },
-      ],
-    },
-  ];
+const COLLABORATORS: Collaborator[] = [
+  { id: '1', name: 'Person 1', avatar: 'https://i.pravatar.cc/150?img=1' },
+  { id: '2', name: 'Person 2', avatar: 'https://i.pravatar.cc/150?img=2' },
+  { id: '3', name: 'Person 3', avatar: 'https://i.pravatar.cc/150?img=3' },
+  { id: '4', name: 'Person 4', avatar: 'https://i.pravatar.cc/150?img=4' },
+  { id: '5', name: 'Person 5', avatar: 'https://i.pravatar.cc/150?img=5' },
+  { id: '6', name: 'Person 6', avatar: 'https://i.pravatar.cc/150?img=6' },
+  { id: '7', name: 'Person 7', avatar: 'https://i.pravatar.cc/150?img=7' },
+];
+
+const goals: Goal[] = [
+  {
+    id: '1',
+    goalText:
+      'I would like to reduce the amount of overtime that employees work. This can increase job satisfaction and ensure employees feel well-rested.',
+    progress: 75,
+    dueDate: 'Dec 30, 2024',
+    collaborators: COLLABORATORS,
+  },
+  {
+    id: '2',
+    goalText: "I want to feel like I've really made a difference in the world.",
+    progress: 75,
+    dueDate: 'Dec 30, 2024',
+    collaborators: COLLABORATORS,
+  },
+  {
+    id: '3',
+    goalText:
+      "This is what a medium-length goal might look like. It's going to be about three lines, like this.",
+    progress: 0,
+    dueDate: 'Dec 30, 2024',
+    collaborators: COLLABORATORS,
+  },
+  {
+    id: '4',
+    goalText:
+      "I'm curious what a super long gigantic goal would look like. Goal sounds like coal which reminds me of a coal train which can also be super duper long and can t...",
+    progress: 25,
+    dueDate: 'Dec 30, 2024',
+    collaborators: COLLABORATORS,
+  },
+];
+
+function GoalCard({ goal }: { goal: Goal }) {
+  const visibleAvatars = goal.collaborators.slice(0, 2);
+  const extraCount = goal.collaborators.length - visibleAvatars.length;
 
   return (
-    <div className="flex flex-col">
-      {/* Top Bar: New Goal Button and Status Filter */}
-      <div className="flex items-center justify-between mb-6">
-        {/* New Goal Button */}
-        <Button variant="standard" size="small" className="gap-2">
-          <IconV2 name="circle-plus-solid" size={16} />
+    <StyledBox
+      backgroundColor="neutral-forced-white"
+      borderColor="neutral-extra-extra-weak"
+      borderStyle="solid"
+      borderRadius="small"
+      boxShadow="small"
+      v2
+    >
+      <div className="goal-card-inner">
+        {/* Goal text */}
+        <div className="goal-card-text">
+          <BodyText size="medium">{goal.goalText}</BodyText>
+        </div>
+
+        {/* Progress percentage + label */}
+        <div className="goal-card-progress-label">
+          <div className="goal-card-percent">
+            <Headline size="extra-small" color="primary">{goal.progress}%</Headline>
+          </div>
+          <BodyText size="medium" color="neutral-strong">complete</BodyText>
+        </div>
+
+        {/* Progress bar */}
+        <div className="goal-card-bar">
+          <ProgressBar current={goal.progress} total={100} height={4} />
+        </div>
+
+        {/* Footer: due date + avatars */}
+        <div className="goal-card-footer">
+          <BodyText size="small" color="neutral-strong">
+            <strong>Due:</strong> {goal.dueDate}
+          </BodyText>
+          <div className="goal-card-avatars">
+            {visibleAvatars.map((person) => (
+              <div key={person.id} className="goal-card-avatar-item">
+                <Avatar src={person.avatar} alt={person.name} size={32} />
+              </div>
+            ))}
+            {extraCount > 0 && (
+              <div className="goal-card-avatar-more">
+                <BodyText size="extra-small" color="neutral-strong">+{extraCount}</BodyText>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </StyledBox>
+  );
+}
+
+export function GoalsTabContent({ employeeName }: GoalsTabContentProps) {
+  void employeeName;
+  const [statusFilter, setStatusFilter] = useState('in-progress');
+
+  return (
+    <div className="goals-content">
+
+      {/* Filter bar */}
+      <div className="goals-filter-bar">
+        <Button
+          variant="outlined"
+          startIcon={<IconV2 name="circle-plus-regular" size={16} />}
+        >
           New Goal
         </Button>
-
-        {/* Status Filter */}
-        <div className="flex items-center gap-3">
-          <span className="text-[15px] font-semibold text-[var(--text-neutral-x-strong)]">
-            Status:
-          </span>
-          <Dropdown
-            options={statusOptions}
+        <div className="goals-status-filter">
+          <SelectField
+            label="Status"
+            labelPlacement="inline"
+            variant="single"
             value={statusFilter}
-            onChange={setStatusFilter}
-            className="w-[180px] [&>button]:h-10"
-          />
+            onChange={(e: any) => setStatusFilter(e.target.value)}
+          >
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="closed">Closed</option>
+          </SelectField>
         </div>
       </div>
 
-      {/* Goals Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Goals grid */}
+      <div className="goals-grid">
         {goals.map((goal) => (
-          <GoalCard
-            key={goal.id}
-            goalText={goal.goalText}
-            progress={goal.progress}
-            dueDate={goal.dueDate}
-            collaborators={goal.collaborators}
-          />
+          <GoalCard key={goal.id} goal={goal} />
         ))}
       </div>
+
     </div>
   );
 }

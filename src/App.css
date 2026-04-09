@@ -8,17 +8,24 @@
  * - Component composition positioning
  */
 
+/* Viewport wrapper: shrinks when ViewBar is visible */
+.app-viewport {
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
 .app-layout {
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
 }
 
 /* Global Navigation spans full height on the left */
 .app-layout > [data-fabric-component="GlobalNavigation"] {
   flex-shrink: 0;
-  height: 100vh;
+  height: 100%;
   position: sticky;
   top: 0;
   background-color: var(--surface-neutral-white) !important;
@@ -35,13 +42,13 @@
   flex: 1;
   min-width: 0;
   padding-right: 16px;
-  height: 100vh;
+  height: 100%;
   overflow-y: hidden;
   background-color: var(--surface-neutral-white);
 }
 
-/* Fixed Header at top - extends into padding area */
-.app-main > [data-fabric-component="Header"] {
+/* Header wrapper — sticky positioning, tooltip anchor */
+.header-wrapper {
   flex-shrink: 0;
   position: sticky;
   top: 0;
@@ -50,6 +57,7 @@
   margin-right: -16px;
   padding-right: 16px;
 }
+
 
 /* Page content - fills remaining viewport height; content scrolls inside */
 .app-main > [data-fabric-component="PageCapsule"] {
@@ -123,7 +131,7 @@
 
 .app-minimal > [data-fabric-component="PageCapsule"] {
   flex: 1;
-  padding: 32px;
+  padding: 24px 32px;
 }
 
 /* ============================================
@@ -161,8 +169,9 @@
   }
 
   /* Header responsive layout for tablet */
-  .app-main > [data-fabric-component="Header"] {
+  .header-wrapper {
     display: flex;
+    flex-direction: column;
     padding-right: 16px;
     margin-right: 0;
     box-sizing: border-box;
@@ -170,7 +179,7 @@
   }
 
   /* Force header internal wrapper to shrink and fit */
-  .app-main > [data-fabric-component="Header"] > div {
+  .header-wrapper > [data-fabric-component="Header"] > div {
     flex: 1 1 auto !important;
     min-width: 0 !important;
     width: auto !important;
