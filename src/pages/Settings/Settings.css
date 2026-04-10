@@ -76,7 +76,7 @@
 /* Main Content */
 .settings-main {
   flex: 1;
-  padding: 0 0 40px;
+  padding: 0 0 40px 24px;
 }
 
 .settings-card {
@@ -135,6 +135,7 @@
 
 /* Account Info Header */
 .account-info-header {
+  margin-top: 16px;
   margin-bottom: 32px;
 }
 

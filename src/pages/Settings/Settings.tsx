@@ -268,7 +268,7 @@ export function Settings({ section = 'account' }: SettingsProps) {
                         </>
                       ) : (
                         <>
-                          <Button size="small" variant="contained" color="primary" startIcon={<IconV2 name="plus-solid" size={16} />}>
+                          <Button size="small" variant="outlined" color="secondary" startIcon={<IconV2 name="plus-solid" size={16} />}>
                             Add Employees
                           </Button>
                           <div className="al-gear-wrapper">
@@ -276,6 +276,8 @@ export function Settings({ section = 'account' }: SettingsProps) {
                               icon="gear-regular"
                               ariaLabel="Level settings"
                               size="small"
+                              variant="outlined"
+                              color="secondary"
                               onClick={() => setGearMenuOpen(!gearMenuOpen)}
                             />
                           </div>

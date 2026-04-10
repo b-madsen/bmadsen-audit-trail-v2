@@ -1,5 +1,4 @@
-import { Button, IconV2, Section } from '@bamboohr/fabric';
-import { TalentPoolCard } from '../../components';
+import { Button, IconV2, Section, TileV2 } from '@bamboohr/fabric';
 import { talentPools } from '../../data/talentPools';
 
 export function TalentPoolsTabContent() {
@@ -19,15 +18,22 @@ export function TalentPoolsTabContent() {
 
       {/* Talent Pool Cards */}
       <div className="hiring-talent-pools-grid">
-        {talentPools.map((pool) => (
-          <TalentPoolCard
-            key={pool.id}
-            icon={pool.icon}
-            title={pool.title}
-            candidatesCount={pool.candidatesCount}
-            onClick={() => console.log(`Clicked ${pool.title}`)}
-          />
-        ))}
+        {talentPools.map((pool) => {
+          const iconName = pool.icon.includes('-solid') || pool.icon.includes('-regular')
+            ? pool.icon
+            : `${pool.icon}-solid`;
+          return (
+            <TileV2
+              key={pool.id}
+              icon={iconName as any}
+              title={pool.title}
+              description={`${pool.candidatesCount} Candidate${pool.candidatesCount !== 1 ? 's' : ''}`}
+              orientation="vertical"
+              titleSize="medium"
+              width={200}
+            />
+          );
+        })}
       </div>
     </Section>
   );

@@ -9,7 +9,7 @@
 
 /* Back button */
 .inbox-test-back {
-  padding: 24px 0 0;
+  padding: 0;
 }
 
 /* Page Header */
@@ -92,9 +92,18 @@
 }
 
 /* Request list */
+.inbox-test-select-all {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--fabric-border-color-neutral-extra-extra-weak, #e5e4e3);
+}
+
 .inbox-test-list {
   flex: 1;
   overflow-y: auto;
+}
+
+.inbox-test-request-checkbox {
+  flex-shrink: 0;
 }
 
 /* Request item */

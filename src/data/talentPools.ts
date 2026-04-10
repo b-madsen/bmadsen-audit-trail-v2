@@ -8,32 +8,20 @@ export interface TalentPool {
 export const talentPools: TalentPool[] = [
   {
     id: '1',
-    icon: 'star',
-    title: 'Top Performers',
-    candidatesCount: 45,
+    icon: 'piggy-bank',
+    title: 'Finance',
+    candidatesCount: 3,
   },
   {
     id: '2',
-    icon: 'code',
-    title: 'Engineering Talent',
-    candidatesCount: 128,
+    icon: 'bullhorn',
+    title: 'Marketing',
+    candidatesCount: 5,
   },
   {
     id: '3',
-    icon: 'graduation-cap',
-    title: 'Recent Graduates',
-    candidatesCount: 67,
-  },
-  {
-    id: '4',
-    icon: 'briefcase',
-    title: 'Executive Search',
-    candidatesCount: 23,
-  },
-  {
-    id: '5',
-    icon: 'users',
-    title: 'Referrals',
-    candidatesCount: 89,
+    icon: 'code',
+    title: 'Software Engineer',
+    candidatesCount: 2,
   },
 ];

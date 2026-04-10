@@ -19,7 +19,7 @@ export function TalentPoolCard({ icon, title, candidatesCount, onClick }: Talent
       className="bg-[var(--fabric-surface-color-neutral-white)] border border-[var(--fabric-border-color-neutral-extra-weak)] rounded-lg p-5 flex flex-col gap-4 items-start w-[224px] hover:bg-[var(--fabric-surface-color-neutral-extra-extra-weak)] transition-colors cursor-pointer text-left"
     >
       {/* Icon box */}
-      <div className="w-12 h-12 bg-[var(--fabric-surface-color-neutral-extra-weak)] rounded-xl flex items-center justify-center">
+      <div className="w-12 h-12 bg-[var(--fabric-surface-color-primary-extra-weak)] rounded-xl flex items-center justify-center">
         <IconV2 name={fabricIconName as any} size={24} color="primary-strong" />
       </div>
 

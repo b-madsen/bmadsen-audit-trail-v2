@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { BodyText, IconV2, Divider, TextButton, Avatar, PageHeaderV2 } from '@bamboohr/fabric';
+import { useNavigate } from 'react-router-dom';
+import { BodyText, IconV2, Divider, TextButton, Avatar, PageHeaderV2, Checkbox } from '@bamboohr/fabric';
 import './InboxTest.css';
 
 // Types
@@ -293,11 +294,13 @@ const sidebarData: SidebarItem[] = [
 const ITEMS_PER_PAGE = 10;
 
 export function InboxTest() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('inbox');
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(['assigned-to-me', 'inbox', 'approvals'])
   );
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
   // Pagination logic
   const totalItems = mockRequests.length;
@@ -328,6 +331,31 @@ export function InboxTest() {
     }
     return pages;
   }, [totalPages]);
+
+  // Selection helpers
+  const pageItemIds = paginatedRequests.map((r) => r.id);
+  const allPageSelected = pageItemIds.length > 0 && pageItemIds.every((id) => selectedItems.has(id));
+  const somePageSelected = pageItemIds.some((id) => selectedItems.has(id));
+
+  const toggleSelectAll = () => {
+    const newSelected = new Set(selectedItems);
+    if (allPageSelected) {
+      pageItemIds.forEach((id) => newSelected.delete(id));
+    } else {
+      pageItemIds.forEach((id) => newSelected.add(id));
+    }
+    setSelectedItems(newSelected);
+  };
+
+  const toggleSelectItem = (id: string) => {
+    const newSelected = new Set(selectedItems);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedItems(newSelected);
+  };
 
   // Render request icon based on type
   const renderRequestIcon = (request: RequestItem) => {
@@ -404,8 +432,8 @@ export function InboxTest() {
           </span>
         </button>
 
-        {/* Render children if expanded */}
-        {hasChildren && isExpanded && (
+        {/* Render children if expanded (skip depth 0 — those are rendered manually with dividers) */}
+        {depth > 0 && hasChildren && isExpanded && (
           <div className="inbox-test-sidebar-children">
             {item.children!.map((child) => renderSidebarItem(child, depth + 1))}
           </div>
@@ -422,6 +450,7 @@ export function InboxTest() {
           startIcon={<IconV2 name="chevron-left-solid" size={12} color="neutral-medium" />}
           size="small"
           color="secondary"
+          onClick={() => navigate(-1)}
         >
           Back
         </TextButton>
@@ -457,9 +486,25 @@ export function InboxTest() {
 
         {/* Request list */}
         <div className="inbox-test-list-container">
+          {/* Select All */}
+          <div className="inbox-test-select-all">
+            <Checkbox
+              checked={allPageSelected}
+              indeterminate={somePageSelected && !allPageSelected}
+              onChange={toggleSelectAll}
+              label={selectedItems.size > 0 ? `${selectedItems.size} Selected` : 'Select All'}
+            />
+          </div>
+
           <div className="inbox-test-list">
             {paginatedRequests.map((request) => (
               <div key={request.id} className="inbox-test-request-item">
+                <div className="inbox-test-request-checkbox">
+                  <Checkbox
+                    checked={selectedItems.has(request.id)}
+                    onChange={() => toggleSelectItem(request.id)}
+                  />
+                </div>
                 {renderRequestIcon(request)}
                 <div className="inbox-test-request-content">
                   <div className="inbox-test-request-header">
