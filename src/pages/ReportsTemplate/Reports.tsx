@@ -1,16 +1,40 @@
 import { useState, ChangeEvent } from 'react';
-import { IconV2, IconButton, PageHeaderV2, Button, SideNavigation, Section, BodyText, Tabs, Tab } from '@bamboohr/fabric';
+import {
+  IconV2,
+  IconButton,
+  PageHeaderV2,
+  Button,
+  SideNavigation,
+  Section,
+  BodyText,
+  Tabs,
+  Tab,
+  Headline,
+  TileV2,
+  Table,
+  TextButton,
+} from '@bamboohr/fabric';
 import { favoriteReports as initialFavorites, recentReports, standardReportGroups } from '../../data/analytics';
+import type { RecentReport, StandardReport } from '../../data/analytics';
 import './Reports.css';
 
 const reportsNavItems = [
   { id: 'recent', label: 'Recent', icon: 'clock' },
+  { id: 'dashboards', label: 'Dashboards', icon: 'grid-2' },
   { id: 'standard-reports', label: 'Standard Reports', icon: 'chart-bar' },
   { id: 'benchmarks', label: 'Benchmarks', icon: 'chart-mixed' },
-  { id: 'custom-reports', label: 'Custom Reports', icon: 'table' },
+  { id: 'custom-reports', label: 'Custom Reports', icon: 'table', badge: 6 },
   { id: 'new-custom-reports', label: 'New Custom Reports', icon: 'sparkles' },
   { id: 'signed-documents', label: 'Signed Documents', icon: 'file-signature' },
   { id: 'payroll-reports', label: 'Payroll Reports', icon: 'circle-dollar' },
+];
+
+const folderNavItems = [
+  { id: 'folder-q1', label: 'Q1 2025 Reports', icon: 'folder' },
+  { id: 'folder-hr', label: 'HR Leadership', icon: 'folder' },
+  { id: 'folder-dept', label: 'Department Summaries', icon: 'folder' },
+  { id: 'folder-exec', label: 'Executive Dashboards', icon: 'folder' },
+  { id: 'folder-test', label: 'TEST', icon: 'folder' },
 ];
 
 const searchPlaceholders: Record<string, string> = {
@@ -18,6 +42,54 @@ const searchPlaceholders: Record<string, string> = {
   'standard-reports': 'Filter by name, type',
   'custom-reports': 'Filter by name, owner',
 };
+
+const recentGroups = [
+  { id: 'last-30-days', title: 'Last 30 days' },
+];
+
+const recentColumns = [
+  {
+    header: 'Today',
+    cell: (row: RecentReport) => (
+      <div className="reports-name-cell">
+        <IconV2 name={`${row.icon ?? 'chart-column'}-regular` as any} size={16} color="info-medium" />
+        <TextButton onClick={() => {}}>{row.name}</TextButton>
+      </div>
+    ),
+  },
+  {
+    header: 'Last Viewed',
+    cell: (row: RecentReport) => (
+      <BodyText size="medium" color="neutral-weak">{row.lastViewed}</BodyText>
+    ),
+  },
+  {
+    header: 'Owner',
+    cell: (row: RecentReport) => (
+      <BodyText size="medium" color="neutral-weak">{row.owner}</BodyText>
+    ),
+  },
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+] as any;
+
+const standardColumns = [
+  {
+    headerAriaLabel: 'Report name',
+    cell: (row: StandardReport) => (
+      <div className="reports-name-cell">
+        <IconV2 name={`${row.icon}-regular` as any} size={16} color="info-medium" />
+        <TextButton onClick={() => {}}>{row.name}</TextButton>
+      </div>
+    ),
+  },
+  {
+    header: 'Last Viewed',
+    cell: (row: StandardReport) => row.lastViewed
+      ? <BodyText size="medium" color="neutral-weak">{row.lastViewed}</BodyText>
+      : null,
+  },
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+] as any;
 
 export function Reports() {
   const [activeNav, setActiveNav] = useState('recent');
@@ -29,6 +101,7 @@ export function Reports() {
   };
 
   const searchPlaceholder = searchPlaceholders[activeNav] ?? 'Search reports...';
+  void searchPlaceholder;
 
   return (
     <div className="reports-page">
@@ -36,15 +109,13 @@ export function Reports() {
         title="Reports"
         primaryContent={
           <div className="reports-header-actions">
-            <div className="reports-search">
-              <IconV2 name="magnifying-glass-solid" size={16} color="neutral-strong" />
-              <input
-                type="text"
-                placeholder={searchPlaceholder}
-                className="reports-search-input"
-              />
-            </div>
-            <Button variant="outlined" startIcon={<IconV2 name="circle-plus-solid" size={16} />}>New Report</Button>
+            <Button
+              className="reports-new-report-btn"
+              variant="outlined"
+              startIcon={<IconV2 name="circle-plus-regular" size={16} />}
+            >
+              New Report
+            </Button>
             <IconButton
               icon="folder-plus-regular"
               aria-label="New Folder"
@@ -58,20 +129,44 @@ export function Reports() {
       <div className="reports-layout">
         <SideNavigation
           ariaLabel="Reports navigation"
-          items={reportsNavItems.map((item) => {
-            const isActive = item.id === activeNav;
-            return (
-              <SideNavigation.Link
-                key={item.id}
-                active={isActive}
-                icon={`${item.icon}-regular` as any}
-                activeIcon={`${item.icon}-solid` as any}
-                onClick={() => setActiveNav(item.id)}
-              >
-                {item.label}
-              </SideNavigation.Link>
-            );
-          })}
+          items={[
+            ...reportsNavItems.map((item) => {
+              const isActive = item.id === activeNav;
+              return (
+                <SideNavigation.Link
+                  key={item.id}
+                  href="#"
+                  active={isActive}
+                  icon={`${item.icon}-regular` as any}
+                  activeIcon={`${item.icon}-solid` as any}
+                  onClick={() => setActiveNav(item.id)}
+                >
+                  {item.badge ? (
+                    <span className="reports-nav-item-with-badge">
+                      {item.label}
+                      <span className="reports-nav-badge">{item.badge}</span>
+                    </span>
+                  ) : item.label}
+                </SideNavigation.Link>
+              );
+            }),
+            <SideNavigation.Divider key="divider" />,
+            ...folderNavItems.map((item) => {
+              const isActive = item.id === activeNav;
+              return (
+                <SideNavigation.Link
+                  key={item.id}
+                  href="#"
+                  active={isActive}
+                  icon={`${item.icon}-regular` as any}
+                  activeIcon={`${item.icon}-solid` as any}
+                  onClick={() => setActiveNav(item.id)}
+                >
+                  {item.label}
+                </SideNavigation.Link>
+              );
+            }),
+          ]}
         />
 
         <div className="reports-main">
@@ -81,24 +176,25 @@ export function Reports() {
             <>
               {favorites.length > 0 && (
                 <div className="reports-favorites-section">
-                  <div className="reports-favorites-header">
-                    <IconV2 name="star-solid" size={16} color="primary-strong" />
-                    <span className="reports-favorites-title">Favorites</span>
-                  </div>
+                  <Headline size="medium" icon="star-solid">Favorites</Headline>
                   <div className="reports-favorites-grid">
                     {favorites.map((report) => (
-                      <div key={report.id} className="reports-favorite-card">
-                        <button
-                          className="reports-favorite-remove"
-                          onClick={() => removeFavorite(report.id)}
-                          aria-label={`Remove ${report.name} from favorites`}
-                        >
-                          <IconV2 name="xmark-regular" size={12} color="neutral-medium" />
-                        </button>
-                        <div className="reports-favorite-icon-tile">
-                          <IconV2 name={`${report.icon}-regular` as any} size={20} color="primary-strong" />
-                        </div>
-                        <BodyText size="small" color="primary">{report.name}</BodyText>
+                      <div key={report.id} className="reports-favorite-tile-wrapper">
+                        <TileV2
+                          icon={`${report.icon}-regular` as any}
+                          title={report.name}
+                          height="100%"
+                          right={
+                            <div className="reports-favorite-remove">
+                              <IconButton
+                                icon="xmark-regular"
+                                aria-label={`Remove ${report.name} from favorites`}
+                                noBoundingBox
+                                onClick={(e: Event) => { e.stopPropagation(); removeFavorite(report.id); }}
+                              />
+                            </div>
+                          }
+                        />
                       </div>
                     ))}
                   </div>
@@ -107,36 +203,15 @@ export function Reports() {
 
               <Section>
                 <Section.Header title="Recent" icon="clock-rotate-left-regular" />
-                <div className="reports-table-wrapper">
-                <table className="reports-recent-table">
-                  <thead>
-                    <tr>
-                      <th className="reports-recent-th reports-recent-th--name">Last 30 days</th>
-                      <th className="reports-recent-th">Last Viewed</th>
-                      <th className="reports-recent-th">Owner</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentReports.map((report) => (
-                      <tr key={report.id} className="reports-recent-row">
-                        <td className="reports-recent-td">
-                          <div className="reports-recent-name-cell">
-                            <IconV2 name="chart-column-regular" size={16} color="info-medium" />
-                            <a href="#" className="reports-recent-link" onClick={(e) => e.preventDefault()}>
-                              {report.name}
-                            </a>
-                          </div>
-                        </td>
-                        <td className="reports-recent-td">
-                          <BodyText size="medium" color="neutral-weak">{report.lastViewed}</BodyText>
-                        </td>
-                        <td className="reports-recent-td">
-                          <BodyText size="medium" color="neutral-weak">{report.owner}</BodyText>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="reports-section-content">
+                  <Table
+                    caption="Recent reports"
+                    columns={recentColumns}
+                    rows={recentReports}
+                    rowKey={(row) => (row as RecentReport).id}
+                    groups={recentGroups}
+                    groupBy={(row) => (row as RecentReport).group === 'last-30-days' ? 'last-30-days' : ''}
+                  />
                 </div>
               </Section>
             </>
@@ -148,34 +223,13 @@ export function Reports() {
               {standardReportGroups.map((group) => (
                 <Section key={group.id}>
                   <Section.Header title={group.label} icon={`${group.icon}-solid` as any} />
-                  <div className="reports-table-wrapper">
-                  <table className="reports-standard-table">
-                    <thead>
-                      <tr>
-                        <th className="reports-standard-th reports-standard-th--name">Name</th>
-                        <th className="reports-standard-th">Last Viewed</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {group.reports.map((report) => (
-                        <tr key={report.id} className="reports-standard-row">
-                          <td className="reports-standard-td">
-                            <div className="reports-standard-name-cell">
-                              <IconV2 name={`${report.icon}-regular` as any} size={16} color="info-medium" />
-                              <a href="#" className="reports-recent-link" onClick={(e) => e.preventDefault()}>
-                                {report.name}
-                              </a>
-                            </div>
-                          </td>
-                          <td className="reports-standard-td">
-                            {report.lastViewed && (
-                              <BodyText size="medium" color="neutral-weak">{report.lastViewed}</BodyText>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <div className="reports-section-content">
+                    <Table
+                      caption={`${group.label} reports`}
+                      columns={standardColumns}
+                      rows={group.reports}
+                      rowKey={(row) => (row as StandardReport).id}
+                    />
                   </div>
                 </Section>
               ))}
@@ -199,14 +253,14 @@ export function Reports() {
               {customTab === 'my-reports' && (
                 <div className="reports-blank-state">
                   <div className="reports-blank-state-icon">
-                    <IconV2 name="file-chart-pie-regular" size={64} color="neutral-x-weak" />
+                    <IconV2 name="file-chart-pie-regular" size={60} color="neutral-weak" />
                   </div>
                   <BodyText size="medium" weight="semibold" color="neutral-strong">
                     You haven't created any reports yet.
                   </BodyText>
                   <Button
+                    className="reports-new-report-btn"
                     variant="outlined"
-                    color="primary"
                     startIcon={<IconV2 name="circle-plus-regular" size={16} />}
                     onClick={() => {}}
                   >
@@ -217,7 +271,7 @@ export function Reports() {
               {customTab === 'company-reports' && (
                 <div className="reports-blank-state">
                   <div className="reports-blank-state-icon">
-                    <IconV2 name="file-chart-pie-regular" size={64} color="neutral-x-weak" />
+                    <IconV2 name="file-chart-pie-regular" size={60} color="neutral-weak" />
                   </div>
                   <BodyText size="medium" weight="semibold" color="neutral-strong">
                     No company reports available yet.

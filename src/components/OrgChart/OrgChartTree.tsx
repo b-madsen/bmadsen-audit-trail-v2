@@ -120,7 +120,7 @@ export function OrgChartTree({
       if (children.length === 0) return;
 
       const parentCenterX = node.x;
-      const parentBottomY = node.y + 185; // NODE_HEIGHT from layout
+      const parentBottomY = node.y + 140; // Visual card bottom (org-node CSS height)
       const midY = (parentBottomY + children[0].y) / 2;
 
       // 1. Vertical line from parent bottom center down to midpoint

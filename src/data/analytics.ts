@@ -16,6 +16,8 @@ export interface RecentReport {
   name: string;
   owner: string;
   lastViewed: string;
+  group: 'today' | 'last-30-days';
+  icon?: string;
 }
 
 export interface StandardReport {
@@ -33,10 +35,9 @@ export interface StandardReportGroup {
 }
 
 export const favoriteReports: FavoriteReport[] = [
-  { id: '1', name: 'Headcount', icon: 'chart-column' },
-  { id: '2', name: 'Employee Turnover', icon: 'chart-column' },
-  { id: '3', name: 'Additions & Terminations', icon: 'chart-line' },
-  { id: '4', name: 'Time Off Used', icon: 'table' },
+  { id: '1', name: 'Employee Turnover', icon: 'chart-column' },
+  { id: '2', name: 'Additions & Terminations', icon: 'chart-line' },
+  { id: '3', name: 'Time Off Used', icon: 'table' },
 ];
 
 export const insights: Insight[] = [
@@ -61,11 +62,11 @@ export const insights: Insight[] = [
 ];
 
 export const recentReports: RecentReport[] = [
-  { id: '1', name: 'Headcount', owner: 'BambooHR', lastViewed: 'Mar 23' },
-  { id: '2', name: 'Age Profile', owner: 'HR Team', lastViewed: 'Mar 22' },
-  { id: '3', name: 'Compensation Summary', owner: 'Finance', lastViewed: 'Mar 21' },
-  { id: '4', name: 'Time Off Balances', owner: 'BambooHR', lastViewed: 'Mar 20' },
-  { id: '5', name: 'New Hires Report', owner: 'Recruiting', lastViewed: 'Mar 15' },
+  { id: '1', name: 'Audit Trail', owner: 'BambooHR', lastViewed: '9:22 am', group: 'today', icon: 'table-cells-large' },
+  { id: '2', name: 'Point-in-Time', owner: 'BambooHR', lastViewed: 'Apr 01', group: 'last-30-days', icon: 'clock-rotate-left' },
+  { id: '3', name: 'Employee Census', owner: 'BambooHR', lastViewed: 'Mar 30', group: 'last-30-days', icon: 'table-cells-large' },
+  { id: '4', name: 'Time Off Balances', owner: 'BambooHR', lastViewed: 'Mar 22', group: 'last-30-days', icon: 'table-cells-large' },
+  { id: '5', name: 'New Hires Report', owner: 'BambooHR', lastViewed: 'Mar 15', group: 'last-30-days', icon: 'chart-column' },
 ];
 
 export const standardReportGroups: StandardReportGroup[] = [
