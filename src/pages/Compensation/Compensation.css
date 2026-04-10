@@ -4,9 +4,16 @@
 }
 
 .compensation-tabs {
-  padding: 0 32px;
-  border-bottom: 1px solid var(--fabric-border-color-neutral-weak);
   margin-bottom: 24px;
+}
+
+.compensation-section-title {
+  margin-bottom: 16px;
+  color: var(--color-primary-strong);
+}
+
+.compensation-section-title h2 {
+  color: var(--color-primary-strong) !important;
 }
 
 .compensation-tab-label {
@@ -21,15 +28,24 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 64px 24px;
-  gap: 12px;
+  padding: 48px 24px 64px;
+  gap: 8px;
 }
 
+.compensation-blank-illustration {
+  width: 128px;
+  height: auto;
+  margin-bottom: 16px;
+}
+
+.compensation-blank-headline {
+  margin-bottom: 4px;
+}
 
 .compensation-blank-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 4px;
+  gap: 16px;
+  margin-top: 16px;
 }
 
 .compensation-btn-primary {
