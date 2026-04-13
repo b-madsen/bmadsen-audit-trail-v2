@@ -20,11 +20,12 @@ npm install
 
 If `npm install` fails, you likely need to set up your NPM token. Follow the **[NPM Token Setup Guide](https://docs.google.com/document/d/12ISyArJ-c2RUZTSmxNrZ80cY_a6r5MhswhF_Hr5bqgE/edit?tab=t.9clsvro19kug)** to retrieve your token from the vault and configure it in your `~/.zshrc`.
 
-### 2. Create your branch
+### 2. Create your team branch
 
 ```bash
-git checkout -b yourname
-git push -u origin yourname
+git checkout main
+git checkout -b yourname/yourteam
+git push -u origin yourname/yourteam
 ```
 
 ### 3. Start building
@@ -33,71 +34,96 @@ git push -u origin yourname
 npm run dev
 ```
 
-Visit **http://localhost:5173** to see the prototype pages. Open Claude Code and start building!
+Visit the local URL shown in your terminal to see the prototype pages. Open Claude Code and start building!
 
 ---
 
 ## Branching Workflow
 
-Feature branches are never merged into `main` — they exist as standalone explorations.
+Branches are organized in three levels: **your name → your team → your iterations**.
 
 ```
-main                          ← the shared template (kept clean)
-├── josh                      ← Josh's personal branch
-│   ├── josh/ai-chat-panel    ← a feature exploration
-│   └── josh/new-onboarding   ← another feature exploration
-├── sarah                     ← Sarah's personal branch
-│   ├── sarah/payroll-v2      ← a feature exploration
-│   └── sarah/dark-mode       ← another feature exploration
-└── ...
+main                                     ← shared template (don't commit directly)
+└── josh/hiring                          ← Josh's Hiring team base
+    ├── josh/hiring/ai-screening         ← iteration (merges back into josh/hiring)
+    ├── josh/hiring/pipeline-redesign    ← iteration (merges back into josh/hiring)
+    └── josh/hiring/offer-letter-flow    ← iteration (merges back into josh/hiring)
+└── josh/payroll                         ← Josh's Payroll team base
+    ├── josh/payroll/tax-summary-v2      ← iteration
+    └── josh/payroll/run-history         ← iteration
+└── kelly/performance                    ← Kelly's Performance team base
+    └── ...
 ```
 
-### Day-to-day workflow
+### Team branches
 
-1. **Create feature branches** off your personal branch for each idea:
-   ```bash
-   git checkout yourname
-   git checkout -b yourname/descriptive-feature-name
-   ```
+Your team branch is your persistent workspace. Add team-specific customizations here that you'll reuse across iterations.
 
-2. **Work and push.** No PRs needed — these branches are your workspace.
+```bash
+git checkout main
+git checkout -b yourname/yourteam
+```
 
-3. **Want to improve the shared template?** Create a branch off `main` and open a PR:
-   ```bash
-   git checkout main
-   git checkout -b template/your-improvement-name
-   ```
+### Iteration branches
 
-### Key rules
+For each prototype or exploration, branch off your team branch. When you're done, merge it back. Iteration branches auto-delete after merge.
 
-- **Feature branches are never merged into `main`** — they live as standalone explorations
-- **`main` is the shared template** — only template improvements get merged via PR
-- **Branch off your personal branch** for features, not directly off `main`
+```bash
+git checkout yourname/yourteam
+git checkout -b yourname/yourteam/descriptive-name
+# ... do your work ...
+# merge back into your team branch when done
+```
+
+### Pulling template updates (optional)
+
+If improvements are made to `main` and you want them in your team branch:
+
+```bash
+git checkout yourname/yourteam
+git merge main
+```
+
+### Contributing to the template
+
+If you build something that everyone should have — a new base page, a shared component, a useful skill — you can contribute it back to `main`:
+
+1. Create a branch off `main`: `git checkout -b template/your-improvement-name`
+2. Make your changes
+3. Open a PR — these get reviewed before merging
 
 ---
 
-## What's Inside
+### Deploying Previews
 
-### Prototype Pages
+Share your prototype with others using the `/deploy` skill. It builds your branch and deploys a draft preview to Netlify with a single command.
 
-| Page | Route | Description |
-|------|-------|-------------|
-| Home | `/home-template` | Dashboard with Gridlets, stats, and avatar header |
-| People | `/people-template` | Employee directory with list/grid views and org chart |
-| Hiring | `/hiring` | Candidate pipeline with tabs and data tables |
-| Payroll | `/payroll` | Stats cards, reminders, and data grid |
-| Profile | `/my-info` | Employee profile with tabbed sections |
-| Settings | `/settings` | Settings forms and account info |
-| Reports | `/reports-template` | Analytics, charts, and filters |
-| Create Job Opening | `/create-job-opening` | Wizard flow with AI generation |
-| Job Opening Detail | `/job-opening-detail` | Detail view with pipeline stages |
-| Files | `/files` | File management with sidebar navigation |
-| New Employee | `/new-employee` | Onboarding checklist and task cards |
-| Inbox | `/inbox` | Sidebar navigation with request list |
+```
+/deploy
+```
 
-### Claude Code Skills
+Each deploy creates a unique, unguessable draft URL you can share with your team. Old deploy sites are automatically cleaned up after 30 days.
 
-This repo includes Claude Code skills (in `.claude/skills/`) that automate common workflows. Run `/basecamp` to get oriented, or see the full list in `CLAUDE.md`.
+#### One-Time Setup
+
+Before your first deploy, you'll need to configure a Netlify auth token:
+
+1. **Create a free Netlify account** at [netlify.com](https://www.netlify.com)
+2. **Generate a personal access token:**
+   - Go to **User Settings** → **Applications** → **Personal access tokens**
+   - Click **New access token**, give it a name, and copy the value
+3. **Save the token to your `~/.zshrc`:**
+   ```bash
+   echo 'export NETLIFY_AUTH_TOKEN=your_token_here' >> ~/.zshrc
+   source ~/.zshrc
+   ```
+   For more details on configuring environment variables, see the [setup guide](https://docs.google.com/document/d/12ISyArJ-c2RUZTSmxNrZ80cY_a6r5MhswhF_Hr5bqgE/edit?tab=t.9clsvro19kug#bookmark=id.eajqc4volrhl).
+4. **Log in to the Netlify CLI:**
+   ```bash
+   netlify login
+   ```
+
+That's it — you only need to do this once. After setup, just run `/deploy` in any Claude Code session.
 
 ### Tech Stack
 
