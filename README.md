@@ -18,7 +18,7 @@ cd product-sandbox
 npm install
 ```
 
-If `npm install` fails, make sure `NPM_TOKEN` is set in your `~/.zshrc`.
+If `npm install` fails, you likely need to set up your NPM token. Follow the **[NPM Token Setup Guide](https://docs.google.com/document/d/12ISyArJ-c2RUZTSmxNrZ80cY_a6r5MhswhF_Hr5bqgE/edit?tab=t.9clsvro19kug)** to retrieve your token from the vault and configure it in your `~/.zshrc`.
 
 ### 2. Create your branch
 
