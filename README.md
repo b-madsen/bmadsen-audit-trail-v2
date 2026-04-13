@@ -94,7 +94,7 @@ If you build something that everyone should have — a new base page, a shared c
 
 ---
 
-### Deploying Previews
+### Deploying Previews — *Coming Soon*
 
 Share your prototype with others using the `/deploy` skill. It builds your branch and deploys a draft preview to Netlify with a single command.
 
