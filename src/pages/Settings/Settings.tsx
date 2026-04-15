@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { IconV2, BodyText, Button, Avatar, PageHeaderV2, Headline, TextField, SideNavigation, SideSubNavigation, IconButton, TextButton } from '@bamboohr/fabric';
+import { IconV2, BodyText, Button, Avatar, PageHeaderV2, Headline, TextField, SideNavigation, SideSubNavigation, IconButton, TextButton, StyledBox, RadioGroup, TextToggle } from '@bamboohr/fabric';
 import {
   settingsNavItems,
   accountSubTabs,
@@ -378,18 +378,16 @@ export function Settings({ section = 'account' }: SettingsProps) {
                     <Headline size="small" color="primary">Company Ownership</Headline>
                     <div className="co-description">
                       <BodyText size="medium">
-                        This info helps us meet compliance requirements and stays confidential. Because of that, you'll need to{' '}
-                        <a href="#" className="co-contact-link">contact us</a>{' '}
-                        before making any changes.
+                        This info helps us meet compliance requirements and stays confidential. Please add your company ownership details below.
                       </BodyText>
                     </div>
 
-                    <div className="co-form">
+                    <StyledBox borderRadius="medium" borderColor="neutral-extra-weak" borderStyle="solid" backgroundColor="neutral-extra-extra-weak" paddingY="32px" paddingX="40px" className="co-outer-box">
                       {/* Business Structure */}
                       <div className="co-field">
                         <BodyText size="small" weight="medium">Business Structure *</BodyText>
                         <div className="co-select-wrapper">
-                          <select className="co-select" disabled defaultValue={companyOwnershipData.businessStructure}>
+                          <select className="co-select" defaultValue={companyOwnershipData.businessStructure}>
                             <option value="LLC">LLC</option>
                             <option value="Corporation">Corporation</option>
                             <option value="Partnership">Partnership</option>
@@ -405,7 +403,7 @@ export function Settings({ section = 'account' }: SettingsProps) {
                       <div className="co-field">
                         <BodyText size="small" weight="medium">Does your company fit any of these? *</BodyText>
                         <div className="co-select-wrapper">
-                          <select className="co-select" disabled defaultValue={companyOwnershipData.companyFit}>
+                          <select className="co-select" defaultValue={companyOwnershipData.companyFit}>
                             <option value="None of these fit my company">None of these fit my company</option>
                           </select>
                           <span className="co-select-icon">
@@ -415,45 +413,31 @@ export function Settings({ section = 'account' }: SettingsProps) {
                       </div>
 
                       {/* Ownership Radio Group */}
-                      <div className="co-field">
-                        <BodyText size="small" weight="medium">Who has ownership or control of the company*</BodyText>
-                        <div className="co-radio-group">
-                          <label className="co-radio-label">
-                            <input
-                              type="radio"
-                              name="ownership"
-                              value="owner-25"
-                              checked={ownershipType === 'owner-25'}
-                              onChange={() => setOwnershipType('owner-25')}
-                              disabled
-                              className="co-radio-input"
-                            />
-                            <span className="co-radio-text">At least one person owns 25% or more of the company</span>
-                          </label>
-                          <label className="co-radio-label">
-                            <input
-                              type="radio"
-                              name="ownership"
-                              value="management-control"
-                              checked={ownershipType === 'management-control'}
-                              onChange={() => setOwnershipType('management-control')}
-                              disabled
-                              className="co-radio-input"
-                            />
-                            <span className="co-radio-text">No individual owns 25% or more; someone has management control instead</span>
-                          </label>
-                        </div>
+                      <div className="co-radio-field">
+                        <RadioGroup
+                          label="Who has ownership or control of the company*"
+                          name="ownership"
+                          value={ownershipType}
+                          onChange={({ value }) => setOwnershipType(value)}
+                          items={[
+                            { label: 'At least one person owns 25% or more of the company', value: 'owner-25' },
+                            { label: 'No individual owns 25% or more; someone has management control instead', value: 'management-control' },
+                          ]}
+                        />
                       </div>
 
-                      {/* Manager Form */}
-                      <div className="co-manager-section">
-                        <Headline size="extra-small" color="primary">Manager (CEO or Similar)</Headline>
+                      {/* Manager Form — white inner container */}
+                      <StyledBox borderRadius="medium" borderColor="neutral-medium" borderStyle="solid" backgroundColor="neutral-inverted" paddingY="32px" paddingX="40px" className="co-manager-section">
+                        <div className="co-section-heading">
+                          <Headline size="extra-small" color="primary">Manager (CEO or Similar)</Headline>
+                        </div>
 
                         {/* Full Name */}
                         <div className="co-field">
                           <BodyText size="small" weight="medium">Full Name *</BodyText>
                           <div className="co-select-wrapper">
-                            <select className="co-select" disabled defaultValue={companyOwnershipData.manager.fullName}>
+                            <select className="co-select" defaultValue={companyOwnershipData.manager.fullName}>
+                              <option value="">-Select-</option>
                               <option value="Sydney Rasmussen">Sydney Rasmussen</option>
                             </select>
                             <span className="co-select-icon">
@@ -470,7 +454,6 @@ export function Settings({ section = 'account' }: SettingsProps) {
                               type="text"
                               className="co-input"
                               defaultValue={companyOwnershipData.manager.birthDate}
-                              disabled
                             />
                             <span className="co-input-icon">
                               <IconV2 name="calendar-regular" size={16} color="neutral-weak" />
@@ -479,24 +462,16 @@ export function Settings({ section = 'account' }: SettingsProps) {
                         </div>
 
                         {/* Citizenship Status */}
-                        <div className="co-field">
+                        <div className="co-field co-field--citizenship">
                           <BodyText size="small" weight="medium">Citizenship Status *</BodyText>
-                          <div className="co-toggle">
-                            <button
-                              className={`co-toggle-option ${citizenshipStatus === 'us' ? 'co-toggle-option--active' : ''}`}
-                              onClick={() => setCitizenshipStatus('us')}
-                              disabled
-                            >
-                              US Citizen
-                            </button>
-                            <button
-                              className={`co-toggle-option ${citizenshipStatus === 'non-us' ? 'co-toggle-option--active' : ''}`}
-                              onClick={() => setCitizenshipStatus('non-us')}
-                              disabled
-                            >
-                              Non US Citizen
-                            </button>
-                          </div>
+                          <TextToggle
+                            value={['US Citizen', 'Non US Citizen']}
+                            isChecked={citizenshipStatus === 'us'}
+                            size="large"
+                            onChange={(event, data) => {
+                              setCitizenshipStatus(data?.value === 'US Citizen' ? 'us' : 'non-us');
+                            }}
+                          />
                         </div>
 
                         {/* SSN */}
@@ -506,7 +481,6 @@ export function Settings({ section = 'account' }: SettingsProps) {
                             type="text"
                             className="co-input"
                             defaultValue={companyOwnershipData.manager.ssn}
-                            disabled
                           />
                         </div>
 
@@ -517,7 +491,6 @@ export function Settings({ section = 'account' }: SettingsProps) {
                             type="text"
                             className="co-input"
                             defaultValue={companyOwnershipData.manager.email}
-                            disabled
                           />
                         </div>
 
@@ -528,7 +501,6 @@ export function Settings({ section = 'account' }: SettingsProps) {
                             type="text"
                             className="co-input"
                             defaultValue={companyOwnershipData.manager.phone}
-                            disabled
                           />
                           <span className="co-field-note">
                             <BodyText size="extra-small" color="neutral-medium">Please include the country code</BodyText>
@@ -536,7 +508,9 @@ export function Settings({ section = 'account' }: SettingsProps) {
                         </div>
 
                         {/* Residential Address */}
-                        <Headline size="extra-small" color="primary">Residential Address</Headline>
+                        <div className="co-section-heading">
+                          <Headline size="extra-small" color="primary">Residential Address</Headline>
+                        </div>
 
                         {/* Street 1 */}
                         <div className="co-field">
@@ -545,7 +519,6 @@ export function Settings({ section = 'account' }: SettingsProps) {
                             type="text"
                             className="co-input"
                             defaultValue={companyOwnershipData.manager.address.street1}
-                            disabled
                           />
                         </div>
 
@@ -556,11 +529,10 @@ export function Settings({ section = 'account' }: SettingsProps) {
                             type="text"
                             className="co-input"
                             defaultValue={companyOwnershipData.manager.address.street2}
-                            disabled
                           />
                         </div>
 
-                        {/* City / State / Zip */}
+                        {/* City / State / Zip Code */}
                         <div className="co-field-row">
                           <div className="co-field co-field--flex">
                             <BodyText size="small" weight="medium">City *</BodyText>
@@ -568,13 +540,13 @@ export function Settings({ section = 'account' }: SettingsProps) {
                               type="text"
                               className="co-input"
                               defaultValue={companyOwnershipData.manager.address.city}
-                              disabled
                             />
                           </div>
                           <div className="co-field co-field--small">
                             <BodyText size="small" weight="medium">State *</BodyText>
                             <div className="co-select-wrapper">
-                              <select className="co-select" disabled defaultValue={companyOwnershipData.manager.address.state}>
+                              <select className="co-select" defaultValue={companyOwnershipData.manager.address.state}>
+                                <option value="">-Select-</option>
                                 <option value="UT">UT</option>
                               </select>
                               <span className="co-select-icon">
@@ -583,12 +555,11 @@ export function Settings({ section = 'account' }: SettingsProps) {
                             </div>
                           </div>
                           <div className="co-field co-field--small">
-                            <BodyText size="small" weight="medium">Zip *</BodyText>
+                            <BodyText size="small" weight="medium">Zip Code *</BodyText>
                             <input
                               type="text"
                               className="co-input"
                               defaultValue={companyOwnershipData.manager.address.zip}
-                              disabled
                             />
                           </div>
                         </div>
@@ -597,7 +568,8 @@ export function Settings({ section = 'account' }: SettingsProps) {
                         <div className="co-field">
                           <BodyText size="small" weight="medium">Country *</BodyText>
                           <div className="co-select-wrapper">
-                            <select className="co-select" disabled defaultValue={companyOwnershipData.manager.address.country}>
+                            <select className="co-select" defaultValue={companyOwnershipData.manager.address.country}>
+                              <option value="">-Select-</option>
                               <option value="United States">United States</option>
                             </select>
                             <span className="co-select-icon">
@@ -605,12 +577,12 @@ export function Settings({ section = 'account' }: SettingsProps) {
                             </span>
                           </div>
                         </div>
-                      </div>
+                      </StyledBox>
+                    </StyledBox>
 
-                      {/* Save Button */}
-                      <div className="co-save">
-                        <Button variant="contained" color="primary" disabled>Save</Button>
-                      </div>
+                    {/* Save Button */}
+                    <div className="co-save">
+                      <Button variant="contained" color="primary">Save</Button>
                     </div>
                   </>
                 ) : (

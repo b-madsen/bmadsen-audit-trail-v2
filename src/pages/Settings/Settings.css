@@ -263,29 +263,43 @@
 /* ===== Company Ownership Form ===== */
 
 .co-description {
-  margin: 16px 0 24px;
+  margin: 12px 0 20px;
 }
 
-.co-contact-link {
-  color: var(--color-primary-strong);
-  text-decoration: underline;
+/* Section headings inside manager/address containers */
+.co-section-heading {
+  margin-bottom: 16px;
 }
 
-.co-form {
+/* Outer gray container (StyledBox) */
+.co-outer-box {
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
 .co-field {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  max-width: 380px;
 }
 
 .co-field-note {
   margin-top: 2px;
+}
+
+/* Radio group field — Fabric RadioGroup handles its own spacing */
+.co-radio-field {
+  margin-bottom: 24px;
+  max-width: 100%;
+}
+
+/* Citizenship toggle — 4px gap between label and toggle per Figma spec */
+.co-field--citizenship {
+  gap: 4px;
+  max-width: none;
 }
 
 /* Select (native dropdown) */
@@ -304,12 +318,6 @@
   color: var(--text-neutral-strong);
   appearance: none;
   cursor: pointer;
-}
-
-.co-select:disabled {
-  background: var(--surface-neutral-xx-weak);
-  color: var(--text-neutral-medium);
-  cursor: default;
 }
 
 .co-select-icon {
@@ -338,12 +346,6 @@
   box-sizing: border-box;
 }
 
-.co-input:disabled {
-  background: var(--surface-neutral-xx-weak);
-  color: var(--text-neutral-medium);
-  cursor: default;
-}
-
 .co-input-icon {
   position: absolute;
   right: 12px;
@@ -353,74 +355,14 @@
   display: flex;
 }
 
-/* Radio group */
-.co-radio-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.co-radio-label {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  cursor: pointer;
-}
-
-.co-radio-input {
-  margin-top: 3px;
-  accent-color: var(--color-primary-strong);
-}
-
-.co-radio-text {
-  font-size: 14px;
-  line-height: 20px;
-  color: var(--text-neutral-strong);
-}
-
-/* Toggle (US Citizen / Non US Citizen) */
-.co-toggle {
-  display: inline-flex;
-  border: 1px solid var(--border-neutral-medium);
-  border-radius: var(--radius-xx-small);
-  overflow: hidden;
-}
-
-.co-toggle-option {
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  background: var(--surface-neutral-white);
-  color: var(--text-neutral-medium);
-}
-
-.co-toggle-option--active {
-  background: var(--color-primary-strong);
-  color: white;
-}
-
-.co-toggle-option:disabled {
-  cursor: default;
-}
-
-/* Manager section */
+/* Manager section — white inner container */
 .co-manager-section {
-  margin-top: 8px;
-  padding: 24px;
-  background: var(--surface-neutral-xx-weak);
-  border: 1px solid var(--border-neutral-x-weak);
-  border-radius: var(--radius-medium);
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
 .co-manager-section .co-field {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 /* Field row (City / State / Zip) */
@@ -428,10 +370,12 @@
   display: flex;
   gap: 12px;
   margin-bottom: 16px;
+  max-width: 480px;
 }
 
 .co-field-row .co-field {
   margin-bottom: 0;
+  max-width: none;
 }
 
 .co-field--flex {
@@ -445,7 +389,7 @@
 
 /* Save button */
 .co-save {
-  margin-top: 16px;
+  margin-top: 24px;
   display: flex;
   justify-content: flex-start;
 }
