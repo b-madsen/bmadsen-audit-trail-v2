@@ -1,0 +1,83 @@
+.benefits-page {
+  min-height: 100%;
+}
+
+.benefits-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.benefits-welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.benefits-getting-started {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.benefits-lets-go {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.benefits-lets-go-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--surface-neutral-xx-weak);
+  border: 1px solid var(--border-neutral-x-weak);
+  border-radius: 8px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.benefits-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.benefits-step-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  background: var(--surface-neutral-white);
+  border: 1px solid var(--border-neutral-x-weak);
+  border-radius: 8px;
+}
+
+.benefits-step-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--surface-neutral-xx-weak);
+  border: 1px solid var(--border-neutral-x-weak);
+  border-radius: 8px;
+  flex-shrink: 0;
+  margin-bottom: 4px;
+}
+
+.benefits-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.benefits-step-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+}
