@@ -3,7 +3,77 @@
 .audit-trail-page {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  /* Extend through the PageCapsule's 32px bottom padding so the timeline
+     clips at the capsule's visual edge instead of leaving a dead zone */
+  height: calc(100% + 32px);
+  margin-bottom: -32px;
+}
+
+/* ── Page header actions ────────────────────────────────────────────────── */
+
+.audit-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Share modal ─────────────────────────────────────────────────────────── */
+
+.share-modal-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 8px 0 0;
+}
+
+.share-modal-divider {
+  height: 1px;
+  background: var(--fabric-border-color-neutral-weak, #e8e8e8);
+  margin: 16px 0;
+  width: 100%;
+}
+
+.share-modal-access-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.share-modal-access-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.share-modal-access-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.share-modal-add-people {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--fabric-surface-color-neutral-x-weak, #f4f4f4);
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.share-modal-add-people [data-fabric-component="TextField"] {
+  background: #fff;
+}
+
+.share-modal-add-people input {
+  height: 80px;
+  align-items: flex-start;
+  padding-top: 10px;
 }
 
 /* ── Filter bar ──────────────────────────────────────────────────────────── */
@@ -32,9 +102,24 @@
   background: #fff;
   border: 1px solid var(--fabric-border-color-neutral-weak, #e0e0e0);
   border-radius: 8px;
-  padding: 12px;
+  padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   min-width: 240px;
+}
+
+.audit-filter-quick-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--fabric-border-color-neutral-weak, #e8e8e8);
+  margin-bottom: 16px;
+}
+
+.audit-filter-quick-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .audit-filter-date-range {
@@ -61,27 +146,21 @@
   gap: 4px;
 }
 
+.audit-actor-children {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 24px;
+  margin-top: 4px;
+}
+
 /* ── Timeline container ──────────────────────────────────────────────────── */
 
 .audit-timeline {
-  position: relative;
   flex: 1;
-  padding-bottom: 32px;
-}
-
-/* The vertical line running behind events */
-.audit-timeline-line {
-  position: absolute;
-  left: 15px; /* center of 32px actor slot, minus 1px for 2px line centering */
-  top: 28px;
-  bottom: 32px;
-  width: 2px;
-  background: var(--fabric-border-color-neutral-weak, #e8e8e8);
-  z-index: 0;
-}
-
-.audit-timeline-group {
-  position: relative;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* ── Date separator ──────────────────────────────────────────────────────── */
@@ -89,46 +168,13 @@
 .audit-date-sep-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 20px 0 8px;
-}
-
-.audit-date-sep-row:first-child {
-  margin-top: 8px;
-}
-
-.audit-date-sep-dot {
-  position: relative;
-  z-index: 1;
-}
-
-.audit-date-sep-dot::after {
-  content: '';
-  display: block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #fff;
-  border: 2px solid var(--fabric-border-color-neutral-medium, #bbb);
-  margin: 0 auto;
-}
-
-/* Small dot for event rows (actor badge now lives inside the card) */
-.audit-event-dot::after {
-  content: '';
-  display: block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--fabric-border-color-neutral-medium, #bbb);
-  margin: 14px auto 0;
-}
-
-.audit-date-sep-content {
-  flex: 1;
-  display: flex;
-  align-items: center;
   gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: rgb(246, 246, 244);
+  padding: 16px 0 8px;
+  margin: 0;
 }
 
 .audit-date-sep-rule {
@@ -144,49 +190,6 @@
   align-items: flex-start;
   gap: 12px;
   margin-bottom: 8px;
-}
-
-/* ── Actor slot (left column) ────────────────────────────────────────────── */
-
-.audit-actor-slot {
-  flex-shrink: 0;
-  width: 32px;
-  display: flex;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-}
-
-/* ── Actor badges ────────────────────────────────────────────────────────── */
-
-.audit-actor-badge {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.audit-actor-badge--user {
-  background: var(--fabric-surface-color-primary-weak, #e6f4ea);
-  color: var(--fabric-color-text-primary-strong, #1a6b1a);
-}
-
-.audit-actor-badge--system {
-  background: var(--fabric-surface-color-neutral-weak, #f0f0f0);
-}
-
-.audit-actor-badge--ask {
-  background: var(--fabric-surface-color-discovery-weak, #f3e8ff);
-}
-
-.audit-actor-badge--integration {
-  background: var(--fabric-surface-color-info-weak, #e3f2fd);
 }
 
 /* ── Event card ──────────────────────────────────────────────────────────── */
@@ -230,7 +233,7 @@
 
 .audit-event-description {
   flex: 1;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
   color: var(--fabric-color-text-neutral-strong, #222);
   margin: 0;
@@ -316,8 +319,32 @@
   font-size: 13px;
 }
 
-/* Undo action area */
-.audit-event-actions {
+/* Hover undo on table rows */
+.audit-row-undo-wrap {
   display: flex;
-  align-items: center;
+  justify-content: flex-end;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.audit-change-table-wrap tr:hover .audit-row-undo-wrap {
+  opacity: 1;
+}
+
+
+
+/* Reverted row state */
+.audit-cell--reverted {
+  opacity: 0.45;
+}
+
+.audit-row-reverted-pill {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ── Tags panel ──────────────────────────────────────────────────────────── */
+
+.audit-tags-panel {
+  min-width: 300px;
 }
