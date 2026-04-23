@@ -1,4 +1,5 @@
 import { useState, ChangeEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   IconV2,
   IconButton,
@@ -47,31 +48,6 @@ const recentGroups = [
   { id: 'last-30-days', title: 'Last 30 days' },
 ];
 
-const recentColumns = [
-  {
-    header: 'Today',
-    cell: (row: RecentReport) => (
-      <div className="reports-name-cell">
-        <IconV2 name={`${row.icon ?? 'chart-column'}-regular` as any} size={16} color="info-medium" />
-        <TextButton onClick={() => {}}>{row.name}</TextButton>
-      </div>
-    ),
-  },
-  {
-    header: 'Last Viewed',
-    cell: (row: RecentReport) => (
-      <BodyText size="medium" color="neutral-weak">{row.lastViewed}</BodyText>
-    ),
-  },
-  {
-    header: 'Owner',
-    cell: (row: RecentReport) => (
-      <BodyText size="medium" color="neutral-weak">{row.owner}</BodyText>
-    ),
-  },
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-] as any;
-
 const standardColumns = [
   {
     headerAriaLabel: 'Report name',
@@ -92,9 +68,37 @@ const standardColumns = [
 ] as any;
 
 export function Reports() {
+  const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState('recent');
   const [favorites, setFavorites] = useState(initialFavorites);
   const [customTab, setCustomTab] = useState('my-reports');
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recentColumns: any[] = [
+    {
+      header: 'Today',
+      cell: (row: RecentReport) => (
+        <div className="reports-name-cell">
+          <IconV2 name={`${row.icon ?? 'chart-column'}-regular` as any} size={16} color="info-medium" />
+          <TextButton onClick={() => {
+            if (row.name === 'Audit Trail') navigate('/reports/audit-trail');
+          }}>{row.name}</TextButton>
+        </div>
+      ),
+    },
+    {
+      header: 'Last Viewed',
+      cell: (row: RecentReport) => (
+        <BodyText size="medium" color="neutral-weak">{row.lastViewed}</BodyText>
+      ),
+    },
+    {
+      header: 'Owner',
+      cell: (row: RecentReport) => (
+        <BodyText size="medium" color="neutral-weak">{row.owner}</BodyText>
+      ),
+    },
+  ];
 
   const removeFavorite = (id: string) => {
     setFavorites(prev => prev.filter(f => f.id !== id));

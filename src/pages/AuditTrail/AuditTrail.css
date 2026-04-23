@@ -1,0 +1,323 @@
+/* ── Page shell ──────────────────────────────────────────────────────────── */
+
+.audit-trail-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ── Filter bar ──────────────────────────────────────────────────────────── */
+
+.audit-trail-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+}
+
+.audit-trail-filter-bar-spacer {
+  flex: 1;
+}
+
+/* Filter dropdown wrapper */
+.audit-filter-wrapper {
+  position: relative;
+}
+
+.audit-filter-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 100;
+  background: #fff;
+  border: 1px solid var(--fabric-border-color-neutral-weak, #e0e0e0);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  min-width: 240px;
+}
+
+.audit-filter-date-range {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.audit-filter-date-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.audit-filter-date-sep {
+  color: var(--fabric-color-text-neutral-weak, #888);
+  font-size: 14px;
+  padding-bottom: 6px;
+}
+
+.audit-filter-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── Timeline container ──────────────────────────────────────────────────── */
+
+.audit-timeline {
+  position: relative;
+  flex: 1;
+  padding-bottom: 32px;
+}
+
+/* The vertical line running behind events */
+.audit-timeline-line {
+  position: absolute;
+  left: 15px; /* center of 32px actor slot, minus 1px for 2px line centering */
+  top: 28px;
+  bottom: 32px;
+  width: 2px;
+  background: var(--fabric-border-color-neutral-weak, #e8e8e8);
+  z-index: 0;
+}
+
+.audit-timeline-group {
+  position: relative;
+}
+
+/* ── Date separator ──────────────────────────────────────────────────────── */
+
+.audit-date-sep-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 8px;
+}
+
+.audit-date-sep-row:first-child {
+  margin-top: 8px;
+}
+
+.audit-date-sep-dot {
+  position: relative;
+  z-index: 1;
+}
+
+.audit-date-sep-dot::after {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--fabric-border-color-neutral-medium, #bbb);
+  margin: 0 auto;
+}
+
+/* Small dot for event rows (actor badge now lives inside the card) */
+.audit-event-dot::after {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fabric-border-color-neutral-medium, #bbb);
+  margin: 14px auto 0;
+}
+
+.audit-date-sep-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.audit-date-sep-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--fabric-border-color-neutral-weak, #e8e8e8);
+}
+
+/* ── Event row ───────────────────────────────────────────────────────────── */
+
+.audit-event-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+/* ── Actor slot (left column) ────────────────────────────────────────────── */
+
+.audit-actor-slot {
+  flex-shrink: 0;
+  width: 32px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Actor badges ────────────────────────────────────────────────────────── */
+
+.audit-actor-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.audit-actor-badge--user {
+  background: var(--fabric-surface-color-primary-weak, #e6f4ea);
+  color: var(--fabric-color-text-primary-strong, #1a6b1a);
+}
+
+.audit-actor-badge--system {
+  background: var(--fabric-surface-color-neutral-weak, #f0f0f0);
+}
+
+.audit-actor-badge--ask {
+  background: var(--fabric-surface-color-discovery-weak, #f3e8ff);
+}
+
+.audit-actor-badge--integration {
+  background: var(--fabric-surface-color-info-weak, #e3f2fd);
+}
+
+/* ── Event card ──────────────────────────────────────────────────────────── */
+
+.audit-event-card {
+  flex: 1;
+  border: 1px solid var(--fabric-border-color-neutral-weak, #e8e8e8);
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease;
+  min-width: 0;
+}
+
+.audit-event-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.audit-event-card--expanded {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Card header */
+.audit-event-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.audit-event-header:hover {
+  background: var(--fabric-surface-color-neutral-xx-weak, #fafafa);
+}
+
+/* Actor icon slot inside card header */
+.audit-event-actor-icon {
+  flex-shrink: 0;
+}
+
+.audit-event-description {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--fabric-color-text-neutral-strong, #222);
+  margin: 0;
+  min-width: 0;
+}
+
+/* Inline link buttons inside description — primary green per brand guidelines */
+.audit-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--fabric-color-text-primary-strong, #2e7918);
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: inherit;
+}
+
+.audit-link:hover {
+  text-decoration: underline;
+}
+
+.audit-event-timestamp {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.audit-event-toggle {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.audit-event-toggle--expanded {
+  transform: rotate(180deg);
+}
+
+/* ── Expanded details ────────────────────────────────────────────────────── */
+
+.audit-event-details {
+  border-top: 1px solid var(--fabric-border-color-neutral-weak, #e8e8e8);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--fabric-surface-color-neutral-xx-weak, #fafafa);
+}
+
+/* Meta row: Area + IP */
+.audit-event-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.audit-meta-label {
+  font-weight: 600;
+  color: var(--fabric-color-text-neutral-medium, #555);
+}
+
+.audit-meta-sep {
+  color: var(--fabric-color-text-neutral-weak, #aaa);
+}
+
+
+/* Fabric Table wrapper — constrains padding/sizing inside the expanded card */
+.audit-change-table-wrap {
+  margin: 0 -4px;
+}
+
+/* Strikethrough before value */
+.audit-change-before {
+  text-decoration: line-through;
+  color: var(--fabric-color-text-error-medium, #c62828);
+  opacity: 0.85;
+  font-size: 13px;
+}
+
+/* After value */
+.audit-change-after {
+  color: var(--fabric-color-text-success-medium, #2e7d32);
+  font-weight: 500;
+  font-size: 13px;
+}
+
+/* Undo action area */
+.audit-event-actions {
+  display: flex;
+  align-items: center;
+}

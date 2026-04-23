@@ -36,6 +36,7 @@ const Compensation = lazy(() => import('./pages/Compensation/Compensation'));
 // Additional pages
 const Chat = lazy(() => import('./pages/Chat/Chat'));
 const CreateJobOpening = lazy(() => import('./pages/CreateJobOpening/CreateJobOpening'));
+const AuditTrail = lazy(() => import('./pages/AuditTrail/AuditTrail'));
 const HeadcountReport = lazy(() => import('./pages/HeadcountReport/HeadcountReport'));
 const HomeTemplate = lazy(() => import('./pages/HomeTemplate/Home'));
 const HRManagerHome = lazy(() => import('./pages/HRManagerHome/HRManagerHome'));
@@ -376,6 +377,7 @@ function App() {
         <Route path="/hiring/create-job" element={<FullLayout><CreateJobOpening /></FullLayout>} />
         <Route path="/hiring/job/:id" element={<FullLayout><JobOpeningDetail /></FullLayout>} />
         <Route path="/new-employee" element={<FullLayout><NewEmployeePage /></FullLayout>} />
+        <Route path="/reports/audit-trail" element={<FullLayout><AuditTrail /></FullLayout>} />
         <Route path="/reports/headcount" element={<FullLayout><HeadcountReport /></FullLayout>} />
         <Route path="/benefits" element={<FullLayout><Benefits /></FullLayout>} />
         <Route path="/compensation" element={<FullLayout><Compensation /></FullLayout>} />
