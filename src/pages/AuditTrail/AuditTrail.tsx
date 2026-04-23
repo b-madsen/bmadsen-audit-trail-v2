@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useViewBar } from '../../contexts/ViewBarContext';
 import {
   PageHeaderV2,
   Button,
@@ -266,7 +267,7 @@ function formatUndoneTime(d: Date) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function makeChangeColumns(onUndo: (change: AuditChange) => void, undoneChanges: Record<string, Date>): any[] {
+function makeChangeColumns(onUndo: (change: AuditChange) => void, undoneChanges: Record<string, Date>, isMvp: boolean): any[] {
   return [
     {
       header: 'Attribute',
@@ -303,6 +304,7 @@ function makeChangeColumns(onUndo: (change: AuditChange) => void, undoneChanges:
             </div>
           );
         }
+        if (isMvp) return null;
         return (
           <div className="audit-row-undo-wrap">
             <Button
@@ -408,10 +410,12 @@ function AuditEventCard({
   event,
   isExpanded,
   onToggle,
+  isMvp,
 }: {
   event: AuditEventData;
   isExpanded: boolean;
   onToggle: () => void;
+  isMvp: boolean;
 }) {
   const { actor, description, timestamp, details } = event;
   const [undoTarget, setUndoTarget] = useState<AuditChange | null>(null);
@@ -421,7 +425,7 @@ function AuditEventCard({
   const totalCount = details.changes.length;
   const hasAnyReverted = revertedCount > 0;
   const allReverted = revertedCount === totalCount;
-  const changeColumns = makeChangeColumns(setUndoTarget, undoneChanges);
+  const changeColumns = makeChangeColumns(setUndoTarget, undoneChanges, isMvp);
 
   return (
     <div className="audit-event-row">
@@ -862,6 +866,8 @@ function applyFilters(
 
 export default function AuditTrail() {
   const navigate = useNavigate();
+  const { activeVersion } = useViewBar();
+  const isMvp = activeVersion === 'mvp';
 
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [dateRange, setDateRange] = useState<DateRange>({ from: '', to: '' });
@@ -901,7 +907,7 @@ export default function AuditTrail() {
   return (
     <div className="audit-trail-page">
       <PageHeaderV2
-        title="Audit Trail"
+        title="Change History"
         breadcrumb={
           <PageHeaderV2.Breadcrumb
             href="/reports"
@@ -915,12 +921,14 @@ export default function AuditTrail() {
         }
         primaryContent={
           <div className="audit-header-actions">
-            <IconButton
-              icon="user-plus-regular"
-              aria-label="Share report"
-              variant="outlined"
-              onClick={() => setIsShareOpen(true)}
-            />
+            {!isMvp && (
+              <IconButton
+                icon="user-plus-regular"
+                aria-label="Share report"
+                variant="outlined"
+                onClick={() => setIsShareOpen(true)}
+              />
+            )}
             <Dropdown
               type="icon"
               ButtonProps={{
@@ -994,15 +1002,17 @@ export default function AuditTrail() {
 
       {/* Filter bar */}
       <div className="audit-trail-filter-bar">
-        <Button
-          color="ai"
-          variant="outlined"
-          size="medium"
-          startIcon={<IconV2 name="sparkles-solid" size={16} />}
-          onClick={() => window.dispatchEvent(new CustomEvent('bhr-open-ask', { detail: { context: 'audit-trail' } }))}
-        >
-          Filter with Ask
-        </Button>
+        {!isMvp && (
+          <Button
+            color="ai"
+            variant="outlined"
+            size="medium"
+            startIcon={<IconV2 name="sparkles-solid" size={16} />}
+            onClick={() => window.dispatchEvent(new CustomEvent('bhr-open-ask', { detail: { context: 'audit-trail' } }))}
+          >
+            Filter with Ask
+          </Button>
+        )}
 
         <FilterDropdown label="Date"    icon="calendar"      type="date"     dateValue={dateRange}         onDateChange={setDateRange} />
         <ActorsDropdown selectedIds={selectedActors} onSelectionChange={setSelectedActors} />
@@ -1036,6 +1046,7 @@ export default function AuditTrail() {
                 event={event}
                 isExpanded={expandedIds.has(event.id)}
                 onToggle={() => toggleExpand(event.id)}
+                isMvp={isMvp}
               />
             ))}
           </div>

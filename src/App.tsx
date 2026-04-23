@@ -1,4 +1,4 @@
-import { useState, Suspense, lazy } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { AskPanel } from './components/AskPanel/AskPanel';
 import { Routes, Route, Link, Link as RouterLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -15,7 +15,9 @@ import {
   DatePickerProvider,
 } from '@bamboohr/fabric';
 import { ViewBarProvider, useViewBar } from './contexts/ViewBarContext';
+import { CommentsProvider } from './contexts/CommentsContext';
 import { ViewBar } from './components/ViewBar';
+import { CommentsLayer } from './components/CommentsLayer';
 import './App.css';
 
 // Lazy load pages - working pages
@@ -216,6 +218,17 @@ function FullLayout({ children, noCapsule }: { children: React.ReactNode; noCaps
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isAskOpen, setIsAskOpen] = useState(false);
   const [isAskExpanded, setIsAskExpanded] = useState(false);
+  const [askContext, setAskContext] = useState<'audit-trail' | undefined>(undefined);
+
+  useEffect(() => {
+    function handleOpenAsk(e: Event) {
+      const detail = (e as CustomEvent).detail as { context?: 'audit-trail' } | undefined;
+      setAskContext(detail?.context);
+      setIsAskOpen(true);
+    }
+    window.addEventListener('bhr-open-ask', handleOpenAsk);
+    return () => window.removeEventListener('bhr-open-ask', handleOpenAsk);
+  }, []);
   const location = useLocation();
   const navigate = useNavigate();
   const p = location.pathname;
@@ -289,9 +302,10 @@ function FullLayout({ children, noCapsule }: { children: React.ReactNode; noCaps
             <div className="ask-panel-wrapper">
               <AskPanel
                 isOpen={isAskOpen}
-                onClose={() => { setIsAskOpen(false); setIsAskExpanded(false); }}
+                onClose={() => { setIsAskOpen(false); setIsAskExpanded(false); setAskContext(undefined); }}
                 isExpanded={isAskExpanded}
                 onExpandChange={setIsAskExpanded}
+                context={askContext}
               />
             </div>
           )}
@@ -306,6 +320,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <ViewBar />
+      <CommentsLayer />
       <div
         className="app-viewport"
         style={{ paddingTop: isVisible ? '40px' : '0', transition: 'padding-top 0.2s ease' }}
@@ -319,6 +334,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <ViewBarProvider>
+    <CommentsProvider>
     <DatePickerProvider>
     <Suspense fallback={<PageLoader />}>
       <AppShell>
@@ -385,6 +401,7 @@ function App() {
       </AppShell>
     </Suspense>
     </DatePickerProvider>
+    </CommentsProvider>
     </ViewBarProvider>
   );
 }

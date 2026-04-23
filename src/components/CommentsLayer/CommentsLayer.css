@@ -1,0 +1,115 @@
+.comments-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 150;
+}
+
+/* ── Pin badge ───────────────────────────────────────────────────────────── */
+
+.comment-pin__badge {
+  pointer-events: all;
+}
+
+.comment-pin__badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #d97706;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: Inter, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.45), 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.comment-pin__badge:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.55), 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.comment-pin__badge--open {
+  transform: scale(1.15);
+  background: #b45309;
+}
+
+/* ── Note card ───────────────────────────────────────────────────────────── */
+
+.comment-note {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 256px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  z-index: 250;
+  animation: note-in 0.15s ease;
+  pointer-events: all;
+}
+
+
+@keyframes note-in {
+  from { opacity: 0; transform: translateX(-50%) scale(0.94); }
+  to   { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+.comment-note__accent {
+  width: 100%;
+  height: 3px;
+  background: #d97706;
+  flex-shrink: 0;
+}
+
+.comment-note__body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.comment-note__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.comment-note__id {
+  font-size: 10px;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  color: #d97706;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+.comment-note__author {
+  font-size: 12px;
+  font-weight: 600;
+  font-family: Inter, sans-serif;
+  color: #222;
+  line-height: 1.4;
+}
+
+.comment-note__timestamp {
+  font-size: 11px;
+  font-family: Inter, sans-serif;
+  color: #888;
+  line-height: 1.4;
+}
+
+.comment-note__text {
+  font-size: 13px;
+  font-family: Inter, sans-serif;
+  color: #444;
+  line-height: 1.55;
+  margin: 0;
+}

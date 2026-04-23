@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 
 type Persona = 'employee' | 'manager' | 'hr-admin';
 type Package = 'core' | 'pro' | 'elite';
+export type Version = 'north-star' | 'mvp';
 interface ViewBarContextType {
   isVisible: boolean;
   toggleVisible: () => void;
@@ -14,6 +15,8 @@ interface ViewBarContextType {
   toggleEdgeCase: (id: string) => void;
   activeErrorState: string | null;
   toggleErrorState: (id: string) => void;
+  activeVersion: Version;
+  setActiveVersion: (version: Version) => void;
 }
 
 const ViewBarContext = createContext<ViewBarContextType | undefined>(undefined);
@@ -24,6 +27,7 @@ export function ViewBarProvider({ children }: { children: ReactNode }) {
   const [activePackage, setActivePackage] = useState<Package>('core');
   const [activeEdgeCase, setActiveEdgeCase] = useState<string | null>(null);
   const [activeErrorState, setActiveErrorState] = useState<string | null>(null);
+  const [activeVersion, setActiveVersion] = useState<Version>('north-star');
 
   const toggleEdgeCase = (id: string) =>
     setActiveEdgeCase(prev => prev === id ? null : id);
@@ -51,6 +55,7 @@ export function ViewBarProvider({ children }: { children: ReactNode }) {
       activePackage, setActivePackage,
       activeEdgeCase, toggleEdgeCase,
       activeErrorState, toggleErrorState,
+      activeVersion, setActiveVersion,
     }}>
       {children}
     </ViewBarContext.Provider>

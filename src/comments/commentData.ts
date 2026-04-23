@@ -1,0 +1,59 @@
+import type { CommentMap } from './types';
+
+export const commentData: CommentMap = {
+  '/reports/audit-trail': [
+    {
+      id: 'ch-1',
+      selector: '.audit-trail-filter-bar',
+      anchorEdge: 'top-right',
+      author: 'Chris Downs',
+      text: 'Filter with Ask is north-star only — in MVP all filters are manual. Worth watching if the filter bar alone feels overwhelming.',
+      timestamp: 'Apr 21, 2026 · 3:14 PM',
+    },
+    {
+      id: 'ch-2',
+      selector: '.audit-event-card:first-child .audit-event-header',
+      anchorEdge: 'top-right',
+      offsetX: -8,
+      author: 'Chris Downs',
+      text: 'The first row is always "Today." Consider whether a sticky date separator makes sense once the list grows long.',
+      timestamp: 'Apr 21, 2026 · 3:18 PM',
+    },
+    {
+      id: 'ch-3',
+      selector: '.audit-header-actions',
+      anchorEdge: 'top-left',
+      offsetX: -28,
+      author: 'Chris Downs',
+      text: 'Share icon is north-star only. Export is available in both versions — it just triggers a no-op in this prototype.',
+      timestamp: 'Apr 22, 2026 · 10:05 AM',
+    },
+    {
+      id: 'ch-4',
+      selector: '.audit-event-meta',
+      anchorEdge: 'top-right',
+      author: 'Chris Downs',
+      text: 'Area + IP are shown on expand. Decision pending: should Area be visible in the collapsed row to speed up scanning?',
+      timestamp: 'Apr 22, 2026 · 10:08 AM',
+    },
+    {
+      id: 'ch-5',
+      selector: '[aria-label="Export report"]',
+      anchorEdge: 'bottom-left',
+      offsetX: -8,
+      offsetY: 8,
+      author: 'Chris Downs',
+      text: 'Triggers a no-op in this prototype. In production, exports the currently filtered view as Excel, CSV, or PDF.',
+      timestamp: 'Apr 22, 2026 · 10:12 AM',
+    },
+    {
+      id: 'ch-6',
+      selector: '.audit-row-undo-wrap button',
+      anchorEdge: 'top-left',
+      offsetX: -28,
+      author: 'Chris Downs',
+      text: 'Reverts a single field change inline. North-star only — hidden in MVP. After undoing, the row shows a "Reverted" pill with a timestamp.',
+      timestamp: 'Apr 22, 2026 · 10:15 AM',
+    },
+  ],
+};

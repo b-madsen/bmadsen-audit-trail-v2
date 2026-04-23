@@ -1,5 +1,7 @@
 import { useRef, useLayoutEffect, useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useViewBar } from '../../contexts/ViewBarContext';
+import { useComments } from '../../contexts/CommentsContext';
 import './ViewBar.css';
 
 const PERSONAS = [
@@ -24,6 +26,11 @@ const ERROR_STATES = [
   { id: 'option-one', label: 'Option 1' },
   { id: 'option-two', label: 'Option 2' },
   { id: 'option-three', label: 'Option 3' },
+] as const;
+
+const VERSIONS = [
+  { id: 'north-star', label: 'North Star' },
+  { id: 'mvp', label: 'MVP' },
 ] as const;
 
 const IS_MAC = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
@@ -210,6 +217,8 @@ function EdgeHint() {
   );
 }
 
+const COMMENT_ITEMS = [{ id: 'comments', label: 'Comments' }] as const;
+
 export function ViewBar() {
   const {
     isVisible,
@@ -217,31 +226,54 @@ export function ViewBar() {
     activePackage, setActivePackage,
     activeEdgeCase, toggleEdgeCase,
     activeErrorState, toggleErrorState,
+    activeVersion, setActiveVersion,
   } = useViewBar();
+  const { commentsVisible, toggleComments } = useComments();
 
+  const { pathname } = useLocation();
+  const isChangeHistory = pathname === '/reports/audit-trail';
   const [infoOpen, setInfoOpen] = useState(false);
 
   return (
     <>
     <EdgeHint />
     <div className={`view-bar${isVisible ? ' view-bar--visible' : ''}`} role="toolbar" aria-label="View settings">
-      <span className="view-bar__label">Persona</span>
-      <ButtonGroup items={PERSONAS} activeId={activePersona} onSelect={setActivePersona} />
+      {isChangeHistory ? (
+        <>
+          <span className="view-bar__label">Version</span>
+          <ButtonGroup items={VERSIONS} activeId={activeVersion} onSelect={setActiveVersion} />
+        </>
+      ) : (
+        <>
+          <span className="view-bar__label">Persona</span>
+          <ButtonGroup items={PERSONAS} activeId={activePersona} onSelect={setActivePersona} />
+
+          <div className="view-bar__divider" aria-hidden="true" />
+
+          <span className="view-bar__label">Package</span>
+          <ButtonGroup items={PACKAGES} activeId={activePackage} onSelect={setActivePackage} />
+
+          <div className="view-bar__divider" aria-hidden="true" />
+
+          <span className="view-bar__label">Edge Cases</span>
+          <ToggleGroup items={EDGE_CASES} activeId={activeEdgeCase} onToggle={toggleEdgeCase} activeColor="#b45309" />
+
+          <div className="view-bar__divider" aria-hidden="true" />
+
+          <span className="view-bar__label">Error States</span>
+          <ToggleGroup items={ERROR_STATES} activeId={activeErrorState} onToggle={toggleErrorState} activeColor="#b91c1c" />
+        </>
+      )}
 
       <div className="view-bar__divider" aria-hidden="true" />
 
-      <span className="view-bar__label">Package</span>
-      <ButtonGroup items={PACKAGES} activeId={activePackage} onSelect={setActivePackage} />
-
-      <div className="view-bar__divider" aria-hidden="true" />
-
-      <span className="view-bar__label">Edge Cases</span>
-      <ToggleGroup items={EDGE_CASES} activeId={activeEdgeCase} onToggle={toggleEdgeCase} activeColor="#b45309" />
-
-      <div className="view-bar__divider" aria-hidden="true" />
-
-      <span className="view-bar__label">Error States</span>
-      <ToggleGroup items={ERROR_STATES} activeId={activeErrorState} onToggle={toggleErrorState} activeColor="#b91c1c" />
+      <span className="view-bar__label">Annotations</span>
+      <ToggleGroup
+        items={COMMENT_ITEMS}
+        activeId={commentsVisible ? 'comments' : null}
+        onToggle={toggleComments}
+        activeColor="#d97706"
+      />
 
       <div className="view-bar__info-anchor">
         <button
