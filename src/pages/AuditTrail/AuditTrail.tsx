@@ -907,7 +907,7 @@ export default function AuditTrail() {
   return (
     <div className="audit-trail-page">
       <PageHeaderV2
-        title="Change History"
+        title="Audit Trail"
         breadcrumb={
           <PageHeaderV2.Breadcrumb
             href="/reports"
