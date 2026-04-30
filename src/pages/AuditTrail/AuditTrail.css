@@ -241,6 +241,15 @@
 }
 
 /* Inline link buttons inside description — primary green per brand guidelines */
+.audit-event-row--highlight {
+  animation: audit-highlight-fade 2s ease-out forwards;
+}
+
+@keyframes audit-highlight-fade {
+  0%   { background-color: var(--fabric-color-surface-info-weak, #eef5ff); }
+  100% { background-color: transparent; }
+}
+
 .audit-link {
   background: none;
   border: none;
@@ -342,7 +351,7 @@
 }
 
 .audit-employee-link {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -471,7 +480,7 @@
 }
 
 
-/* Hover undo on table rows */
+/* Hover update on table rows */
 .audit-row-undo-wrap {
   display: flex;
   justify-content: flex-end;
@@ -485,14 +494,42 @@
 
 
 
-/* Reverted row state */
-.audit-cell--reverted {
+/* Fixed/updated row state */
+.audit-cell--fixed {
   opacity: 0.45;
 }
 
-.audit-row-reverted-pill {
+.audit-row-fixed-pill {
   display: flex;
   justify-content: flex-end;
+}
+
+/* Update field modal */
+.audit-update-changes-preview {
+  display: flex;
+  flex-direction: column;
+}
+
+.audit-update-field-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.audit-update-native-select {
+  appearance: auto;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 15px;
+  border: 1px solid var(--fabric-border-color-neutral-medium, #c8c8c8);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--fabric-text-color-neutral-strong, #2d2d2d);
+  cursor: pointer;
+}
+
+.audit-update-native-select:focus {
+  outline: 2px solid var(--fabric-border-color-primary-strong, #0b7240);
+  outline-offset: 1px;
 }
 
 /* ── Tags panel ──────────────────────────────────────────────────────────── */

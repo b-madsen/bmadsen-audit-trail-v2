@@ -808,6 +808,123 @@
   gap: 12px;
 }
 
+/* ========== While You Were Away ========== */
+.while-away-feed {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.while-away-items {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-height: 288px;
+  overflow-y: auto;
+}
+
+.while-away-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 4px 10px 0;
+  border-bottom: 1px solid var(--fabric-color-border-neutral-x-weak, #e4e3e0);
+  border-radius: 4px;
+  transition: background-color 0.1s ease;
+  cursor: default;
+}
+
+.while-away-item:last-child {
+  border-bottom: none;
+}
+
+.while-away-item--hovered {}
+
+.while-away-item-tile {
+  flex-shrink: 0;
+}
+
+.while-away-ask-icon {
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, #5570C8 0%, #8868D0 100%);
+  -webkit-mask-image: url('/assets/images/ask-icon.svg');
+  mask-image: url('/assets/images/ask-icon.svg');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.while-away-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.while-away-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--fabric-color-text-neutral-strong, #3b3836);
+}
+
+.while-away-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--fabric-color-text-primary-strong, #2e7918);
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: inherit;
+}
+
+.while-away-link:hover {
+  text-decoration: underline;
+}
+
+.while-away-item-actions {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.while-away-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--fabric-color-border-neutral-x-weak, #e4e3e0);
+}
+
+.while-away-footer--empty {
+  border-top: none;
+  padding-top: 8px;
+  justify-content: flex-end;
+}
+
+.while-away-blank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 288px;
+}
+
+.while-away-blank-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 0 16px;
+  width: 100%;
+}
+
 /* ========== Company Links ========== */
 .home-links-body {
   display: flex;

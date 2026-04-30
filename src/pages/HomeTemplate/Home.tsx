@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Headline,
   BodyText,
   Button,
   IconButton,
   IconV2,
+  IconTile,
   TextButton,
   Tabs,
   Tab,
@@ -209,6 +211,107 @@ const whatsHappeningItems = [
   },
 ];
 
+// ── While You Were Away data ─────────────────────────────────
+
+interface WhileAwayDescPart {
+  text: string;
+  link?: boolean;
+}
+
+interface WhileAwayEvent {
+  id: string;
+  auditEventId: string;
+  source: 'automation' | 'ask';
+  description: WhileAwayDescPart[];
+  area: string;
+  dateLabel: string;
+  timestamp: string;
+}
+
+const whileAwayEvents: WhileAwayEvent[] = [
+  {
+    id: 'wa-1',
+    auditEventId: 'evt-4',
+    source: 'automation',
+    description: [{ text: 'Time Off Accrual Update', link: true }, { text: ' applied to ' }, { text: '3 employees', link: true }],
+    area: 'Time Off',
+    dateLabel: 'Today',
+    timestamp: '12:01 AM',
+  },
+  {
+    id: 'wa-2',
+    auditEventId: 'evt-7',
+    source: 'ask',
+    description: [{ text: 'Ask BambooHR' }, { text: ' edited ' }, { text: 'Job Title', link: true }, { text: ' for ' }, { text: 'Marcus Rivera', link: true }],
+    area: 'Employee Records',
+    dateLabel: 'Yesterday',
+    timestamp: '2:15 PM',
+  },
+  {
+    id: 'wa-7',
+    auditEventId: 'evt-via-2',
+    source: 'ask',
+    description: [{ text: 'Ask BambooHR' }, { text: ' updated ' }, { text: "Priya Patel's", link: true }, { text: ' department to ' }, { text: 'Product', link: true }],
+    area: 'Employee Records',
+    dateLabel: 'Yesterday',
+    timestamp: '1:30 PM',
+  },
+  {
+    id: 'wa-3',
+    auditEventId: 'evt-ask-2',
+    source: 'ask',
+    description: [{ text: 'Ask BambooHR' }, { text: ' edited ' }, { text: 'benefits enrollment', link: true }, { text: ' for ' }, { text: 'Lena Brooks', link: true }],
+    area: 'Benefits',
+    dateLabel: 'Apr 20',
+    timestamp: '11:05 AM',
+  },
+  {
+    id: 'wa-4',
+    auditEventId: 'evt-20',
+    source: 'automation',
+    description: [{ text: 'Time Off Policy Update', link: true }, { text: ' applied to all employees' }],
+    area: 'Time Off',
+    dateLabel: 'Apr 12',
+    timestamp: '12:00 AM',
+  },
+  {
+    id: 'wa-5',
+    auditEventId: 'evt-ask-3',
+    source: 'ask',
+    description: [{ text: 'Ask BambooHR' }, { text: ' edited ' }, { text: 'emergency contact', link: true }, { text: ' for ' }, { text: 'Jamie Russo', link: true }],
+    area: 'Employee Records',
+    dateLabel: 'Apr 10',
+    timestamp: '10:14 AM',
+  },
+  {
+    id: 'wa-6',
+    auditEventId: 'evt-25',
+    source: 'automation',
+    description: [{ text: 'Payroll compliance check', link: true }, { text: ' completed for ' }, { text: '48 employees', link: true }],
+    area: 'Payroll',
+    dateLabel: 'Apr 8',
+    timestamp: '12:00 AM',
+  },
+  {
+    id: 'wa-8',
+    auditEventId: 'evt-9',
+    source: 'automation',
+    description: [{ text: 'Onboarding task reminders', link: true }, { text: ' sent to ' }, { text: '6 new hires', link: true }],
+    area: 'Hiring',
+    dateLabel: 'Apr 5',
+    timestamp: '9:00 AM',
+  },
+  {
+    id: 'wa-9',
+    auditEventId: 'evt-ask-3',
+    source: 'ask',
+    description: [{ text: 'Ask BambooHR' }, { text: ' updated ' }, { text: "Blake Thompson's", link: true }, { text: ' emergency contact' }],
+    area: 'Employee Records',
+    dateLabel: 'Apr 3',
+    timestamp: '2:30 PM',
+  },
+];
+
 // ── Types ────────────────────────────────────────────────────
 
 type FeedTab = 'community' | 'happening';
@@ -217,10 +320,13 @@ type TeamTab = 'team' | 'turnover' | 'headcount';
 // ── Component ────────────────────────────────────────────────
 
 export function Home() {
+  const navigate = useNavigate();
   const [feedTab, setFeedTab] = useState<FeedTab>('community');
   const [hoveredPost, setHoveredPost] = useState<number | null>(null);
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [teamTab, setTeamTab] = useState<TeamTab>('team');
+  const [hoveredEventId, setHoveredEventId] = useState<string | null>(null);
+  const [whileAwayEmpty, setWhileAwayEmpty] = useState(false);
 
   return (
     <div className="home-page">
@@ -260,9 +366,97 @@ export function Home() {
         {/* While you were away */}
         <Gridlet header={<Gridlet.Header title="While you were away" icon="clock-rotate-left-regular" />}>
           <Gridlet.Body>
-            <div className="home-placeholder-body">
-              <IconV2 name="clock-rotate-left-regular" size={40} color="neutral-weak" />
-              <BodyText size="medium" color="neutral-weak">Placeholder content coming soon</BodyText>
+            <div className="while-away-feed">
+              {whileAwayEmpty ? (
+                <div className="while-away-blank">
+                  <div className="while-away-blank-inner">
+                    <IconV2 name="rectangle-history-solid" size={32} color="neutral-weak" />
+                    <Headline size="extra-small" component="h4" color="neutral-medium">Nothing running yet</Headline>
+                    <BodyText size="small" color="neutral-weak">Automations handle the routine stuff while you're away. We'll recap what ran, right here.</BodyText>
+                    <Button variant="outlined" color="secondary" size="small">
+                      Set up automations
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="while-away-items">
+                    {whileAwayEvents.map((event) => (
+                      <div
+                        key={event.id}
+                        className={`while-away-item${hoveredEventId === event.id ? ' while-away-item--hovered' : ''}`}
+                        onMouseEnter={() => setHoveredEventId(event.id)}
+                        onMouseLeave={() => setHoveredEventId(null)}
+                      >
+                        <div className="while-away-item-tile">
+                          {event.source === 'automation' ? (
+                            <IconTile
+                              icon={<IconV2 name="bolt-solid" size={16} color="primary-strong" />}
+                              size={40}
+                              variant="muted"
+                            />
+                          ) : (
+                            <IconTile
+                              icon={<div className="while-away-ask-icon" />}
+                              size={40}
+                              variant="muted"
+                            />
+                          )}
+                        </div>
+                        <div className="while-away-item-body">
+                          <p className="while-away-desc">
+                            {event.description.map((part, i) =>
+                              part.link ? (
+                                <button key={i} className="while-away-link" onClick={e => e.stopPropagation()}>{part.text}</button>
+                              ) : (
+                                <span key={i}>{part.text}</span>
+                              )
+                            )}
+                          </p>
+                          <BodyText size="extra-small" color="neutral-weak">
+                            {event.area} · {event.dateLabel} · {event.timestamp}
+                          </BodyText>
+                        </div>
+                        {hoveredEventId === event.id && (
+                          <div className="while-away-item-actions">
+                            <Button
+                              variant="outlined"
+                              color="secondary"
+                              size="small"
+                              onClick={() => navigate(`/reports/audit-trail?event=${event.auditEventId}`)}
+                            >
+                              See details
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="while-away-footer">
+                    <TextButton color="primary" size="small" onClick={() => navigate('/reports/audit-trail')}>
+                      View full audit trail
+                    </TextButton>
+                    <IconButton
+                      icon="eye-slash-regular"
+                      variant="outlined"
+                      color="secondary"
+                      aria-label="Preview empty state"
+                      onClick={() => setWhileAwayEmpty(true)}
+                    />
+                  </div>
+                </>
+              )}
+              {whileAwayEmpty && (
+                <div className="while-away-footer while-away-footer--empty">
+                  <IconButton
+                    icon="eye-regular"
+                    variant="outlined"
+                    color="secondary"
+                    aria-label="Show events"
+                    onClick={() => setWhileAwayEmpty(false)}
+                  />
+                </div>
+              )}
             </div>
           </Gridlet.Body>
         </Gridlet>

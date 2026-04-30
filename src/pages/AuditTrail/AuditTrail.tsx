@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useViewBar } from '../../contexts/ViewBarContext';
 import {
   PageHeaderV2,
@@ -20,6 +20,9 @@ import {
   Dropdown,
   TextField,
   AutocompleteMultiple,
+  InlineMessage,
+  SlidedownPortal,
+  SLIDEDOWN_TYPES,
 } from '@bamboohr/fabric';
 import './AuditTrail.css';
 
@@ -52,12 +55,12 @@ interface ChangeDisplayRow extends AuditChange {
   showEmployee: boolean;
 }
 
-function flattenChanges(changes: AuditChange[]): ChangeDisplayRow[] {
+function flattenChanges(changes: AuditChange[], fallbackEmployee?: string): ChangeDisplayRow[] {
   const result: ChangeDisplayRow[] = [];
   let lastEmployee = '\0';
   for (const change of changes) {
-    const emp = change.employee ?? '';
-    result.push({ ...change, showEmployee: emp !== lastEmployee });
+    const emp = change.employee ?? fallbackEmployee ?? '';
+    result.push({ ...change, employee: emp || change.employee, showEmployee: emp !== lastEmployee });
     lastEmployee = emp;
   }
   return result;
@@ -268,8 +271,16 @@ function formatUndoneTime(d: Date) {
   return `${date} ${time}`;
 }
 
+function inferInputType(field: string): 'text' | 'select' {
+  const f = field.toLowerCase();
+  if (/\b(status|type|rating|grade|level|department|division|flsa|pay type|employment type|manager|supervisor|reports to|direct report)\b/.test(f)) {
+    return 'select';
+  }
+  return 'text';
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function makeChangeColumns(onUndo: (change: ChangeDisplayRow) => void, undoneChanges: Record<string, Date>, isMvp: boolean, showComment = false): any[] {
+function makeChangeColumns(onUpdate: (change: ChangeDisplayRow) => void, fixedChanges: Record<string, Date>, isMvp: boolean, showComment = false): any[] {
   return [
     {
       header: 'Employee',
@@ -282,9 +293,8 @@ function makeChangeColumns(onUndo: (change: ChangeDisplayRow) => void, undoneCha
     {
       header: 'Attribute',
       cell: (row: ChangeDisplayRow) => {
-        const key = `${row.employee ?? ''}|${row.field}`;
         return (
-          <span className={undoneChanges[key] ? 'audit-cell--reverted' : ''}>
+          <span>
             <BodyText size="small">{row.field}</BodyText>
           </span>
         );
@@ -293,9 +303,8 @@ function makeChangeColumns(onUndo: (change: ChangeDisplayRow) => void, undoneCha
     {
       header: 'Changes',
       cell: (row: ChangeDisplayRow) => {
-        const key = `${row.employee ?? ''}|${row.field}`;
         return (
-          <span className={`audit-changes-cell${undoneChanges[key] ? ' audit-cell--reverted' : ''}`}>
+          <span className="audit-changes-cell">
             <Pill muted type={PillType.Error}>
               <span className="audit-before-text">{row.before}</span>
             </Pill>
@@ -308,7 +317,7 @@ function makeChangeColumns(onUndo: (change: ChangeDisplayRow) => void, undoneCha
       },
     },
     ...(showComment ? [{
-      header: 'Reason',
+      header: 'Comment',
       cell: (row: ChangeDisplayRow) => (
         <BodyText size="small" color="neutral-weak">{row.comment ?? '—'}</BodyText>
       ),
@@ -317,14 +326,7 @@ function makeChangeColumns(onUndo: (change: ChangeDisplayRow) => void, undoneCha
       headerAriaLabel: 'Actions',
       cell: (row: ChangeDisplayRow) => {
         const key = `${row.employee ?? ''}|${row.field}`;
-        const revertedAt = undoneChanges[key];
-        if (revertedAt) {
-          return (
-            <div className="audit-row-reverted-pill">
-              <Pill muted type={PillType.Neutral}>Reverted · {formatUndoneTime(revertedAt)}</Pill>
-            </div>
-          );
-        }
+        const alreadyFixed = !!fixedChanges[key];
         if (isMvp) return null;
         return (
           <div className="audit-row-undo-wrap">
@@ -332,10 +334,11 @@ function makeChangeColumns(onUndo: (change: ChangeDisplayRow) => void, undoneCha
               size="small"
               variant="outlined"
               color="secondary"
-              startIcon={<IconV2 name="rotate-left-regular" size={12} />}
-              onClick={(e: React.MouseEvent) => { e.stopPropagation(); onUndo(row); }}
+              disabled={alreadyFixed}
+              startIcon={<IconV2 name="pen-regular" size={12} />}
+              onClick={(e: React.MouseEvent) => { e.stopPropagation(); onUpdate(row); }}
             >
-              Undo
+              Update
             </Button>
           </div>
         );
@@ -468,26 +471,34 @@ function AuditEventCard({
   isExpanded,
   onToggle,
   isMvp,
+  onEventAdded,
 }: {
   event: AuditEventData;
   isExpanded: boolean;
   onToggle: () => void;
   isMvp: boolean;
+  onEventAdded: (newEvent: AuditEventData) => void;
 }) {
   const { actor, description, timestamp, details, affectedEmployee } = event;
-  const [undoTarget, setUndoTarget] = useState<ChangeDisplayRow | null>(null);
-  const [undoneChanges, setUndoneChanges] = useState<Record<string, Date>>({});
+  const [fixTarget, setFixTarget] = useState<ChangeDisplayRow | null>(null);
+  const [fixedChanges, setFixedChanges] = useState<Record<string, Date>>({});
+  const [updateValue, setUpdateValue] = useState<string>('');
+  const [slidedownVisible, setSlidedownVisible] = useState(false);
+  const [slidedownField, setSlidedownField] = useState('');
 
-  const revertedCount = Object.keys(undoneChanges).length;
+  const revertedCount = Object.keys(fixedChanges).length;
   const totalCount = details.changes.length;
   const hasAnyReverted = revertedCount > 0;
   const allReverted = revertedCount === totalCount;
   const isAsk = actor.type === 'ask';
   const showComment = isAsk || !!event.viaAsk;
-  const changeColumns = makeChangeColumns(setUndoTarget, undoneChanges, isMvp, showComment);
+  const changeColumns = makeChangeColumns(
+    (row) => { setFixTarget(row); setUpdateValue(row.after); },
+    fixedChanges, isMvp, showComment
+  );
 
   return (
-    <div className="audit-event-row">
+    <div id={event.id} className="audit-event-row">
       <div className={`audit-event-card ${isExpanded ? 'audit-event-card--expanded' : ''} ${actor.type === 'ask' ? 'audit-event-card--ask' : ''}`}>
         {/* Header — always visible */}
         <div className="audit-event-header" onClick={onToggle} role="button" aria-expanded={isExpanded}>
@@ -508,11 +519,6 @@ function AuditEventCard({
           </div>
           <DescriptionText parts={description} />
           <span className="audit-event-right-rail">
-            {hasAnyReverted && (
-              <Pill muted type={PillType.Neutral}>
-                {allReverted ? 'Reverted' : `${revertedCount} Reverted`}
-              </Pill>
-            )}
             <ActionPill action={event.action} />
             <span className="audit-event-timestamp">
               <BodyText size="small" color="neutral-weak">{timestamp}</BodyText>
@@ -538,8 +544,8 @@ function AuditEventCard({
               )}
             </div>
 
-            {/* Automation steps timeline */}
-            {details.automationSteps ? (
+            {/* Automation steps timeline / change table */}
+            {event.action === 'logged-in' ? null : details.automationSteps ? (
               <div className="audit-automation-timeline">
                 {details.automationSteps.map((step, i) => (
                   <div key={i} className={`audit-auto-step audit-auto-step--${step.status}`}>
@@ -575,7 +581,7 @@ function AuditEventCard({
                 <Table
                   caption="Field changes"
                   columns={changeColumns}
-                  rows={flattenChanges(details.changes)}
+                  rows={flattenChanges(details.changes, affectedEmployee?.name)}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   rowKey={(row: any) => `${row.employee ?? ''}|${row.field}`}
                 />
@@ -585,45 +591,106 @@ function AuditEventCard({
         )}
       </div>
 
-      {/* Undo confirmation modal */}
-      <StandardModal isOpen={!!undoTarget} onRequestClose={() => setUndoTarget(null)}>
+      {/* Update field modal */}
+      <StandardModal isOpen={!!fixTarget} onRequestClose={() => setFixTarget(null)}>
         <StandardModal.Body
-          renderHeader={<StandardModal.Header title="Just checking..." />}
+          renderHeader={<StandardModal.Header title={fixTarget ? `Update ${fixTarget.field}` : 'Update field'} />}
           renderFooter={
             <StandardModal.Footer
               actions={[
-                <TextButton key="cancel" onClick={() => setUndoTarget(null)}>Cancel</TextButton>,
-                <Button key="confirm" variant="contained" color="primary" onClick={() => { const key = `${undoTarget!.employee ?? ''}|${undoTarget!.field}`; setUndoneChanges(prev => ({ ...prev, [key]: new Date() })); setUndoTarget(null); }}>
-                  Undo
+                <TextButton key="cancel" onClick={() => setFixTarget(null)}>Cancel</TextButton>,
+                <Button
+                  key="confirm"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    if (!fixTarget) return;
+                    const key = `${fixTarget.employee ?? ''}|${fixTarget.field}`;
+                    setFixedChanges(prev => ({ ...prev, [key]: new Date() }));
+                    const timeStr = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                    onEventAdded({
+                      id: `evt-new-${Date.now()}`,
+                      actor: { type: 'user', name: 'Jess', photo: 'https://i.pravatar.cc/40?img=5' },
+                      action: 'edited',
+                      description: [
+                        { text: 'Jess', link: true },
+                        { text: ' edited ' },
+                        { text: fixTarget.field, link: true },
+                        ...(fixTarget.employee ? [{ text: ' for ' }, { text: fixTarget.employee, link: true }] : []),
+                      ],
+                      timestamp: timeStr,
+                      details: {
+                        ipAddress: '—',
+                        area: event.details.area,
+                        changes: [{
+                          employee: fixTarget.employee,
+                          field: fixTarget.field,
+                          before: fixTarget.after,
+                          after: updateValue,
+                        }],
+                      },
+                    });
+                    setSlidedownField(fixTarget.field);
+                    setSlidedownVisible(true);
+                    setTimeout(() => setSlidedownVisible(false), 4000);
+                    setFixTarget(null);
+                    setUpdateValue('');
+                  }}
+                >
+                  Save Update
                 </Button>,
               ]}
             />
           }
         >
           <StandardModal.UpperContent>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 12, padding: '24px 0 16px', width: '100%' }}>
-              <IconTile
-                icon={<IconV2 name="rotate-left-regular" color="warning-strong" size={24} />}
-                size={56}
-                variant="muted"
-              />
-              <Headline size="small" component="h4" color="neutral-strong">
-                Undo this change?
-              </Headline>
-              <BodyText size="medium" color="neutral-weak">
-                {undoTarget && (
-                  <>
-                    This will revert <strong>{undoTarget.field}</strong>
-                    {undoTarget.employee && <> for <strong>{undoTarget.employee}</strong></>}{' '}
-                    from <strong>{undoTarget.after}</strong> back to{' '}
-                    <strong>{undoTarget.before}</strong>. This can't be undone.
-                  </>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, padding: '16px 0' }}>
+              <div className="audit-update-changes-preview">
+                <BodyText size="small" color="neutral-weak">Previous change</BodyText>
+                <span className="audit-changes-cell" style={{ marginTop: 6 }}>
+                  <Pill muted type={PillType.Error}>
+                    <span className="audit-before-text">{fixTarget?.before ?? ''}</span>
+                  </Pill>
+                  <span className="audit-changes-arrow">
+                    <IconV2 name="arrow-right-regular" size={12} color="neutral-weak" />
+                  </span>
+                  <Pill muted type={PillType.Success}>{fixTarget?.after ?? ''}</Pill>
+                </span>
+              </div>
+              <div className="audit-update-field-wrap">
+                <div style={{ marginBottom: 4 }}><BodyText size="small" color="neutral-weak">Update to</BodyText></div>
+                {fixTarget && inferInputType(fixTarget.field) === 'select' ? (
+                  <select
+                    className="audit-update-native-select"
+                    value={updateValue}
+                    onChange={(e) => setUpdateValue(e.target.value)}
+                  >
+                    <option value={fixTarget.after}>{fixTarget.after}</option>
+                    <option value={fixTarget.before}>{fixTarget.before} (previous value)</option>
+                  </select>
+                ) : (
+                  <TextField
+                    label=""
+                    value={updateValue}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdateValue(e.target.value)}
+                  />
                 )}
-              </BodyText>
+              </div>
+              <InlineMessage
+                status="info"
+                title="A new audit trail entry will be created"
+                description="Saving this update will add a new entry showing you as the actor. The original change will still be visible in the audit trail."
+              />
             </div>
           </StandardModal.UpperContent>
         </StandardModal.Body>
       </StandardModal>
+      <SlidedownPortal
+        show={slidedownVisible}
+        onDismiss={() => setSlidedownVisible(false)}
+        message={`${slidedownField} has been updated.`}
+        type={SLIDEDOWN_TYPES.success}
+      />
     </div>
   );
 }
@@ -964,16 +1031,59 @@ function applyFilters(
 
 export default function AuditTrail() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { activeVersion } = useViewBar();
   const isMvp = activeVersion === 'mvp';
 
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const highlightEventId = searchParams.get('event');
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(
+    highlightEventId ? new Set([highlightEventId]) : new Set()
+  );
   const [dateRange, setDateRange] = useState<DateRange>({ from: '', to: '' });
   const [selectedActors, setSelectedActors] = useState<string[]>([]);
   const [selectedActions, setSelectedActions] = useState<string[]>([]);
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<TagItem[]>([]);
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const [auditGroups, setAuditGroups] = useState<AuditGroup[]>(AUDIT_GROUPS);
+
+  function handleEventAdded(newEvent: AuditEventData) {
+    setAuditGroups(prev => {
+      const todayIdx = prev.findIndex(g => g.key === 'today');
+      if (todayIdx >= 0) {
+        const updated = prev.map((g, i) =>
+          i === todayIdx ? { ...g, events: [newEvent, ...g.events] } : g
+        );
+        return updated;
+      }
+      const todayGroup: AuditGroup = { key: 'today', label: 'Today', date: new Date(), events: [newEvent] };
+      return [todayGroup, ...prev];
+    });
+    setExpandedIds(prev => new Set([...prev, newEvent.id]));
+  }
+
+  useEffect(() => {
+    if (!highlightEventId) return;
+    let cancelled = false;
+    const tid = setTimeout(() => {
+      if (cancelled) return;
+      requestAnimationFrame(() => {
+        if (cancelled) return;
+        const el = document.getElementById(highlightEventId);
+        if (!el) return;
+        const timeline = el.closest('.audit-timeline') as HTMLElement | null;
+        if (timeline) {
+          const elRect = el.getBoundingClientRect();
+          const containerRect = timeline.getBoundingClientRect();
+          const target = timeline.scrollTop + (elRect.top - containerRect.top) - (timeline.clientHeight / 2) + (el.clientHeight / 2);
+          timeline.scrollTop = Math.max(0, target);
+        }
+        el.classList.add('audit-event-row--highlight');
+        setTimeout(() => el.classList.remove('audit-event-row--highlight'), 2000);
+      });
+    }, 300);
+    return () => { cancelled = true; clearTimeout(tid); };
+  }, [highlightEventId]);
 
   useEffect(() => {
     function handleApplyFilters(e: Event) {
@@ -1135,7 +1245,7 @@ export default function AuditTrail() {
       {/* Timeline */}
       <div className="audit-timeline">
 
-        {applyFilters(AUDIT_GROUPS, dateRange, selectedActors, selectedActions, selectedAreas, selectedTags).map(group => (
+        {applyFilters(auditGroups, dateRange, selectedActors, selectedActions, selectedAreas, selectedTags).map(group => (
           <div key={group.key} className="audit-timeline-group">
             <DateSeparator label={group.label} />
             {group.events.map(event => (
@@ -1145,6 +1255,7 @@ export default function AuditTrail() {
                 isExpanded={expandedIds.has(event.id)}
                 onToggle={() => toggleExpand(event.id)}
                 isMvp={isMvp}
+                onEventAdded={handleEventAdded}
               />
             ))}
           </div>
