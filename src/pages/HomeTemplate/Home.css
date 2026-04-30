@@ -36,6 +36,23 @@
   gap: 8px;
 }
 
+/* ========== Attention Row (2/3 + 1/3) ========== */
+.home-attention-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.home-placeholder-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 0;
+  text-align: center;
+}
+
 /* ========== Top Dashboard (2-col grid) ========== */
 .home-dashboard {
   display: grid;

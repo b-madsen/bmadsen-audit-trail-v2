@@ -244,6 +244,31 @@ export function Home() {
         </div>
       </div>
 
+      {/* ── Attention Row: Needs your attention + While you were away ── */}
+      <div className="home-attention-row">
+
+        {/* Needs your attention */}
+        <Gridlet header={<Gridlet.Header title="Needs your attention" icon="circle-exclamation-regular" />}>
+          <Gridlet.Body>
+            <div className="home-placeholder-body">
+              <IconV2 name="circle-exclamation-regular" size={40} color="neutral-weak" />
+              <BodyText size="medium" color="neutral-weak">Placeholder content coming soon</BodyText>
+            </div>
+          </Gridlet.Body>
+        </Gridlet>
+
+        {/* While you were away */}
+        <Gridlet header={<Gridlet.Header title="While you were away" icon="clock-rotate-left-regular" />}>
+          <Gridlet.Body>
+            <div className="home-placeholder-body">
+              <IconV2 name="clock-rotate-left-regular" size={40} color="neutral-weak" />
+              <BodyText size="medium" color="neutral-weak">Placeholder content coming soon</BodyText>
+            </div>
+          </Gridlet.Body>
+        </Gridlet>
+
+      </div>
+
       {/* ── Top Dashboard: Left widgets + Feed ── */}
       <div className="home-dashboard">
 
