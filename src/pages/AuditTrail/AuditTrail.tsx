@@ -431,10 +431,10 @@ function DescriptionText({ parts }: { parts: DescriptionPart[] }) {
 // ---------------------------------------------------------------------------
 
 const ACTION_PILL_CONFIG: Record<string, { type: PillType; label: string; icon: string }> = {
-  added:      { type: PillType.Success, label: 'Added',     icon: 'circle-plus-solid'              },
-  edited:     { type: PillType.Warning, label: 'Edited',    icon: 'pen-solid'                      },
-  removed:    { type: PillType.Error,   label: 'Deleted',   icon: 'trash-can-solid'                },
-  'logged-in':{ type: PillType.Info,    label: 'Logged in', icon: 'arrow-right-to-bracket-solid'   },
+  added:      { type: PillType.Neutral, label: 'Added',     icon: 'circle-plus-solid'              },
+  edited:     { type: PillType.Neutral, label: 'Edited',    icon: 'pen-solid'                      },
+  removed:    { type: PillType.Neutral, label: 'Deleted',   icon: 'trash-can-solid'                },
+  'logged-in':{ type: PillType.Neutral, label: 'Logged in', icon: 'arrow-right-to-bracket-solid'   },
 };
 
 function ActionPill({ action }: { action: string }) {
@@ -442,7 +442,12 @@ function ActionPill({ action }: { action: string }) {
   if (!config) return null;
   return (
     <span className="audit-action-pill">
-      <Pill muted type={config.type}>{config.label}</Pill>
+      <Pill muted type={config.type}>
+        <span className="audit-action-pill-inner">
+          <IconV2 name={config.icon} size={14} />
+          {config.label}
+        </span>
+      </Pill>
     </span>
   );
 }
