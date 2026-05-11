@@ -305,11 +305,11 @@ function makeChangeColumns(onUpdate: (change: ChangeDisplayRow) => void, fixedCh
       cell: (row: ChangeDisplayRow) => {
         return (
           <span className="audit-changes-cell">
-            <Pill muted type={PillType.Error}>
+            <Pill muted type={PillType.Neutral}>
               <span className="audit-before-text">{row.before}</span>
             </Pill>
             <span className="audit-changes-arrow">
-              <IconV2 name="arrow-right-regular" size={12} color="neutral-weak" />
+              <IconV2 name="arrow-right-regular" size={12} color="neutral-medium" />
             </span>
             <Pill muted type={PillType.Success}>{row.after}</Pill>
           </span>
@@ -431,10 +431,10 @@ function DescriptionText({ parts }: { parts: DescriptionPart[] }) {
 // ---------------------------------------------------------------------------
 
 const ACTION_PILL_CONFIG: Record<string, { type: PillType; label: string; icon: string }> = {
-  added:      { type: PillType.Neutral, label: 'Added',     icon: 'circle-plus-solid'              },
-  edited:     { type: PillType.Neutral, label: 'Edited',    icon: 'pen-solid'                      },
-  removed:    { type: PillType.Neutral, label: 'Deleted',   icon: 'trash-can-solid'                },
-  'logged-in':{ type: PillType.Neutral, label: 'Logged in', icon: 'arrow-right-to-bracket-solid'   },
+  added:      { type: PillType.Neutral, label: 'Added',     icon: 'circle-plus-regular'              },
+  edited:     { type: PillType.Neutral, label: 'Edited',    icon: 'pen-regular'                      },
+  removed:    { type: PillType.Neutral, label: 'Deleted',   icon: 'trash-can-regular'                },
+  'logged-in':{ type: PillType.Neutral, label: 'Logged in', icon: 'arrow-right-to-bracket-regular'   },
 };
 
 function ActionPill({ action }: { action: string }) {
@@ -442,12 +442,10 @@ function ActionPill({ action }: { action: string }) {
   if (!config) return null;
   return (
     <span className="audit-action-pill">
-      <Pill muted type={config.type}>
-        <span className="audit-action-pill-inner">
-          <IconV2 name={config.icon} size={14} />
-          {config.label}
-        </span>
-      </Pill>
+      <span className="audit-action-pill-inner">
+        <IconV2 name={config.icon} size={14} color="neutral-medium" />
+        <BodyText size="small" color="neutral-weak">{config.label}</BodyText>
+      </span>
     </span>
   );
 }
@@ -653,11 +651,11 @@ function AuditEventCard({
               <div className="audit-update-changes-preview">
                 <BodyText size="small" color="neutral-weak">Previous change</BodyText>
                 <span className="audit-changes-cell" style={{ marginTop: 6 }}>
-                  <Pill muted type={PillType.Error}>
+                  <Pill muted type={PillType.Neutral}>
                     <span className="audit-before-text">{fixTarget?.before ?? ''}</span>
                   </Pill>
                   <span className="audit-changes-arrow">
-                    <IconV2 name="arrow-right-regular" size={12} color="neutral-weak" />
+                    <IconV2 name="arrow-right-regular" size={12} color="neutral-medium" />
                   </span>
                   <Pill muted type={PillType.Success}>{fixTarget?.after ?? ''}</Pill>
                 </span>

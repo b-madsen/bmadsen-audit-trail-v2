@@ -254,12 +254,13 @@
   background: none;
   border: none;
   padding: 0;
-  color: var(--fabric-color-text-primary-strong, #2e7918);
+  color: var(--color-link);
   cursor: pointer;
   font-size: inherit;
   font-family: inherit;
   font-weight: 500;
   line-height: inherit;
+  text-decoration: none;
 }
 
 .audit-link:hover {
@@ -280,7 +281,7 @@
 .audit-action-pill-inner {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 }
 
 .audit-event-timestamp {
@@ -307,7 +308,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background: var(--fabric-surface-color-neutral-xx-weak, #fafafa);
+  background: #fff;
 }
 
 /* Meta row: Area + IP */
