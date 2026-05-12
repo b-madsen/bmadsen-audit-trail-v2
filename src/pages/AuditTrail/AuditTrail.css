@@ -116,6 +116,12 @@
   margin-bottom: 16px;
 }
 
+.audit-filter-quick-options-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .audit-filter-quick-buttons {
   display: flex;
   gap: 6px;
@@ -123,9 +129,9 @@
 }
 
 .audit-quick-btn--selected {
-  background-color: var(--fabric-surface-color-primary-weak, #edf6e8) !important;
-  border-color: var(--fabric-theme-base, #2e7918) !important;
-  color: var(--fabric-theme-base, #2e7918) !important;
+  background-color: var(--fabric-surface-color-neutral-x-weak, #f4f4f4) !important;
+  border-color: var(--fabric-border-color-neutral-medium, #c8c8c8) !important;
+  color: var(--fabric-color-text-primary-strong, #2e7918) !important;
 }
 
 .audit-filter-date-range {

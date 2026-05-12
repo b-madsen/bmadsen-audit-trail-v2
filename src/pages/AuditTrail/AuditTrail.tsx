@@ -932,7 +932,19 @@ function FilterDropdown({
           {type === 'date' && dateValue && onDateChange && (
             <>
               <div className="audit-filter-quick-options">
-                <BodyText size="extra-small" weight="semibold" color="neutral-medium">Quick options</BodyText>
+                <div className="audit-filter-quick-options-header">
+                  <BodyText size="extra-small" weight="semibold" color="neutral-medium">Quick options</BodyText>
+                  <TextButton
+                    size="small"
+                    disabled={!isActive}
+                    onClick={() => {
+                      onDateChange({ from: '', to: '' });
+                      setSelectedDays(null);
+                    }}
+                  >
+                    Clear
+                  </TextButton>
+                </div>
                 <div className="audit-filter-quick-buttons">
                   <ButtonGroup variant="outlined" size="small">
                     {([
