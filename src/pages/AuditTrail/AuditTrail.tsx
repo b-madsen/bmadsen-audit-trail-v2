@@ -85,6 +85,7 @@ interface AuditEventData {
   details: {
     ipAddress: string;
     area: string;
+    client?: 'desktop' | 'mobile';
     changes: AuditChange[];
     automationSteps?: AutomationStep[];
   };
@@ -103,9 +104,9 @@ interface AuditGroup {
 
 const AUDIT_GROUPS: AuditGroup[] = [
   { key: 'today',    label: 'Today',     date: new Date('2026-04-23'), events: [
-    { id: 'evt-25', action: 'edited',    actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' updated compensation for 3 employees' }],                                                                                                                                      timestamp: '10:45 AM', details: { ipAddress: '192.168.1.104', area: 'Payroll',           changes: [{ employee: 'Blake Thompson', field: 'Annual Salary',      before: '$72,000',            after: '$78,000'              }, { employee: 'Blake Thompson', field: 'Job Title',            before: 'Senior Designer',    after: 'Lead Designer'        }, { employee: 'Lena Brooks',    field: 'Annual Salary',      before: '$65,000',            after: '$70,000'              }, { employee: 'Lena Brooks',    field: 'Performance Rating', before: 'Meets Expectations', after: 'Exceeds Expectations' }, { employee: 'Jamie Russo',    field: 'Annual Salary',      before: '$58,000',            after: '$63,000'              }] } },
-    { id: 'evt-1',  action: 'removed',   actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' removed ' }, { text: 'Emergency Contact Phone', link: true }, { text: ' from ' }, { text: "Blake Thompson's", link: true }, { text: ' profile' }],                              timestamp: '9:22 AM',  details: { ipAddress: '192.168.1.104', area: 'Employee Records', changes: [{ employee: 'Blake Thompson', field: 'Emergency Contact Phone', before: '(801) 555-0192', after: '—' }] } },
-    { id: 'evt-2',  action: 'edited',    actor: { type: 'user',        name: 'Marcus Rivera',  photo: 'https://i.pravatar.cc/40?img=11' }, description: [{ text: 'Marcus Rivera', link: true }, { text: ' edited ' }, { text: 'Annual Salary', link: true }, { text: ' for ' }, { text: 'Priya Patel', link: true }],                                                                  timestamp: '8:47 AM',  details: { ipAddress: '10.0.1.55',    area: 'Payroll',           changes: [{ employee: 'Priya Patel',    field: 'Annual Salary',           before: '$82,000',            after: '$91,000'              }] } },
+    { id: 'evt-25', action: 'edited',    actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' updated compensation for 3 employees' }],                                                                                                                                      timestamp: '10:45 AM', details: { ipAddress: '192.168.1.104', area: 'Payroll',           client: 'desktop', changes: [{ employee: 'Blake Thompson', field: 'Annual Salary',      before: '$72,000',            after: '$78,000'              }, { employee: 'Blake Thompson', field: 'Job Title',            before: 'Senior Designer',    after: 'Lead Designer'        }, { employee: 'Lena Brooks',    field: 'Annual Salary',      before: '$65,000',            after: '$70,000'              }, { employee: 'Lena Brooks',    field: 'Performance Rating', before: 'Meets Expectations', after: 'Exceeds Expectations' }, { employee: 'Jamie Russo',    field: 'Annual Salary',      before: '$58,000',            after: '$63,000'              }] } },
+    { id: 'evt-1',  action: 'removed',   actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' removed ' }, { text: 'Emergency Contact Phone', link: true }, { text: ' from ' }, { text: "Blake Thompson's", link: true }, { text: ' profile' }],                              timestamp: '9:22 AM',  details: { ipAddress: '192.168.1.104', area: 'Employee Records', client: 'mobile',  changes: [{ employee: 'Blake Thompson', field: 'Emergency Contact Phone', before: '(801) 555-0192', after: '—' }] } },
+    { id: 'evt-2',  action: 'edited',    actor: { type: 'user',        name: 'Marcus Rivera',  photo: 'https://i.pravatar.cc/40?img=11' }, description: [{ text: 'Marcus Rivera', link: true }, { text: ' edited ' }, { text: 'Annual Salary', link: true }, { text: ' for ' }, { text: 'Priya Patel', link: true }],                                                                  timestamp: '8:47 AM',  details: { ipAddress: '10.0.1.55',    area: 'Payroll',           client: 'desktop', changes: [{ employee: 'Priya Patel',    field: 'Annual Salary',           before: '$82,000',            after: '$91,000'              }] } },
     { id: 'evt-via-1', action: 'edited', actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, viaAsk: true, description: [{ text: 'Sarah Chen', link: true }, { text: ' updated ' }, { text: "Blake Thompson's", link: true }, { text: ' pay rate via Ask BambooHR' }],                                                                   timestamp: '8:05 AM',  details: { ipAddress: '192.168.1.104', area: 'Payroll',          changes: [{ employee: 'Blake Thompson', field: 'Annual Salary', before: '$78,000', after: '$84,000', comment: 'Merit increase — Ask suggested based on market comp data for L5 designers' }] } },
     { id: 'evt-3',  action: 'edited',    actor: { type: 'user',        name: 'Derek Olson',    photo: 'https://i.pravatar.cc/40?img=68' }, description: [{ text: 'Derek Olson', link: true }, { text: ' updated ' }, { text: 'Benefits enrollment', link: true }, { text: ' for ' }, { text: 'Lena Brooks', link: true }],                                                             timestamp: '8:12 AM',  details: { ipAddress: '192.168.2.20', area: 'Benefits',          changes: [{ employee: 'Lena Brooks',   field: 'Health Plan',             before: 'Basic PPO',          after: 'Premium PPO'          }, { employee: 'Lena Brooks', field: 'Dental Plan', before: 'None', after: 'Delta Dental Plus' }] } },
     { id: 'evt-4',  action: 'edited',    actor: { type: 'system',      name: 'BambooHR System'                                          }, description: [{ text: 'Time Off Accrual Update', link: true }, { text: ' applied to ' }, { text: '3 employees', link: true }],                                                                                                             timestamp: '12:01 AM', details: { ipAddress: '—',            area: 'Time Off',          changes: [], automationSteps: [
@@ -308,10 +309,14 @@ function makeChangeColumns(onUpdate: (change: ChangeDisplayRow) => void, fixedCh
             <Pill muted type={PillType.Neutral}>
               <span className="audit-before-text">{row.before}</span>
             </Pill>
-            <span className="audit-changes-arrow">
-              <IconV2 name="arrow-right-regular" size={12} color="neutral-medium" />
-            </span>
-            <Pill muted type={PillType.Success}>{row.after}</Pill>
+            {row.after !== '—' && (
+              <>
+                <span className="audit-changes-arrow">
+                  <IconV2 name="arrow-right-regular" size={12} color="neutral-medium" />
+                </span>
+                <Pill muted type={PillType.Success}>{row.after}</Pill>
+              </>
+            )}
           </span>
         );
       },
@@ -542,6 +547,14 @@ function AuditEventCard({
                   <span className="audit-meta-sep">·</span>
                   <BodyText size="small" color="neutral-weak">
                     <span className="audit-meta-label">IP</span> {details.ipAddress}
+                  </BodyText>
+                </>
+              )}
+              {details.client && (
+                <>
+                  <span className="audit-meta-sep">·</span>
+                  <BodyText size="small" color="neutral-weak">
+                    <span className="audit-meta-label">Client</span> {details.client === 'mobile' ? 'BambooHR Mobile' : 'BambooHR Desktop'}
                   </BodyText>
                 </>
               )}
