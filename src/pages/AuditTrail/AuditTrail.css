@@ -122,6 +122,12 @@
   flex-wrap: wrap;
 }
 
+.audit-quick-btn--selected {
+  background-color: var(--fabric-surface-color-primary-weak, #edf6e8) !important;
+  border-color: var(--fabric-theme-base, #2e7918) !important;
+  color: var(--fabric-theme-base, #2e7918) !important;
+}
+
 .audit-filter-date-range {
   display: flex;
   align-items: flex-end;
@@ -316,6 +322,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding-left: 12px;
 }
 
 .audit-meta-label {

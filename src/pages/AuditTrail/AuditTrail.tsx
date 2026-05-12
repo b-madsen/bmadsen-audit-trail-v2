@@ -4,6 +4,7 @@ import { useViewBar } from '../../contexts/ViewBarContext';
 import {
   PageHeaderV2,
   Button,
+  ButtonGroup,
   IconV2,
   IconButton,
   IconTile,
@@ -540,7 +541,7 @@ function AuditEventCard({
           <div className="audit-event-details">
             {/* Meta row */}
             <div className="audit-event-meta">
-              <BodyText size="small" color="neutral-weak">
+              <BodyText size="extra-small" color="neutral-weak">
                 <span className="audit-meta-label">Area</span> {details.area}
               </BodyText>
               {details.ipAddress !== '—' && (
@@ -859,10 +860,17 @@ function FilterDropdown({
   onSelectionChange,
 }: FilterDropdownProps) {
   const [open, setOpen] = useState(false);
+  const [selectedDays, setSelectedDays] = useState<number | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (dateValue && !dateValue.from && !dateValue.to) {
+      setSelectedDays(null);
+    }
+  }, [dateValue]);
+
   const count = type === 'date'
-    ? (dateValue ? [dateValue.from, dateValue.to].filter(Boolean).length : 0)
+    ? (dateValue && (dateValue.from || dateValue.to) ? 1 : 0)
     : selectedIds.length;
 
   const isActive = count > 0;
@@ -908,28 +916,30 @@ function FilterDropdown({
               <div className="audit-filter-quick-options">
                 <BodyText size="extra-small" weight="semibold" color="neutral-medium">Quick options</BodyText>
                 <div className="audit-filter-quick-buttons">
-                  {([
-                    { label: '7 days',  days: 7   },
-                    { label: '30 days', days: 30  },
-                    { label: '90 days', days: 90  },
-                    { label: '1 year',  days: 365 },
-                  ] as const).map(({ label, days }) => (
-                    <Button
-                      key={label}
-                      variant="outlined"
-                      size="small"
-                      onClick={() => {
-                        const to   = new Date();
-                        const from = new Date();
-                        from.setDate(from.getDate() - days);
-                        const fmt = (d: Date) =>
-                          `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-                        onDateChange({ from: fmt(from), to: fmt(to) });
-                      }}
-                    >
-                      {label}
-                    </Button>
-                  ))}
+                  <ButtonGroup variant="outlined" size="small">
+                    {([
+                      { label: '7 days',  days: 7   },
+                      { label: '30 days', days: 30  },
+                      { label: '90 days', days: 90  },
+                      { label: '1 year',  days: 365 },
+                    ] as const).map(({ label, days }) => (
+                      <Button
+                        key={label}
+                        className={selectedDays === days ? 'audit-quick-btn--selected' : undefined}
+                        onClick={() => {
+                          const to   = new Date();
+                          const from = new Date();
+                          from.setDate(from.getDate() - days);
+                          const fmt = (d: Date) =>
+                            `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                          onDateChange({ from: fmt(from), to: fmt(to) });
+                          setSelectedDays(days);
+                        }}
+                      >
+                        {label}
+                      </Button>
+                    ))}
+                  </ButtonGroup>
                 </div>
               </div>
               <div className="audit-filter-date-range">
@@ -1241,7 +1251,7 @@ export default function AuditTrail() {
 
         <FilterDropdown label="Date"    icon="calendar"      type="date"     dateValue={dateRange}         onDateChange={setDateRange} />
         <ActorsDropdown selectedIds={selectedActors} onSelectionChange={setSelectedActors} />
-        <FilterDropdown label="Actions" icon="bolt"          type="checkbox" options={ACTIONS} selectedIds={selectedActions} onSelectionChange={setSelectedActions} />
+        <FilterDropdown label="Actions" icon="clock-rotate-left"          type="checkbox" options={ACTIONS} selectedIds={selectedActions} onSelectionChange={setSelectedActions} />
         <FilterDropdown label="Areas"   icon="layer-group"   type="checkbox" options={AREAS}   selectedIds={selectedAreas}   onSelectionChange={setSelectedAreas} />
         <TagsDropdown value={selectedTags} onChange={setSelectedTags} />
         {(dateRange.from || dateRange.to || selectedActors.length > 0 || selectedActions.length > 0 || selectedAreas.length > 0 || selectedTags.length > 0) && (
