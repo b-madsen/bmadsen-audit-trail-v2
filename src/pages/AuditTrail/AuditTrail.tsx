@@ -149,6 +149,14 @@ const AUDIT_GROUPS: AuditGroup[] = [
     { id: 'evt-22', action: 'edited',    actor: { type: 'user',        name: 'Derek Olson',    photo: 'https://i.pravatar.cc/40?img=68' }, description: [{ text: 'Derek Olson', link: true }, { text: ' updated ' }, { text: 'company holiday schedule', link: true }],                                                                                                                 timestamp: '2:18 PM',  details: { ipAddress: '192.168.2.20', area: 'Settings',          changes: [{ field: 'Holiday: Apr 18', before: '—', after: 'Company Day Off' }] } },
     { id: 'evt-24', action: 'logged-in', actor: { type: 'user',        name: 'Blake Thompson', photo: 'https://i.pravatar.cc/40?img=53' }, description: [{ text: 'Blake Thompson', link: true }, { text: ' logged in' }],                                                                                                                                                               timestamp: '8:30 AM',  details: { ipAddress: '172.16.0.4',   area: 'Settings',          changes: [{ field: 'Login', before: '—', after: 'Authenticated' }] } },
   ] },
+  { key: 'dec-19-2025', label: 'Dec 19', date: new Date('2025-12-19'), events: [
+    { id: 'evt-y1', action: 'edited',  actor: { type: 'user', name: 'Sarah Chen',    photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' updated ' }, { text: "Priya Patel's", link: true }, { text: ' job title' }],                    timestamp: '3:12 PM',  details: { ipAddress: '192.168.1.104', area: 'Employee Records', client: 'desktop', changes: [{ employee: 'Priya Patel',  field: 'Job Title',  before: 'Engineer II',    after: 'Senior Engineer'  }] } },
+    { id: 'evt-y2', action: 'added',   actor: { type: 'user', name: 'Marcus Rivera', photo: 'https://i.pravatar.cc/40?img=11' }, description: [{ text: 'Marcus Rivera', link: true }, { text: ' added ' }, { text: 'Lena Brooks', link: true }, { text: ' to the Engineering team' }],      timestamp: '1:45 PM',  details: { ipAddress: '10.0.1.55',    area: 'Employee Records',              changes: [{ employee: 'Lena Brooks', field: 'Team',        before: '—',              after: 'Engineering'      }] } },
+  ] },
+  { key: 'nov-3-2025',  label: 'Nov 3',  date: new Date('2025-11-03'), events: [
+    { id: 'evt-y3', action: 'removed', actor: { type: 'user', name: 'Derek Olson',   photo: 'https://i.pravatar.cc/40?img=68' }, description: [{ text: 'Derek Olson', link: true }, { text: ' removed ' }, { text: 'Jamie Russo', link: true }, { text: ' from ' }, { text: 'Benefits plan', link: true }], timestamp: '10:05 AM', details: { ipAddress: '192.168.2.20', area: 'Benefits',                          changes: [{ employee: 'Jamie Russo', field: 'Health Plan', before: 'Premium PPO',    after: '—'                }] } },
+    { id: 'evt-y4', action: 'edited',  actor: { type: 'ask',  name: 'Ask'            }, affectedEmployee: { name: 'Blake Thompson', photo: 'https://i.pravatar.cc/40?img=53' }, description: [{ text: 'Ask BambooHR' }, { text: ' edited ' }, { text: 'emergency contact', link: true }, { text: ' for ' }, { text: 'Blake Thompson', link: true }], timestamp: '9:22 AM',  details: { ipAddress: '—',            area: 'Employee Records',              changes: [{ field: 'Emergency Contact Name', before: 'Alex Thompson', after: 'Jordan Thompson', comment: 'Updated per employee request via chat' }] } },
+  ] },
 ];
 
 interface ActorLeaf { id: string; label: string; }
@@ -404,6 +412,16 @@ function ActorIcon({ actor }: { actor: AuditActor }) {
 // Date separator
 // ---------------------------------------------------------------------------
 
+const CURRENT_YEAR = new Date().getFullYear();
+
+function formatGroupLabel(label: string, date: Date): string {
+  if (label === 'Today' || label === 'Yesterday') return label;
+  if (date.getFullYear() !== CURRENT_YEAR) {
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  return label;
+}
+
 function DateSeparator({ label }: { label: string }) {
   return (
     <div className="audit-date-sep-row">
@@ -466,7 +484,7 @@ function AvatarWithAskBadge({ photo, name }: { photo: string; name: string }) {
     <div className="audit-avatar-badge-wrap">
       <Avatar src={photo} size={40} alt={name} />
       <div className="audit-ask-badge">
-        <IconV2 name="sparkle-solid" size={12} />
+        <div className="audit-ask-badge-icon" />
       </div>
     </div>
   );
@@ -1274,7 +1292,7 @@ export default function AuditTrail() {
 
         {applyFilters(auditGroups, dateRange, selectedActors, selectedActions, selectedAreas, selectedTags).map(group => (
           <div key={group.key} className="audit-timeline-group">
-            <DateSeparator label={group.label} />
+            <DateSeparator label={formatGroupLabel(group.label, group.date)} />
             {group.events.map(event => (
               <AuditEventCard
                 key={event.id}

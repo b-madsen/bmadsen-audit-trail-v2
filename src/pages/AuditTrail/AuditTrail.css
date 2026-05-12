@@ -82,7 +82,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 16px 0;
+  padding: 8px 0 16px;
 }
 
 .audit-trail-filter-bar-spacer {
@@ -457,27 +457,36 @@
 
 .audit-ask-badge {
   position: absolute;
-  bottom: -4px;
-  right: -4px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #5570C8 0%, #8868D0 100%);
-  border: 2px solid #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  bottom: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  filter:
+    drop-shadow(2px 0 0 #fff)
+    drop-shadow(-2px 0 0 #fff)
+    drop-shadow(0 2px 0 #fff)
+    drop-shadow(0 -2px 0 #fff);
 }
 
-.audit-ask-badge svg {
-  fill: #fff;
+.audit-ask-badge-icon {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #5570C8 0%, #8868D0 100%);
+  -webkit-mask-image: url('/assets/images/ask-icon.svg');
+  mask-image: url('/assets/images/ask-icon.svg');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
 }
 
 /* ── Ask BambooHR card branding ──────────────────────────────────────────── */
 
 .audit-ask-icon-inner {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   background: linear-gradient(135deg, #5570C8 0%, #8868D0 100%);
   -webkit-mask-image: url('/assets/images/ask-icon.svg');
   mask-image: url('/assets/images/ask-icon.svg');
