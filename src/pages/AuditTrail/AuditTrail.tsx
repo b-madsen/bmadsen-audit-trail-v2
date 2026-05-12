@@ -232,7 +232,7 @@ function TagsDropdown({ value, onChange }: {
         variant="outlined"
         color="secondary"
         size="medium"
-        startIcon={<IconV2 name="tag-regular" size={16} />}
+        startIcon={<IconV2 name="user-regular" size={16} />}
         endIcon={<IconV2 name="caret-down-solid" size={12} />}
         onClick={() => setOpen(prev => !prev)}
       >
@@ -307,16 +307,17 @@ function makeChangeColumns(onUpdate: (change: ChangeDisplayRow) => void, fixedCh
         return (
           <span className="audit-changes-cell">
             <Pill muted type={PillType.Neutral}>
-              <span className="audit-before-text">{row.before}</span>
+              {row.before === '—'
+                ? <em>None</em>
+                : <span className="audit-before-text">{row.before}</span>
+              }
             </Pill>
-            {row.after !== '—' && (
-              <>
-                <span className="audit-changes-arrow">
-                  <IconV2 name="arrow-right-regular" size={12} color="neutral-medium" />
-                </span>
-                <Pill muted type={PillType.Success}>{row.after}</Pill>
-              </>
-            )}
+            <span className="audit-changes-arrow">
+              <IconV2 name="arrow-right-regular" size={12} color="neutral-medium" />
+            </span>
+            <Pill muted type={PillType.Success}>
+              {row.after === '—' ? <em>None</em> : row.after}
+            </Pill>
           </span>
         );
       },
