@@ -24,6 +24,7 @@ import {
   InlineMessage,
   SlidedownPortal,
   SLIDEDOWN_TYPES,
+  RoundedToggle,
 } from '@bamboohr/fabric';
 import './AuditTrail.css';
 
@@ -500,12 +501,16 @@ function AuditEventCard({
   onToggle,
   isMvp,
   onEventAdded,
+  showActionType,
+  showIpAddress,
 }: {
   event: AuditEventData;
   isExpanded: boolean;
   onToggle: () => void;
   isMvp: boolean;
   onEventAdded: (newEvent: AuditEventData) => void;
+  showActionType: boolean;
+  showIpAddress: boolean;
 }) {
   const { actor, description, timestamp, details, affectedEmployee } = event;
   const [fixTarget, setFixTarget] = useState<ChangeDisplayRow | null>(null);
@@ -547,7 +552,10 @@ function AuditEventCard({
           </div>
           <DescriptionText parts={description} />
           <span className="audit-event-right-rail">
-            <ActionPill action={event.action} />
+            {showActionType && <ActionPill action={event.action} />}
+            {showIpAddress && details.ipAddress !== '—' && (
+              <BodyText size="small" color="neutral-weak">{details.ipAddress}</BodyText>
+            )}
             <span className="audit-event-timestamp">
               <BodyText size="small" color="neutral-weak">{timestamp}</BodyText>
             </span>
@@ -848,6 +856,74 @@ function ActorsDropdown({ selectedIds, onSelectionChange }: {
 }
 
 // ---------------------------------------------------------------------------
+// SettingsDropdown
+// ---------------------------------------------------------------------------
+
+function SettingsDropdown({
+  showActionType,
+  onShowActionTypeChange,
+  showIpAddress,
+  onShowIpAddressChange,
+}: {
+  showActionType: boolean;
+  onShowActionTypeChange: (v: boolean) => void;
+  showIpAddress: boolean;
+  onShowIpAddressChange: (v: boolean) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function handleMouseDown(e: MouseEvent) {
+      if (wrapperRef.current?.contains(e.target as HTMLElement)) return;
+      setOpen(false);
+    }
+    document.addEventListener('mousedown', handleMouseDown);
+    return () => document.removeEventListener('mousedown', handleMouseDown);
+  }, [open]);
+
+  return (
+    <div className="audit-filter-wrapper" ref={wrapperRef}>
+      <Button
+        variant="outlined"
+        color="secondary"
+        size="medium"
+        startIcon={<IconV2 name="gear-regular" size={16} />}
+        endIcon={<IconV2 name="caret-down-solid" size={12} />}
+        aria-label="Display settings"
+        onClick={() => setOpen(prev => !prev)}
+      />
+      {open && (
+        <div className="audit-settings-panel">
+          <BodyText size="extra-small" weight="semibold" color="neutral-medium">
+            Show in event summaries...
+          </BodyText>
+          <div className="audit-settings-toggle-row" onClick={() => onShowActionTypeChange(!showActionType)}>
+            <RoundedToggle
+              ariaLabel="Show action type"
+              isChecked={showActionType}
+              isControlled={true}
+              onChange={() => onShowActionTypeChange(!showActionType)}
+            />
+            <BodyText size="small">Action Type</BodyText>
+          </div>
+          <div className="audit-settings-toggle-row" onClick={() => onShowIpAddressChange(!showIpAddress)}>
+            <RoundedToggle
+              ariaLabel="Show IP address"
+              isChecked={showIpAddress}
+              isControlled={true}
+              onChange={() => onShowIpAddressChange(!showIpAddress)}
+            />
+            <BodyText size="small">IP Address</BodyText>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // FilterDropdown
 // ---------------------------------------------------------------------------
 
@@ -1103,6 +1179,8 @@ export default function AuditTrail() {
   const [selectedTags, setSelectedTags] = useState<TagItem[]>([]);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [auditGroups, setAuditGroups] = useState<AuditGroup[]>(AUDIT_GROUPS);
+  const [showActionType, setShowActionType] = useState(true);
+  const [showIpAddress, setShowIpAddress] = useState(false);
 
   function handleEventAdded(newEvent: AuditEventData) {
     setAuditGroups(prev => {
@@ -1297,6 +1375,13 @@ export default function AuditTrail() {
             Clear all
           </TextButton>
         )}
+        <div className="audit-trail-filter-bar-spacer" />
+        <SettingsDropdown
+          showActionType={showActionType}
+          onShowActionTypeChange={setShowActionType}
+          showIpAddress={showIpAddress}
+          onShowIpAddressChange={setShowIpAddress}
+        />
       </div>
 
       {/* Timeline */}
@@ -1313,6 +1398,8 @@ export default function AuditTrail() {
                 onToggle={() => toggleExpand(event.id)}
                 isMvp={isMvp}
                 onEventAdded={handleEventAdded}
+                showActionType={showActionType}
+                showIpAddress={showIpAddress}
               />
             ))}
           </div>

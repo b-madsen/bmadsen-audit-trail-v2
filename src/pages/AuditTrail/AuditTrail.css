@@ -107,6 +107,34 @@
   min-width: 240px;
 }
 
+
+.audit-settings-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 100;
+  background: #fff;
+  border: 1px solid var(--fabric-border-color-neutral-weak, #e0e0e0);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.audit-settings-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.audit-settings-toggle-row label {
+  cursor: pointer;
+}
+
 .audit-filter-quick-options {
   display: flex;
   flex-direction: column;
