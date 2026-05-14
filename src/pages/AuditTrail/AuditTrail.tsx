@@ -941,6 +941,7 @@ interface FilterDropdownProps {
   options?: { id: string; label: string }[];
   selectedIds?: string[];
   onSelectionChange?: (ids: string[]) => void;
+  anchorId?: string;
 }
 
 function FilterDropdown({
@@ -952,6 +953,7 @@ function FilterDropdown({
   options = [],
   selectedIds = [],
   onSelectionChange,
+  anchorId,
 }: FilterDropdownProps) {
   const [open, setOpen] = useState(false);
   const [selectedDays, setSelectedDays] = useState<number | null>(null);
@@ -991,7 +993,7 @@ function FilterDropdown({
   }
 
   return (
-    <div className="audit-filter-wrapper" ref={wrapperRef}>
+    <div className="audit-filter-wrapper" ref={wrapperRef} {...(anchorId ? { id: anchorId } : {})}>
       <Button
         variant="outlined"
         color="secondary"
@@ -1272,25 +1274,27 @@ export default function AuditTrail() {
                 onClick={() => setIsShareOpen(true)}
               />
             )}
-            <Dropdown
-              type="icon"
-              ButtonProps={{
-                icon: 'arrow-up-from-bracket-regular',
-                'aria-label': 'Export report',
-                variant: 'outlined',
-              } as any}
-              showCaret={false}
-              items={[{
-                type: 'group',
-                text: 'Export report as...',
-                items: [
-                  { text: 'Excel Spreadsheet', value: 'excel' },
-                  { text: 'CSV',               value: 'csv' },
-                  { text: 'PDF',               value: 'pdf' },
-                ],
-              }]}
-              onSelect={() => {}}
-            />
+            {!isMvp && (
+              <Dropdown
+                type="icon"
+                ButtonProps={{
+                  icon: 'arrow-up-from-bracket-regular',
+                  'aria-label': 'Export report',
+                  variant: 'outlined',
+                } as any}
+                showCaret={false}
+                items={[{
+                  type: 'group',
+                  text: 'Export report as...',
+                  items: [
+                    { text: 'Excel Spreadsheet', value: 'excel' },
+                    { text: 'CSV',               value: 'csv' },
+                    { text: 'PDF',               value: 'pdf' },
+                  ],
+                }]}
+                onSelect={() => {}}
+              />
+            )}
           </div>
         }
       />
@@ -1357,7 +1361,7 @@ export default function AuditTrail() {
           </Button>
         )}
 
-        <FilterDropdown label="Date"    icon="calendar"      type="date"     dateValue={dateRange}         onDateChange={setDateRange} />
+        <FilterDropdown label="Date"    icon="calendar"      type="date"     dateValue={dateRange}         onDateChange={setDateRange} anchorId="audit-date-filter" />
         <ActorsDropdown selectedIds={selectedActors} onSelectionChange={setSelectedActors} />
         <FilterDropdown label="Actions" icon="clock-rotate-left"          type="checkbox" options={ACTIONS} selectedIds={selectedActions} onSelectionChange={setSelectedActions} />
         <FilterDropdown label="Areas"   icon="layer-group"   type="checkbox" options={AREAS}   selectedIds={selectedAreas}   onSelectionChange={setSelectedAreas} />

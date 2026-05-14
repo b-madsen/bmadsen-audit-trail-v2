@@ -55,5 +55,13 @@ export const commentData: CommentMap = {
       text: 'Reverts a single field change inline. North-star only — hidden in MVP. After undoing, the row shows a "Reverted" pill with a timestamp.',
       timestamp: 'Apr 22, 2026 · 10:15 AM',
     },
+    {
+      id: 'ch-7',
+      selector: '#audit-date-filter',
+      anchorEdge: 'top-right',
+      author: 'Brock Madsen',
+      text: 'User can select a quick option via button group that acts as a radio select so they can see their selection after leaving and coming back. Use the clear button to clear back to default date range.',
+      timestamp: 'May 14, 2026 · 10:00 AM',
+    },
   ],
 };
