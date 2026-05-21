@@ -32,7 +32,7 @@ import './AuditTrail.css';
 // Types
 // ---------------------------------------------------------------------------
 
-type ActorType = 'user' | 'system' | 'ask' | 'integration';
+type ActorType = 'user' | 'system' | 'ask' | 'integration' | 'hr-services';
 
 interface AuditActor {
   type: ActorType;
@@ -168,6 +168,11 @@ const ACTOR_TREE: ActorNode[] = [
   { id: 'user',   label: 'User' },
   { id: 'ask',    label: 'Ask BambooHR' },
   { id: 'system', label: 'Automations' },
+];
+
+const NORTH_STAR_ACTOR_TREE: ActorNode[] = [
+  ...ACTOR_TREE,
+  { id: 'hr-services', label: 'HR Services' },
 ];
 
 function getActorLeafs(node: ActorNode): string[] {
@@ -762,9 +767,10 @@ function ParentCheckbox({ id, label, state, onChange }: {
   );
 }
 
-function ActorsDropdown({ selectedIds, onSelectionChange }: {
+function ActorsDropdown({ selectedIds, onSelectionChange, tree = ACTOR_TREE }: {
   selectedIds: string[];
   onSelectionChange: (ids: string[]) => void;
+  tree?: ActorNode[];
 }) {
   const [open, setOpen] = useState(false);
   const [expandedParents, setExpandedParents] = useState<string[]>([]);
@@ -800,7 +806,7 @@ function ActorsDropdown({ selectedIds, onSelectionChange }: {
     }
   }
 
-  const activeGroups = ACTOR_TREE.filter(node =>
+  const activeGroups = tree.filter(node =>
     getActorLeafs(node).some(id => selectedIds.includes(id))
   ).length;
   const isActive = activeGroups > 0;
@@ -821,7 +827,7 @@ function ActorsDropdown({ selectedIds, onSelectionChange }: {
       {open && (
         <div className="audit-filter-panel">
           <div className="audit-filter-checkbox-list">
-            {ACTOR_TREE.map(node => {
+            {tree.map(node => {
               const state = actorParentState(node, selectedIds);
               const isExpanded = expandedParents.includes(node.id) || state !== 'unchecked';
               return (
@@ -1112,9 +1118,10 @@ const AREA_ID_MAP: Record<string, string> = {
 
 // Maps leaf actor filter IDs → actor.type values they match
 const ACTOR_LEAF_TO_TYPE: Record<string, ActorType[]> = {
-  user:   ['user'],
-  ask:    ['ask'],
-  system: ['system'],
+  user:         ['user'],
+  ask:          ['ask'],
+  system:       ['system'],
+  'hr-services': ['hr-services'],
 };
 
 function applyFilters(
@@ -1363,7 +1370,7 @@ export default function AuditTrail() {
         )}
 
         <FilterDropdown label="Date"    icon="calendar"      type="date"     dateValue={dateRange}         onDateChange={setDateRange} anchorId="audit-date-filter" />
-        <ActorsDropdown selectedIds={selectedActors} onSelectionChange={setSelectedActors} />
+        <ActorsDropdown selectedIds={selectedActors} onSelectionChange={setSelectedActors} tree={isMvp ? ACTOR_TREE : NORTH_STAR_ACTOR_TREE} />
         <FilterDropdown label="Actions" icon="clock-rotate-left"          type="checkbox" options={ACTIONS} selectedIds={selectedActions} onSelectionChange={setSelectedActions} />
         <FilterDropdown label="Areas"   icon="layer-group"   type="checkbox" options={AREAS}   selectedIds={selectedAreas}   onSelectionChange={setSelectedAreas} />
         <TagsDropdown value={selectedTags} onChange={setSelectedTags} />
