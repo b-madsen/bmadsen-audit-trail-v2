@@ -516,6 +516,62 @@
   mask-position: center;
 }
 
+/* ── HR Services avatar badge ────────────────────────────────────────────── */
+
+.audit-hrs-badge-wrap {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  width: 28px;
+  height: 28px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audit-hrs-badge {
+  width: 24px;
+  height: 24px;
+  background: #2E7918;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audit-hrs-badge-icon {
+  width: 23px;
+  height: 23px;
+  background: #fff;
+  margin-left: -1px;
+  -webkit-mask-image: url('/assets/images/hr-services-icon.svg');
+  mask-image: url('/assets/images/hr-services-icon.svg');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+/* ── HR Services icon ────────────────────────────────────────────────────── */
+
+.audit-hr-services-icon-inner {
+  width: 40px;
+  height: 40px;
+  background: #2E7918;
+  -webkit-mask-image: url('/assets/images/hr-services-icon.svg');
+  mask-image: url('/assets/images/hr-services-icon.svg');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
 /* ── Ask BambooHR card branding ──────────────────────────────────────────── */
 
 .audit-ask-icon-inner {

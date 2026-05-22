@@ -17,6 +17,8 @@ interface ViewBarContextType {
   toggleErrorState: (id: string) => void;
   activeVersion: Version;
   setActiveVersion: (version: Version) => void;
+  showHRC: boolean;
+  toggleShowHRC: () => void;
 }
 
 const ViewBarContext = createContext<ViewBarContextType | undefined>(undefined);
@@ -28,6 +30,8 @@ export function ViewBarProvider({ children }: { children: ReactNode }) {
   const [activeEdgeCase, setActiveEdgeCase] = useState<string | null>(null);
   const [activeErrorState, setActiveErrorState] = useState<string | null>(null);
   const [activeVersion, setActiveVersion] = useState<Version>('north-star');
+  const [showHRC, setShowHRC] = useState(false);
+  const toggleShowHRC = () => setShowHRC(prev => !prev);
 
   const toggleEdgeCase = (id: string) =>
     setActiveEdgeCase(prev => prev === id ? null : id);
@@ -56,6 +60,7 @@ export function ViewBarProvider({ children }: { children: ReactNode }) {
       activeEdgeCase, toggleEdgeCase,
       activeErrorState, toggleErrorState,
       activeVersion, setActiveVersion,
+      showHRC, toggleShowHRC,
     }}>
       {children}
     </ViewBarContext.Provider>

@@ -227,6 +227,7 @@ export function ViewBar() {
     activeEdgeCase, toggleEdgeCase,
     activeErrorState, toggleErrorState,
     activeVersion, setActiveVersion,
+    showHRC, toggleShowHRC,
   } = useViewBar();
   const { commentsVisible, toggleComments } = useComments();
 
@@ -242,6 +243,17 @@ export function ViewBar() {
         <>
           <span className="view-bar__label">Version</span>
           <ButtonGroup items={VERSIONS} activeId={activeVersion} onSelect={setActiveVersion} />
+          {activeVersion === 'north-star' && (
+            <>
+              <div className="view-bar__divider" aria-hidden="true" />
+              <ToggleGroup
+                items={[{ id: 'show-hrc', label: 'Show HRC' }]}
+                activeId={showHRC ? 'show-hrc' : null}
+                onToggle={toggleShowHRC}
+                activeColor="#2e7918"
+              />
+            </>
+          )}
         </>
       ) : (
         <>

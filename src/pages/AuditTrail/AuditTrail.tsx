@@ -84,6 +84,8 @@ interface AuditEventData {
   timestamp: string;
   affectedEmployee?: { name: string; photo: string };
   viaAsk?: boolean;
+  northStarOnly?: boolean;
+  hrcPerson?: string;
   details: {
     ipAddress: string;
     area: string;
@@ -108,9 +110,10 @@ const AUDIT_GROUPS: AuditGroup[] = [
   { key: 'today',    label: 'Today',     date: new Date('2026-04-23'), events: [
     { id: 'evt-25', action: 'edited',    actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' updated compensation for 3 employees' }],                                                                                                                                      timestamp: '10:45 AM', details: { ipAddress: '192.168.1.104', area: 'Payroll',           client: 'desktop', changes: [{ employee: 'Blake Thompson', field: 'Annual Salary',      before: '$72,000',            after: '$78,000'              }, { employee: 'Blake Thompson', field: 'Job Title',            before: 'Senior Designer',    after: 'Lead Designer'        }, { employee: 'Lena Brooks',    field: 'Annual Salary',      before: '$65,000',            after: '$70,000'              }, { employee: 'Lena Brooks',    field: 'Performance Rating', before: 'Meets Expectations', after: 'Exceeds Expectations' }, { employee: 'Jamie Russo',    field: 'Annual Salary',      before: '$58,000',            after: '$63,000'              }] } },
     { id: 'evt-1',  action: 'removed',   actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' removed ' }, { text: 'Emergency Contact Phone', link: true }, { text: ' from ' }, { text: "Blake Thompson's", link: true }, { text: ' profile' }],                              timestamp: '9:22 AM',  details: { ipAddress: '192.168.1.104', area: 'Employee Records', client: 'mobile',  changes: [{ employee: 'Blake Thompson', field: 'Emergency Contact Phone', before: '(801) 555-0192', after: '—' }] } },
+    { id: 'evt-hrs-1', action: 'added',  actor: { type: 'hr-services', name: 'HR Services', photo: 'https://i.pravatar.cc/40?img=26' }, northStarOnly: true, hrcPerson: 'Sharon Brown', description: [{ text: 'HR Services' }, { text: ' added ' }, { text: 'benefits enrollment', link: true }, { text: ' for ' }, { text: 'Marcus Rivera', link: true }],                                                                                     timestamp: '9:05 AM',  details: { ipAddress: '—', area: 'Benefits',         changes: [{ employee: 'Marcus Rivera', field: 'Health Plan',  before: '—', after: 'Premium PPO',       comment: 'Auto-enrolled based on new hire eligibility window' }, { employee: 'Marcus Rivera', field: 'Dental Plan', before: '—', after: 'Delta Dental Plus', comment: 'Included in standard benefits package for full-time employees' }] } },
     { id: 'evt-2',  action: 'edited',    actor: { type: 'user',        name: 'Marcus Rivera',  photo: 'https://i.pravatar.cc/40?img=11' }, description: [{ text: 'Marcus Rivera', link: true }, { text: ' edited ' }, { text: 'Annual Salary', link: true }, { text: ' for ' }, { text: 'Priya Patel', link: true }],                                                                  timestamp: '8:47 AM',  details: { ipAddress: '10.0.1.55',    area: 'Payroll',           client: 'desktop', changes: [{ employee: 'Priya Patel',    field: 'Annual Salary',           before: '$82,000',            after: '$91,000'              }] } },
-    { id: 'evt-via-1', action: 'edited', actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, viaAsk: true, description: [{ text: 'Sarah Chen', link: true }, { text: ' updated ' }, { text: "Blake Thompson's", link: true }, { text: ' pay rate via Ask BambooHR' }],                                                                   timestamp: '8:05 AM',  details: { ipAddress: '192.168.1.104', area: 'Payroll',          changes: [{ employee: 'Blake Thompson', field: 'Annual Salary', before: '$78,000', after: '$84,000', comment: 'Merit increase — Ask suggested based on market comp data for L5 designers' }] } },
-    { id: 'evt-via-3', action: 'added',  actor: { type: 'user',        name: 'James Rockford', photo: 'https://i.pravatar.cc/40?img=33'  }, viaAsk: true, description: [{ text: 'James Rockford', link: true }, { text: ' added SSN to his employee profile, prompted by BambooHR AI' }],                                                                                                                            timestamp: '7:52 AM',  details: { ipAddress: '10.0.3.71',    area: 'Employee Records', changes: [{ employee: 'James Rockford', field: 'SSN', before: '—', after: '●●●-●●-●●●●', comment: 'BambooHR AI flagged missing SSN required for payroll processing' }] } },
+    { id: 'evt-via-1', action: 'edited', actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, viaAsk: true, description: [{ text: 'Sarah Chen', link: true }, { text: ' updated ' }, { text: "Blake Thompson's", link: true }, { text: ' pay rate via Bamboo AI' }],                                                                   timestamp: '8:05 AM',  details: { ipAddress: '192.168.1.104', area: 'Payroll',          changes: [{ employee: 'Blake Thompson', field: 'Annual Salary', before: '$78,000', after: '$84,000', comment: 'Merit increase — Ask suggested based on market comp data for L5 designers' }] } },
+    { id: 'evt-via-3', action: 'added',  actor: { type: 'user',        name: 'James Rockford', photo: 'https://i.pravatar.cc/40?img=33'  }, viaAsk: true, description: [{ text: 'James Rockford', link: true }, { text: ' added SSN to his employee profile, prompted by Bamboo AI' }],                                                                                                                            timestamp: '7:52 AM',  details: { ipAddress: '10.0.3.71',    area: 'Employee Records', changes: [{ employee: 'James Rockford', field: 'SSN', before: '—', after: '●●●-●●-●●●●', comment: 'Bamboo AI flagged missing SSN required for payroll processing' }] } },
     { id: 'evt-3',  action: 'edited',    actor: { type: 'user',        name: 'Derek Olson',    photo: 'https://i.pravatar.cc/40?img=68' }, description: [{ text: 'Derek Olson', link: true }, { text: ' updated ' }, { text: 'Benefits enrollment', link: true }, { text: ' for ' }, { text: 'Lena Brooks', link: true }],                                                             timestamp: '8:12 AM',  details: { ipAddress: '192.168.2.20', area: 'Benefits',          changes: [{ employee: 'Lena Brooks',   field: 'Health Plan',             before: 'Basic PPO',          after: 'Premium PPO'          }, { employee: 'Lena Brooks', field: 'Dental Plan', before: 'None', after: 'Delta Dental Plus' }] } },
     { id: 'evt-4',  action: 'edited',    actor: { type: 'system',      name: 'BambooHR System'                                          }, description: [{ text: 'Time Off Accrual Update', link: true }, { text: ' applied to ' }, { text: '3 employees', link: true }],                                                                                                             timestamp: '12:01 AM', details: { ipAddress: '—',            area: 'Time Off',          changes: [], automationSteps: [
       { name: 'Trigger',           description: 'Monthly pay cycle started',                    date: 'Apr 29', timestamp: '12:00 AM', status: 'completed' },
@@ -121,13 +124,14 @@ const AUDIT_GROUPS: AuditGroup[] = [
   ] },
   { key: 'yesterday', label: 'Yesterday', date: new Date('2026-04-22'), events: [
     { id: 'evt-6',  action: 'logged-in', actor: { type: 'user',        name: 'Priya Patel',    photo: 'https://i.pravatar.cc/40?img=44' }, description: [{ text: 'Priya Patel', link: true }, { text: ' logged in' }],                                                                                                                                                                  timestamp: '3:55 PM',  details: { ipAddress: '10.0.2.88',    area: 'Settings',          changes: [{ field: 'Login', before: '—', after: 'Authenticated' }] } },
-    { id: 'evt-7',  action: 'edited',    actor: { type: 'ask',         name: 'Ask'                                                      }, affectedEmployee: { name: 'Marcus Rivera',  photo: 'https://i.pravatar.cc/40?img=11' }, description: [{ text: 'Ask BambooHR' }, { text: ' edited ' }, { text: 'Job Title', link: true }, { text: ' for ' }, { text: 'Marcus Rivera', link: true }],                                                                                  timestamp: '2:15 PM',  details: { ipAddress: '—',            area: 'Employee Records',  changes: [{ field: 'Job Title', before: 'Senior Engineer', after: 'Staff Engineer', comment: 'Promotion confirmed in performance review on Apr 21' }, { field: 'Pay Grade', before: 'L4', after: 'L5', comment: 'Updated to match new title band' }] } },
-    { id: 'evt-via-2', action: 'edited', actor: { type: 'user',        name: 'Derek Olson',    photo: 'https://i.pravatar.cc/40?img=68' }, viaAsk: true, description: [{ text: 'Derek Olson', link: true }, { text: ' edited ' }, { text: "Priya Patel's", link: true }, { text: ' department via Ask BambooHR' }],                                                                  timestamp: '1:30 PM',  details: { ipAddress: '192.168.2.20',  area: 'Employee Records', changes: [{ employee: 'Priya Patel', field: 'Department', before: 'Engineering', after: 'Product', comment: 'Team restructure confirmed in all-hands — Ask drafted the update' }, { employee: 'Priya Patel', field: 'Cost Center', before: 'ENG-001', after: 'PRD-003', comment: 'Auto-updated to match new department' }] } },
+    { id: 'evt-7',  action: 'edited',    actor: { type: 'ask',         name: 'Ask'                                                      }, affectedEmployee: { name: 'Marcus Rivera',  photo: 'https://i.pravatar.cc/40?img=11' }, description: [{ text: 'Bamboo AI' }, { text: ' edited ' }, { text: 'Job Title', link: true }, { text: ' for ' }, { text: 'Marcus Rivera', link: true }],                                                                                  timestamp: '2:15 PM',  details: { ipAddress: '—',            area: 'Employee Records',  changes: [{ field: 'Job Title', before: 'Senior Engineer', after: 'Staff Engineer', comment: 'Promotion confirmed in performance review on Apr 21' }, { field: 'Pay Grade', before: 'L4', after: 'L5', comment: 'Updated to match new title band' }] } },
+    { id: 'evt-hrs-2', action: 'edited', actor: { type: 'hr-services', name: 'HR Services', photo: 'https://i.pravatar.cc/40?img=32' }, northStarOnly: true, hrcPerson: 'David Kim', description: [{ text: 'HR Services' }, { text: ' updated ' }, { text: "Lena Brooks's", link: true }, { text: ' W-4 withholding' }],                                                                                                                          timestamp: '1:50 PM',  details: { ipAddress: '—', area: 'Payroll',           changes: [{ employee: 'Lena Brooks',   field: 'Filing Status', before: 'Single',         after: 'Married',            comment: 'Updated per employee-submitted form on file' }, { employee: 'Lena Brooks',   field: 'Allowances',    before: '1',              after: '3',                  comment: 'Reflects dependent additions reported by employee' }] } },
+    { id: 'evt-via-2', action: 'edited', actor: { type: 'user',        name: 'Derek Olson',    photo: 'https://i.pravatar.cc/40?img=68' }, viaAsk: true, description: [{ text: 'Derek Olson', link: true }, { text: ' edited ' }, { text: "Priya Patel's", link: true }, { text: ' department via Bamboo AI' }],                                                                  timestamp: '1:30 PM',  details: { ipAddress: '192.168.2.20',  area: 'Employee Records', changes: [{ employee: 'Priya Patel', field: 'Department', before: 'Engineering', after: 'Product', comment: 'Team restructure confirmed in all-hands — Ask drafted the update' }, { employee: 'Priya Patel', field: 'Cost Center', before: 'ENG-001', after: 'PRD-003', comment: 'Auto-updated to match new department' }] } },
     { id: 'evt-9',  action: 'edited',    actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' updated ' }, { text: "Jamie Russo's", link: true }, { text: ' onboarding checklist' }],                                                                                        timestamp: '9:44 AM',  details: { ipAddress: '192.168.1.104', area: 'Hiring',            changes: [{ employee: 'Jamie Russo',   field: 'I-9 Verification',        before: 'Incomplete',         after: 'Complete'             }, { employee: 'Jamie Russo', field: 'Direct Deposit', before: 'Incomplete', after: 'Complete' }] } },
   ] },
   { key: 'apr-20', label: 'Apr 20',    date: new Date('2026-04-20'), events: [
     { id: 'evt-11', action: 'added',     actor: { type: 'user',        name: 'Marcus Rivera',  photo: 'https://i.pravatar.cc/40?img=11' }, description: [{ text: 'Marcus Rivera', link: true }, { text: ' created ' }, { text: 'new job opening', link: true }, { text: ' for Senior Designer' }],                                                                                     timestamp: '2:40 PM',  details: { ipAddress: '10.0.1.55',    area: 'Hiring',            changes: [{ field: 'Job Opening', before: '—', after: 'Senior Designer (open)' }] } },
-    { id: 'evt-ask-2', action: 'edited', actor: { type: 'ask',         name: 'Ask'                                                      }, affectedEmployee: { name: 'Lena Brooks',    photo: 'https://i.pravatar.cc/40?img=25' }, description: [{ text: 'Ask BambooHR' }, { text: ' edited ' }, { text: 'benefits enrollment', link: true }, { text: ' for ' }, { text: 'Lena Brooks', link: true }], timestamp: '11:05 AM', details: { ipAddress: '—',            area: 'Benefits',          changes: [{ field: 'Health Plan', before: 'Basic PPO', after: 'Premium PPO', comment: 'Employee requested upgrade during open enrollment chat' }, { field: 'Dental', before: 'None', after: 'Delta Dental Plus', comment: 'Added per employee request after confirming eligibility' }] } },
+    { id: 'evt-ask-2', action: 'edited', actor: { type: 'ask',         name: 'Ask'                                                      }, affectedEmployee: { name: 'Lena Brooks',    photo: 'https://i.pravatar.cc/40?img=25' }, description: [{ text: 'Bamboo AI' }, { text: ' edited ' }, { text: 'benefits enrollment', link: true }, { text: ' for ' }, { text: 'Lena Brooks', link: true }], timestamp: '11:05 AM', details: { ipAddress: '—',            area: 'Benefits',          changes: [{ field: 'Health Plan', before: 'Basic PPO', after: 'Premium PPO', comment: 'Employee requested upgrade during open enrollment chat' }, { field: 'Dental', before: 'None', after: 'Delta Dental Plus', comment: 'Added per employee request after confirming eligibility' }] } },
     { id: 'evt-13', action: 'logged-in', actor: { type: 'user',        name: 'Blake Thompson', photo: 'https://i.pravatar.cc/40?img=53' }, description: [{ text: 'Blake Thompson', link: true }, { text: ' logged in' }],                                                                                                                                                               timestamp: '8:02 AM',  details: { ipAddress: '172.16.0.4',   area: 'Settings',          changes: [{ field: 'Login', before: '—', after: 'Authenticated' }] } },
   ] },
   { key: 'apr-18', label: 'Apr 18',    date: new Date('2026-04-18'), events: [
@@ -146,7 +150,7 @@ const AUDIT_GROUPS: AuditGroup[] = [
     ] } },
   ] },
   { key: 'apr-10', label: 'Apr 10',    date: new Date('2026-04-10'), events: [
-    { id: 'evt-ask-3', action: 'edited', actor: { type: 'ask',         name: 'Ask'                                                      }, affectedEmployee: { name: 'Jamie Russo',    photo: 'https://i.pravatar.cc/40?img=60' }, description: [{ text: 'Ask BambooHR' }, { text: ' edited ' }, { text: 'emergency contact', link: true }, { text: ' for ' }, { text: 'Jamie Russo', link: true }],           timestamp: '10:14 AM', details: { ipAddress: '—',            area: 'Employee Records',  changes: [{ field: 'Emergency Contact Name', before: '—', after: 'Alex Russo', comment: 'Updated via employee self-service chat' }, { field: 'Emergency Contact Phone', before: '—', after: '(801) 555-0142', comment: null }] } },
+    { id: 'evt-ask-3', action: 'edited', actor: { type: 'ask',         name: 'Ask'                                                      }, affectedEmployee: { name: 'Jamie Russo',    photo: 'https://i.pravatar.cc/40?img=60' }, description: [{ text: 'Bamboo AI' }, { text: ' edited ' }, { text: 'emergency contact', link: true }, { text: ' for ' }, { text: 'Jamie Russo', link: true }],           timestamp: '10:14 AM', details: { ipAddress: '—',            area: 'Employee Records',  changes: [{ field: 'Emergency Contact Name', before: '—', after: 'Alex Russo', comment: 'Updated via employee self-service chat' }, { field: 'Emergency Contact Phone', before: '—', after: '(801) 555-0142', comment: null }] } },
     { id: 'evt-21', action: 'removed',   actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' removed ' }, { text: 'Blake Thompson', link: true }, { text: ' from ' }, { text: 'Engineering', link: true }, { text: ' team' }],                                               timestamp: '4:00 PM',  details: { ipAddress: '192.168.1.104', area: 'Employee Records',  changes: [{ employee: 'Blake Thompson', field: 'Team',                    before: 'Engineering',        after: '—'                    }] } },
     { id: 'evt-22', action: 'edited',    actor: { type: 'user',        name: 'Derek Olson',    photo: 'https://i.pravatar.cc/40?img=68' }, description: [{ text: 'Derek Olson', link: true }, { text: ' updated ' }, { text: 'company holiday schedule', link: true }],                                                                                                                 timestamp: '2:18 PM',  details: { ipAddress: '192.168.2.20', area: 'Settings',          changes: [{ field: 'Holiday: Apr 18', before: '—', after: 'Company Day Off' }] } },
     { id: 'evt-24', action: 'logged-in', actor: { type: 'user',        name: 'Blake Thompson', photo: 'https://i.pravatar.cc/40?img=53' }, description: [{ text: 'Blake Thompson', link: true }, { text: ' logged in' }],                                                                                                                                                               timestamp: '8:30 AM',  details: { ipAddress: '172.16.0.4',   area: 'Settings',          changes: [{ field: 'Login', before: '—', after: 'Authenticated' }] } },
@@ -157,7 +161,7 @@ const AUDIT_GROUPS: AuditGroup[] = [
   ] },
   { key: 'nov-3-2025',  label: 'Nov 3',  date: new Date('2025-11-03'), events: [
     { id: 'evt-y3', action: 'removed', actor: { type: 'user', name: 'Derek Olson',   photo: 'https://i.pravatar.cc/40?img=68' }, description: [{ text: 'Derek Olson', link: true }, { text: ' removed ' }, { text: 'Jamie Russo', link: true }, { text: ' from ' }, { text: 'Benefits plan', link: true }], timestamp: '10:05 AM', details: { ipAddress: '192.168.2.20', area: 'Benefits',                          changes: [{ employee: 'Jamie Russo', field: 'Health Plan', before: 'Premium PPO',    after: '—'                }] } },
-    { id: 'evt-y4', action: 'edited',  actor: { type: 'ask',  name: 'Ask'            }, affectedEmployee: { name: 'Blake Thompson', photo: 'https://i.pravatar.cc/40?img=53' }, description: [{ text: 'Ask BambooHR' }, { text: ' edited ' }, { text: 'emergency contact', link: true }, { text: ' for ' }, { text: 'Blake Thompson', link: true }], timestamp: '9:22 AM',  details: { ipAddress: '—',            area: 'Employee Records',              changes: [{ field: 'Emergency Contact Name', before: 'Alex Thompson', after: 'Jordan Thompson', comment: 'Updated per employee request via chat' }] } },
+    { id: 'evt-y4', action: 'edited',  actor: { type: 'ask',  name: 'Ask'            }, affectedEmployee: { name: 'Blake Thompson', photo: 'https://i.pravatar.cc/40?img=53' }, description: [{ text: 'Bamboo AI' }, { text: ' edited ' }, { text: 'emergency contact', link: true }, { text: ' for ' }, { text: 'Blake Thompson', link: true }], timestamp: '9:22 AM',  details: { ipAddress: '—',            area: 'Employee Records',              changes: [{ field: 'Emergency Contact Name', before: 'Alex Thompson', after: 'Jordan Thompson', comment: 'Updated per employee request via chat' }] } },
   ] },
 ];
 
@@ -166,7 +170,7 @@ interface ActorNode { id: string; label: string; children?: ActorLeaf[]; }
 
 const ACTOR_TREE: ActorNode[] = [
   { id: 'user',   label: 'User' },
-  { id: 'ask',    label: 'Ask BambooHR' },
+  { id: 'ask',    label: 'Bamboo AI' },
   { id: 'system', label: 'Automations' },
 ];
 
@@ -406,6 +410,16 @@ function ActorIcon({ actor }: { actor: AuditActor }) {
     );
   }
 
+  if (actor.type === 'hr-services') {
+    return (
+      <IconTile
+        icon={<div className="audit-hr-services-icon-inner" />}
+        size={40}
+        variant="muted"
+      />
+    );
+  }
+
   return (
     <IconTile
       icon={<IconV2 name="plug-solid" size={16} color="info-strong" />}
@@ -497,6 +511,19 @@ function AvatarWithAskBadge({ photo, name }: { photo: string; name: string }) {
   );
 }
 
+function AvatarWithHRSBadge({ photo, name }: { photo: string; name: string }) {
+  return (
+    <div className="audit-avatar-badge-wrap">
+      <Avatar src={photo} size={40} alt={name} />
+      <div className="audit-hrs-badge-wrap">
+        <div className="audit-hrs-badge">
+          <div className="audit-hrs-badge-icon" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Audit event card
 // ---------------------------------------------------------------------------
@@ -509,6 +536,7 @@ function AuditEventCard({
   onEventAdded,
   showActionType,
   showIpAddress,
+  showHRC,
 }: {
   event: AuditEventData;
   isExpanded: boolean;
@@ -517,8 +545,12 @@ function AuditEventCard({
   onEventAdded: (newEvent: AuditEventData) => void;
   showActionType: boolean;
   showIpAddress: boolean;
+  showHRC: boolean;
 }) {
-  const { actor, description, timestamp, details, affectedEmployee } = event;
+  const { actor, timestamp, details, affectedEmployee } = event;
+  const description = (showHRC && event.hrcPerson)
+    ? [{ text: event.hrcPerson }, { text: ' from HR Services' }, ...event.description.slice(1)]
+    : event.description;
   const [fixTarget, setFixTarget] = useState<ChangeDisplayRow | null>(null);
   const [fixedChanges, setFixedChanges] = useState<Record<string, Date>>({});
   const [updateValue, setUpdateValue] = useState<string>('');
@@ -552,6 +584,8 @@ function AuditEventCard({
           <div className="audit-event-actor-icon">
             {event.viaAsk && actor.photo ? (
               <AvatarWithAskBadge photo={actor.photo} name={actor.name} />
+            ) : actor.type === 'hr-services' && showHRC && actor.photo ? (
+              <AvatarWithHRSBadge photo={actor.photo} name={actor.name} />
             ) : (
               <ActorIcon actor={actor} />
             )}
@@ -1175,7 +1209,7 @@ function applyFilters(
 export default function AuditTrail() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { activeVersion } = useViewBar();
+  const { activeVersion, showHRC } = useViewBar();
   const isMvp = activeVersion === 'mvp';
 
   const highlightEventId = searchParams.get('event');
@@ -1399,7 +1433,12 @@ export default function AuditTrail() {
       {/* Timeline */}
       <div className="audit-timeline">
 
-        {applyFilters(auditGroups, dateRange, selectedActors, selectedActions, selectedAreas, selectedTags).map(group => (
+        {applyFilters(
+          isMvp
+            ? auditGroups.map(g => ({ ...g, events: g.events.filter(e => !e.northStarOnly) }))
+            : auditGroups,
+          dateRange, selectedActors, selectedActions, selectedAreas, selectedTags
+        ).map(group => (
           <div key={group.key} className="audit-timeline-group">
             <DateSeparator label={formatGroupLabel(group.label, group.date)} />
             {group.events.map(event => (
@@ -1412,6 +1451,7 @@ export default function AuditTrail() {
                 onEventAdded={handleEventAdded}
                 showActionType={showActionType}
                 showIpAddress={showIpAddress}
+                showHRC={showHRC}
               />
             ))}
           </div>
