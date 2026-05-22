@@ -43,6 +43,7 @@ interface AuditActor {
 interface DescriptionPart {
   text: string;
   link?: boolean;
+  bold?: boolean;
 }
 
 interface AuditChange {
@@ -464,6 +465,8 @@ function DescriptionText({ parts }: { parts: DescriptionPart[] }) {
           <button key={i} className="audit-link" onClick={e => e.stopPropagation()}>
             {part.text}
           </button>
+        ) : part.bold ? (
+          <span key={i} style={{ fontWeight: 500 }}>{part.text}</span>
         ) : (
           <span key={i}>{part.text}</span>
         )
@@ -549,7 +552,7 @@ function AuditEventCard({
 }) {
   const { actor, timestamp, details, affectedEmployee } = event;
   const description = (showHRC && event.hrcPerson)
-    ? [{ text: event.hrcPerson }, { text: ' from HR Services' }, ...event.description.slice(1)]
+    ? [{ text: event.hrcPerson, bold: true }, { text: ' from HR Services' }, ...event.description.slice(1)]
     : event.description;
   const [fixTarget, setFixTarget] = useState<ChangeDisplayRow | null>(null);
   const [fixedChanges, setFixedChanges] = useState<Record<string, Date>>({});
