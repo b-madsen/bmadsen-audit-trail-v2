@@ -172,11 +172,11 @@ interface ActorNode { id: string; label: string; children?: ActorLeaf[]; }
 const ACTOR_TREE: ActorNode[] = [
   { id: 'user',   label: 'User' },
   { id: 'ask',    label: 'Bamboo AI' },
-  { id: 'system', label: 'Automations' },
 ];
 
 const NORTH_STAR_ACTOR_TREE: ActorNode[] = [
   ...ACTOR_TREE,
+  { id: 'system', label: 'Automations' },
   { id: 'hr-services', label: 'HR Services' },
 ];
 
