@@ -28,11 +28,6 @@ const ERROR_STATES = [
   { id: 'option-three', label: 'Option 3' },
 ] as const;
 
-const VERSIONS = [
-  { id: 'north-star', label: 'North Star' },
-  { id: 'mvp', label: 'MVP' },
-] as const;
-
 const IS_MAC = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
 const SHORTCUT = IS_MAC ? '⌘\\' : 'Ctrl+\\';
 
@@ -226,8 +221,7 @@ export function ViewBar() {
     activePackage, setActivePackage,
     activeEdgeCase, toggleEdgeCase,
     activeErrorState, toggleErrorState,
-    activeVersion, setActiveVersion,
-    showHRC, toggleShowHRC,
+    showExtras, toggleShowExtras,
   } = useViewBar();
   const { commentsVisible, toggleComments } = useComments();
 
@@ -241,19 +235,13 @@ export function ViewBar() {
     <div className={`view-bar${isVisible ? ' view-bar--visible' : ''}`} role="toolbar" aria-label="View settings">
       {isChangeHistory ? (
         <>
-          <span className="view-bar__label">Version</span>
-          <ButtonGroup items={VERSIONS} activeId={activeVersion} onSelect={setActiveVersion} />
-          {activeVersion === 'north-star' && (
-            <>
-              <div className="view-bar__divider" aria-hidden="true" />
-              <ToggleGroup
-                items={[{ id: 'show-hrc', label: 'Show HRC' }]}
-                activeId={showHRC ? 'show-hrc' : null}
-                onToggle={toggleShowHRC}
-                activeColor="#2e7918"
-              />
-            </>
-          )}
+          <span className="view-bar__label">Extras</span>
+          <ToggleGroup
+            items={[{ id: 'extras', label: 'Extras' }]}
+            activeId={showExtras ? 'extras' : null}
+            onToggle={toggleShowExtras}
+            activeColor="#2e7918"
+          />
         </>
       ) : (
         <>

@@ -85,6 +85,7 @@ interface AuditEventData {
   timestamp: string;
   affectedEmployee?: { name: string; photo: string };
   viaAsk?: boolean;
+  partner?: boolean;
   northStarOnly?: boolean;
   hrcPerson?: string;
   details: {
@@ -109,6 +110,7 @@ interface AuditGroup {
 
 const AUDIT_GROUPS: AuditGroup[] = [
   { key: 'today',    label: 'Today',     date: new Date('2026-04-23'), events: [
+    { id: 'evt-partner-1', action: 'edited', actor: { type: 'user', name: 'Marcia James', photo: 'https://i.pravatar.cc/40?img=45' }, partner: true, description: [{ text: 'Marcia James', link: true }, { text: ' from Apex Benefits edited ' }, { text: 'Benefits enrollment', link: true }, { text: ' for ' }, { text: 'Blake Thompson', link: true }, { text: ' via Client Portal' }],                                                                       timestamp: '11:10 AM', details: { ipAddress: '—', area: 'Benefits', changes: [{ employee: 'Blake Thompson', field: 'Health Plan', before: 'Basic PPO', after: 'Premium PPO' }, { employee: 'Blake Thompson', field: 'Dental Plan', before: 'None', after: 'Delta Dental Plus' }] } },
     { id: 'evt-25', action: 'edited',    actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' updated compensation for 3 employees' }],                                                                                                                                      timestamp: '10:45 AM', details: { ipAddress: '192.168.1.104', area: 'Payroll',           client: 'desktop', changes: [{ employee: 'Blake Thompson', field: 'Annual Salary',      before: '$72,000',            after: '$78,000'              }, { employee: 'Blake Thompson', field: 'Job Title',            before: 'Senior Designer',    after: 'Lead Designer'        }, { employee: 'Lena Brooks',    field: 'Annual Salary',      before: '$65,000',            after: '$70,000'              }, { employee: 'Lena Brooks',    field: 'Performance Rating', before: 'Meets Expectations', after: 'Exceeds Expectations' }, { employee: 'Jamie Russo',    field: 'Annual Salary',      before: '$58,000',            after: '$63,000'              }] } },
     { id: 'evt-1',  action: 'removed',   actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' removed ' }, { text: 'Emergency Contact Phone', link: true }, { text: ' from ' }, { text: "Blake Thompson's", link: true }, { text: ' profile' }],                              timestamp: '9:22 AM',  details: { ipAddress: '192.168.1.104', area: 'Employee Records', client: 'mobile',  changes: [{ employee: 'Blake Thompson', field: 'Emergency Contact Phone', before: '(801) 555-0192', after: '—' }] } },
     { id: 'evt-hrs-1', action: 'added',  actor: { type: 'hr-services', name: 'HR Services', photo: 'https://i.pravatar.cc/40?img=26' }, northStarOnly: true, hrcPerson: 'Sharon Brown', description: [{ text: 'HR Services' }, { text: ' added ' }, { text: 'benefits enrollment', link: true }, { text: ' for ' }, { text: 'Marcus Rivera', link: true }],                                                                                     timestamp: '9:05 AM',  details: { ipAddress: '—', area: 'Benefits',         changes: [{ employee: 'Marcus Rivera', field: 'Health Plan',  before: '—', after: 'Premium PPO',       comment: 'Auto-enrolled based on new hire eligibility window' }, { employee: 'Marcus Rivera', field: 'Dental Plan', before: '—', after: 'Delta Dental Plus', comment: 'Included in standard benefits package for full-time employees' }] } },
@@ -302,7 +304,7 @@ function inferInputType(field: string): 'text' | 'select' {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function makeChangeColumns(onUpdate: (change: ChangeDisplayRow) => void, fixedChanges: Record<string, Date>, isMvp: boolean, showComment = false): any[] {
+function makeChangeColumns(onUpdate: (change: ChangeDisplayRow) => void, fixedChanges: Record<string, Date>, showComment = false): any[] {
   return [
     {
       header: 'Employee',
@@ -354,7 +356,6 @@ function makeChangeColumns(onUpdate: (change: ChangeDisplayRow) => void, fixedCh
       cell: (row: ChangeDisplayRow) => {
         const key = `${row.employee ?? ''}|${row.field}`;
         const alreadyFixed = !!fixedChanges[key];
-        if (isMvp) return null;
         return (
           <div className="audit-row-undo-wrap">
             <Button
@@ -514,13 +515,34 @@ function AvatarWithAskBadge({ photo, name }: { photo: string; name: string }) {
   );
 }
 
-function AvatarWithHRSBadge({ photo, name }: { photo: string; name: string }) {
+function AvatarWithHRSBadge() {
   return (
     <div className="audit-avatar-badge-wrap">
-      <Avatar src={photo} size={40} alt={name} />
+      <IconTile
+        icon={<IconV2 name="user-solid" size={18} color="neutral-medium" />}
+        size={40}
+        variant="muted"
+      />
       <div className="audit-hrs-badge-wrap">
         <div className="audit-hrs-badge">
           <div className="audit-hrs-badge-icon" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AvatarWithPartnerBadge() {
+  return (
+    <div className="audit-avatar-badge-wrap">
+      <IconTile
+        icon={<IconV2 name="user-solid" size={18} color="neutral-medium" />}
+        size={40}
+        variant="muted"
+      />
+      <div className="audit-partner-badge-wrap">
+        <div className="audit-partner-badge">
+          <IconV2 name="buildings-regular" size={12} color="neutral-forcedwhite" />
         </div>
       </div>
     </div>
@@ -535,23 +557,19 @@ function AuditEventCard({
   event,
   isExpanded,
   onToggle,
-  isMvp,
   onEventAdded,
   showActionType,
   showIpAddress,
-  showHRC,
 }: {
   event: AuditEventData;
   isExpanded: boolean;
   onToggle: () => void;
-  isMvp: boolean;
   onEventAdded: (newEvent: AuditEventData) => void;
   showActionType: boolean;
   showIpAddress: boolean;
-  showHRC: boolean;
 }) {
   const { actor, timestamp, details, affectedEmployee } = event;
-  const description = (showHRC && event.hrcPerson)
+  const description = event.hrcPerson
     ? [{ text: event.hrcPerson, bold: true }, { text: ' from HR Services' }, ...event.description.slice(1)]
     : event.description;
   const [fixTarget, setFixTarget] = useState<ChangeDisplayRow | null>(null);
@@ -568,7 +586,7 @@ function AuditEventCard({
   const showComment = isAsk || !!event.viaAsk;
   const changeColumns = makeChangeColumns(
     (row) => { setFixTarget(row); setUpdateValue(row.after); },
-    fixedChanges, isMvp, showComment
+    fixedChanges, showComment
   );
 
   return (
@@ -585,10 +603,12 @@ function AuditEventCard({
             />
           </span>
           <div className="audit-event-actor-icon">
-            {event.viaAsk && actor.photo ? (
+            {event.partner ? (
+              <AvatarWithPartnerBadge />
+            ) : event.viaAsk && actor.photo ? (
               <AvatarWithAskBadge photo={actor.photo} name={actor.name} />
-            ) : actor.type === 'hr-services' && showHRC && actor.photo ? (
-              <AvatarWithHRSBadge photo={actor.photo} name={actor.name} />
+            ) : actor.type === 'hr-services' ? (
+              <AvatarWithHRSBadge />
             ) : (
               <ActorIcon actor={actor} />
             )}
@@ -1212,8 +1232,7 @@ function applyFilters(
 export default function AuditTrail() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { activeVersion, showHRC } = useViewBar();
-  const isMvp = activeVersion === 'mvp';
+  const { showExtras } = useViewBar();
 
   const highlightEventId = searchParams.get('event');
   const [expandedIds, setExpandedIds] = useState<Set<string>>(
@@ -1311,7 +1330,7 @@ export default function AuditTrail() {
         }
         primaryContent={
           <div className="audit-header-actions">
-            {!isMvp && (
+            {showExtras && (
               <IconButton
                 icon="user-plus-regular"
                 aria-label="Share report"
@@ -1319,7 +1338,7 @@ export default function AuditTrail() {
                 onClick={() => setIsShareOpen(true)}
               />
             )}
-            {!isMvp && (
+            {showExtras && (
               <Dropdown
                 type="icon"
                 ButtonProps={{
@@ -1394,7 +1413,7 @@ export default function AuditTrail() {
 
       {/* Filter bar */}
       <div className="audit-trail-filter-bar">
-        {!isMvp && (
+        {showExtras && (
           <Button
             color="ai"
             variant="outlined"
@@ -1407,7 +1426,7 @@ export default function AuditTrail() {
         )}
 
         <FilterDropdown label="Date"    icon="calendar"      type="date"     dateValue={dateRange}         onDateChange={setDateRange} anchorId="audit-date-filter" />
-        <ActorsDropdown selectedIds={selectedActors} onSelectionChange={setSelectedActors} tree={isMvp ? ACTOR_TREE : NORTH_STAR_ACTOR_TREE} />
+        <ActorsDropdown selectedIds={selectedActors} onSelectionChange={setSelectedActors} tree={NORTH_STAR_ACTOR_TREE} />
         <FilterDropdown label="Actions" icon="clock-rotate-left"          type="checkbox" options={ACTIONS} selectedIds={selectedActions} onSelectionChange={setSelectedActions} />
         <FilterDropdown label="Areas"   icon="layer-group"   type="checkbox" options={AREAS}   selectedIds={selectedAreas}   onSelectionChange={setSelectedAreas} />
         <TagsDropdown value={selectedTags} onChange={setSelectedTags} />
@@ -1437,9 +1456,7 @@ export default function AuditTrail() {
       <div className="audit-timeline">
 
         {applyFilters(
-          isMvp
-            ? auditGroups.map(g => ({ ...g, events: g.events.filter(e => !e.northStarOnly) }))
-            : auditGroups,
+          auditGroups,
           dateRange, selectedActors, selectedActions, selectedAreas, selectedTags
         ).map(group => (
           <div key={group.key} className="audit-timeline-group">
@@ -1450,11 +1467,9 @@ export default function AuditTrail() {
                 event={event}
                 isExpanded={expandedIds.has(event.id)}
                 onToggle={() => toggleExpand(event.id)}
-                isMvp={isMvp}
                 onEventAdded={handleEventAdded}
                 showActionType={showActionType}
                 showIpAddress={showIpAddress}
-                showHRC={showHRC}
               />
             ))}
           </div>

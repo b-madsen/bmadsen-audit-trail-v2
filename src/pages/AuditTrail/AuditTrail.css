@@ -556,6 +556,37 @@
   mask-position: center;
 }
 
+/* ── Partner avatar badge ────────────────────────────────────────────────── */
+
+.audit-partner-badge-wrap {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audit-partner-badge {
+  width: 20px;
+  height: 20px;
+  background: #2E6FE0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audit-partner-badge svg,
+.audit-partner-badge svg path {
+  color: #fff;
+  fill: #fff;
+}
+
 /* ── HR Services icon ────────────────────────────────────────────────────── */
 
 .audit-hr-services-icon-inner {
