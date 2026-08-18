@@ -593,7 +593,8 @@
 /* Badges overlap in the corner: identity (broker) sits behind and to the left,
    the AI badge is right-most and on top. */
 
-.audit-partner-badge-wrap--stacked {
+.audit-partner-badge-wrap--stacked,
+.audit-hrs-badge-wrap--stacked {
   right: 9px;
   z-index: 1;
 }
