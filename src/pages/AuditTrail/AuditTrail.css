@@ -491,29 +491,31 @@
 
 .audit-ask-badge {
   position: absolute;
-  bottom: -5px;
-  right: -5px;
-  width: 20px;
-  height: 20px;
-  filter:
-    drop-shadow(2px 0 0 #fff)
-    drop-shadow(-2px 0 0 #fff)
-    drop-shadow(0 2px 0 #fff)
-    drop-shadow(0 -2px 0 #fff);
+  bottom: -4px;
+  right: -4px;
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.audit-ask-badge-icon {
+.audit-ask-badge-disc {
   width: 20px;
   height: 20px;
+  border-radius: 50%;
   background: linear-gradient(135deg, #5570C8 0%, #8868D0 100%);
-  -webkit-mask-image: url('/assets/images/ask-icon.svg');
-  mask-image: url('/assets/images/ask-icon.svg');
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audit-ask-badge-disc svg,
+.audit-ask-badge-disc svg path {
+  color: #fff;
+  fill: #fff;
 }
 
 /* ── HR Services avatar badge ────────────────────────────────────────────── */
@@ -585,6 +587,20 @@
 .audit-partner-badge svg path {
   color: #fff;
   fill: #fff;
+}
+
+/* ── Broker + AI badge stack ─────────────────────────────────────────────── */
+/* Badges overlap in the corner: identity (broker) sits behind and to the left,
+   the AI badge is right-most and on top. */
+
+.audit-partner-badge-wrap--stacked {
+  right: 9px;
+  z-index: 1;
+}
+
+.audit-ask-badge--stacked {
+  right: -4px;
+  z-index: 2;
 }
 
 /* ── HR Services icon ────────────────────────────────────────────────────── */

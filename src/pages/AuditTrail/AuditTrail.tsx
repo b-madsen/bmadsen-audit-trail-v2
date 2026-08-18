@@ -110,6 +110,7 @@ interface AuditGroup {
 
 const AUDIT_GROUPS: AuditGroup[] = [
   { key: 'today',    label: 'Today',     date: new Date('2026-04-23'), events: [
+    { id: 'evt-partner-ai-1', action: 'edited', actor: { type: 'user', name: 'Marcia James', photo: 'https://i.pravatar.cc/40?img=45' }, partner: true, viaAsk: true, description: [{ text: 'Marcia James', link: true }, { text: ' from Apex Benefits edited ' }, { text: 'Benefits enrollment', link: true }, { text: ' for ' }, { text: 'Blake Thompson', link: true }, { text: ' via Bamboo AI' }],                                                                       timestamp: '11:22 AM', details: { ipAddress: '—', area: 'Benefits', changes: [{ employee: 'Blake Thompson', field: 'Health Plan', before: 'Basic PPO', after: 'Premium PPO', comment: 'Broker updated the plan in the client portal — Bamboo AI drafted the change from the open-enrollment request' }] } },
     { id: 'evt-partner-1', action: 'edited', actor: { type: 'user', name: 'Marcia James', photo: 'https://i.pravatar.cc/40?img=45' }, partner: true, description: [{ text: 'Marcia James', link: true }, { text: ' from Apex Benefits edited ' }, { text: 'Benefits enrollment', link: true }, { text: ' for ' }, { text: 'Blake Thompson', link: true }, { text: ' via Client Portal' }],                                                                       timestamp: '11:10 AM', details: { ipAddress: '—', area: 'Benefits', changes: [{ employee: 'Blake Thompson', field: 'Health Plan', before: 'Basic PPO', after: 'Premium PPO' }, { employee: 'Blake Thompson', field: 'Dental Plan', before: 'None', after: 'Delta Dental Plus' }] } },
     { id: 'evt-25', action: 'edited',    actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' updated compensation for 3 employees' }],                                                                                                                                      timestamp: '10:45 AM', details: { ipAddress: '192.168.1.104', area: 'Payroll',           client: 'desktop', changes: [{ employee: 'Blake Thompson', field: 'Annual Salary',      before: '$72,000',            after: '$78,000'              }, { employee: 'Blake Thompson', field: 'Job Title',            before: 'Senior Designer',    after: 'Lead Designer'        }, { employee: 'Lena Brooks',    field: 'Annual Salary',      before: '$65,000',            after: '$70,000'              }, { employee: 'Lena Brooks',    field: 'Performance Rating', before: 'Meets Expectations', after: 'Exceeds Expectations' }, { employee: 'Jamie Russo',    field: 'Annual Salary',      before: '$58,000',            after: '$63,000'              }] } },
     { id: 'evt-1',  action: 'removed',   actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' removed ' }, { text: 'Emergency Contact Phone', link: true }, { text: ' from ' }, { text: "Blake Thompson's", link: true }, { text: ' profile' }],                              timestamp: '9:22 AM',  details: { ipAddress: '192.168.1.104', area: 'Employee Records', client: 'mobile',  changes: [{ employee: 'Blake Thompson', field: 'Emergency Contact Phone', before: '(801) 555-0192', after: '—' }] } },
@@ -509,7 +510,9 @@ function AvatarWithAskBadge({ photo, name }: { photo: string; name: string }) {
     <div className="audit-avatar-badge-wrap">
       <Avatar src={photo} size={40} alt={name} />
       <div className="audit-ask-badge">
-        <div className="audit-ask-badge-icon" />
+        <div className="audit-ask-badge-disc">
+          <IconV2 name="sparkles-solid" size={12} color="neutral-inverted" />
+        </div>
       </div>
     </div>
   );
@@ -542,7 +545,31 @@ function AvatarWithPartnerBadge() {
       />
       <div className="audit-partner-badge-wrap">
         <div className="audit-partner-badge">
-          <IconV2 name="buildings-regular" size={12} color="neutral-forcedwhite" />
+          <IconV2 name="building-solid" size={12} color="neutral-forcedwhite" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Broker + AI: badges stack in the bottom-right corner, offset and overlapping.
+// Identity (broker) sits behind/left; the AI badge is right-most and on top.
+function AvatarWithBadgeStack() {
+  return (
+    <div className="audit-avatar-badge-wrap">
+      <IconTile
+        icon={<IconV2 name="user-solid" size={18} color="neutral-medium" />}
+        size={40}
+        variant="muted"
+      />
+      <div className="audit-partner-badge-wrap audit-partner-badge-wrap--stacked">
+        <div className="audit-partner-badge">
+          <IconV2 name="building-solid" size={12} color="neutral-forcedwhite" />
+        </div>
+      </div>
+      <div className="audit-ask-badge audit-ask-badge--stacked">
+        <div className="audit-ask-badge-disc">
+          <IconV2 name="sparkles-solid" size={12} color="neutral-inverted" />
         </div>
       </div>
     </div>
@@ -603,7 +630,9 @@ function AuditEventCard({
             />
           </span>
           <div className="audit-event-actor-icon">
-            {event.partner ? (
+            {event.partner && event.viaAsk ? (
+              <AvatarWithBadgeStack />
+            ) : event.partner ? (
               <AvatarWithPartnerBadge />
             ) : event.viaAsk && actor.photo ? (
               <AvatarWithAskBadge photo={actor.photo} name={actor.name} />
