@@ -201,6 +201,9 @@ const ACTIONS = [
   { id: 'edited',    label: 'Edited' },
   { id: 'removed',   label: 'Deleted' },
   { id: 'logged-in', label: 'Logged in' },
+  { id: 'approved',  label: 'Approved',  group: 'Approvals' },
+  { id: 'denied',    label: 'Denied',    group: 'Approvals' },
+  { id: 'requested', label: 'Requested', group: 'Approvals' },
 ];
 
 const AREAS = [
@@ -1005,22 +1008,22 @@ function SettingsDropdown({
             Show in event summaries...
           </BodyText>
           <div className="audit-settings-toggle-row" onClick={() => onShowActionTypeChange(!showActionType)}>
+            <BodyText size="small">Action Type</BodyText>
             <RoundedToggle
               ariaLabel="Show action type"
               isChecked={showActionType}
               isControlled={true}
               onChange={() => onShowActionTypeChange(!showActionType)}
             />
-            <BodyText size="small">Action Type</BodyText>
           </div>
           <div className="audit-settings-toggle-row" onClick={() => onShowIpAddressChange(!showIpAddress)}>
+            <BodyText size="small">IP Address</BodyText>
             <RoundedToggle
               ariaLabel="Show IP address"
               isChecked={showIpAddress}
               isControlled={true}
               onChange={() => onShowIpAddressChange(!showIpAddress)}
             />
-            <BodyText size="small">IP Address</BodyText>
           </div>
         </div>
       )}
@@ -1043,7 +1046,7 @@ interface FilterDropdownProps {
   type: 'date' | 'checkbox';
   dateValue?: DateRange;
   onDateChange?: (value: DateRange) => void;
-  options?: { id: string; label: string }[];
+  options?: { id: string; label: string; group?: string }[];
   selectedIds?: string[];
   onSelectionChange?: (ids: string[]) => void;
   anchorId?: string;
@@ -1183,7 +1186,7 @@ function FilterDropdown({
 
           {type === 'checkbox' && (
             <div className="audit-filter-checkbox-list">
-              {options.map(opt => (
+              {options.filter(opt => !opt.group).map(opt => (
                 <Checkbox
                   key={opt.id}
                   value={opt.id}
@@ -1191,6 +1194,20 @@ function FilterDropdown({
                   onChange={() => toggleCheckbox(opt.id)}
                   label={opt.label}
                 />
+              ))}
+              {[...new Set(options.filter(opt => opt.group).map(opt => opt.group))].map(group => (
+                <div key={group} className="audit-filter-checkbox-group">
+                  <BodyText size="extra-small" weight="semibold" color="neutral-medium">{group}</BodyText>
+                  {options.filter(opt => opt.group === group).map(opt => (
+                    <Checkbox
+                      key={opt.id}
+                      value={opt.id}
+                      checked={selectedIds.includes(opt.id)}
+                      onChange={() => toggleCheckbox(opt.id)}
+                      label={opt.label}
+                    />
+                  ))}
+                </div>
               ))}
             </div>
           )}
@@ -1466,11 +1483,11 @@ export default function AuditTrail() {
           </Button>
         )}
 
-        <FilterDropdown label="Date"    icon="calendar"      type="date"     dateValue={dateRange}         onDateChange={setDateRange} anchorId="audit-date-filter" />
-        <ActorsDropdown selectedIds={selectedActors} onSelectionChange={setSelectedActors} tree={NORTH_STAR_ACTOR_TREE} />
+        <FilterDropdown label="Dates"    icon="calendar"      type="date"     dateValue={dateRange}         onDateChange={setDateRange} anchorId="audit-date-filter" />
+        <TagsDropdown value={selectedTags} onChange={setSelectedTags} />
         <FilterDropdown label="Actions" icon="clock-rotate-left"          type="checkbox" options={ACTIONS} selectedIds={selectedActions} onSelectionChange={setSelectedActions} />
         <FilterDropdown label="Areas"   icon="layer-group"   type="checkbox" options={AREAS}   selectedIds={selectedAreas}   onSelectionChange={setSelectedAreas} />
-        <TagsDropdown value={selectedTags} onChange={setSelectedTags} />
+        <ActorsDropdown selectedIds={selectedActors} onSelectionChange={setSelectedActors} tree={NORTH_STAR_ACTOR_TREE} />
         {(dateRange.from || dateRange.to || selectedActors.length > 0 || selectedActions.length > 0 || selectedAreas.length > 0 || selectedTags.length > 0) && (
           <TextButton
             onClick={() => {
