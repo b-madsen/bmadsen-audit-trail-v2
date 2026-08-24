@@ -94,6 +94,17 @@ interface AuditEventData {
     client?: 'desktop' | 'mobile' | 'portal';
     changes: AuditChange[];
     automationSteps?: AutomationStep[];
+    timeOff?: {
+      policyType: string;
+      from: string;
+      to: string;
+      hours: number;
+      note?: string;
+    };
+    multiAnswerList?: {
+      fieldName: string;
+      options: { label: string; before: boolean; after: boolean }[];
+    };
   };
 }
 
@@ -110,6 +121,10 @@ interface AuditGroup {
 
 const AUDIT_GROUPS: AuditGroup[] = [
   { key: 'today',    label: 'Today',     date: new Date('2026-04-23'), events: [
+    { id: 'evt-to-req', action: 'requested', actor: { type: 'user', name: 'Jennifer Coolidge', photo: 'https://i.pravatar.cc/40?img=49' }, description: [{ text: 'Jennifer Coolidge', link: true }, { text: ' requested ' }, { text: 'time off', link: true }], timestamp: '4:32 PM', details: { ipAddress: '10.0.4.21', area: 'Time Off', client: 'desktop', changes: [], timeOff: { policyType: 'Vacation', from: '2026-08-24', to: '2026-08-28', hours: 40, note: "Traveling for my cousin's wedding" } } },
+    { id: 'evt-to-approved', action: 'approved', actor: { type: 'user', name: 'Sarah Chen', photo: 'https://i.pravatar.cc/40?img=47' }, affectedEmployee: { name: 'Marcus Rivera', photo: 'https://i.pravatar.cc/40?img=11' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' approved ' }, { text: 'time off', link: true }, { text: ' for ' }, { text: 'Marcus Rivera', link: true }], timestamp: '3:10 PM', details: { ipAddress: '192.168.1.104', area: 'Time Off', client: 'desktop', changes: [], timeOff: { policyType: 'Sick', from: '2026-05-04', to: '2026-05-05', hours: 16, note: 'Doctor appointment and recovery' } } },
+    { id: 'evt-to-denied', action: 'denied', actor: { type: 'user', name: 'Derek Olson', photo: 'https://i.pravatar.cc/40?img=68' }, affectedEmployee: { name: 'Priya Patel', photo: 'https://i.pravatar.cc/40?img=44' }, description: [{ text: 'Derek Olson', link: true }, { text: ' denied ' }, { text: 'time off', link: true }, { text: ' for ' }, { text: 'Priya Patel', link: true }], timestamp: '1:15 PM', details: { ipAddress: '192.168.2.20', area: 'Time Off', client: 'desktop', changes: [], timeOff: { policyType: 'Vacation', from: '2026-06-01', to: '2026-06-12', hours: 80, note: 'Overlaps a critical release window — please resubmit for later dates' } } },
+    { id: 'evt-mal-1', action: 'edited', actor: { type: 'user', name: 'Jimmy Dean', photo: 'https://i.pravatar.cc/40?img=12' }, affectedEmployee: { name: 'Samuel Smith', photo: 'https://i.pravatar.cc/40?img=59' }, description: [{ text: 'Jimmy Dean', link: true }, { text: ' edited ' }, { text: 'Teams', link: true }, { text: ' for ' }, { text: 'Samuel Smith', link: true }], timestamp: '12:48 PM', details: { ipAddress: '10.0.1.77', area: 'Employee Records', client: 'desktop', changes: [], multiAnswerList: { fieldName: 'Teams', options: [{ label: 'NYC Product', before: false, after: true }, { label: 'UT Product', before: false, after: true }] } } },
     { id: 'evt-partner-ai-1', action: 'edited', actor: { type: 'user', name: 'Marcia James', photo: 'https://i.pravatar.cc/40?img=45' }, partner: true, viaAsk: true, description: [{ text: 'Marcia James', link: true }, { text: ' from Apex Benefits edited ' }, { text: 'Benefits enrollment', link: true }, { text: ' for ' }, { text: 'Blake Thompson', link: true }, { text: ' via Bamboo AI' }],                                                                       timestamp: '11:22 AM', details: { ipAddress: '203.0.113.24', area: 'Benefits', client: 'portal', changes: [{ employee: 'Blake Thompson', field: 'Health Plan', before: 'Basic PPO', after: 'Premium PPO', comment: 'Broker updated the plan in the client portal — Bamboo AI drafted the change from the open-enrollment request' }] } },
     { id: 'evt-partner-1', action: 'edited', actor: { type: 'user', name: 'Marcia James', photo: 'https://i.pravatar.cc/40?img=45' }, partner: true, description: [{ text: 'Marcia James', link: true }, { text: ' from Apex Benefits edited ' }, { text: 'Benefits enrollment', link: true }, { text: ' for ' }, { text: 'Blake Thompson', link: true }, { text: ' via Client Portal' }],                                                                       timestamp: '11:10 AM', details: { ipAddress: '203.0.113.24', area: 'Benefits', client: 'portal', changes: [{ employee: 'Blake Thompson', field: 'Health Plan', before: 'Basic PPO', after: 'Premium PPO' }, { employee: 'Blake Thompson', field: 'Dental Plan', before: 'None', after: 'Delta Dental Plus' }] } },
     { id: 'evt-25', action: 'edited',    actor: { type: 'user',        name: 'Sarah Chen',     photo: 'https://i.pravatar.cc/40?img=47' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' updated compensation for 3 employees' }],                                                                                                                                      timestamp: '10:45 AM', details: { ipAddress: '192.168.1.104', area: 'Payroll',           client: 'desktop', changes: [{ employee: 'Blake Thompson', field: 'Annual Salary',      before: '$72,000',            after: '$78,000'              }, { employee: 'Blake Thompson', field: 'Job Title',            before: 'Senior Designer',    after: 'Lead Designer'        }, { employee: 'Lena Brooks',    field: 'Annual Salary',      before: '$65,000',            after: '$70,000'              }, { employee: 'Lena Brooks',    field: 'Performance Rating', before: 'Meets Expectations', after: 'Exceeds Expectations' }, { employee: 'Jamie Russo',    field: 'Annual Salary',      before: '$58,000',            after: '$63,000'              }] } },
@@ -298,6 +313,17 @@ function formatUndoneTime(d: Date) {
   const date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
   return `${date} ${time}`;
+}
+
+function formatTimeOffRange(from: string, to: string): string {
+  const f = new Date(`${from}T00:00:00`);
+  const t = new Date(`${to}T00:00:00`);
+  const mo = (d: Date) => d.toLocaleDateString('en-US', { month: 'short' });
+  const sameYear = f.getFullYear() === t.getFullYear();
+  const sameMonth = sameYear && f.getMonth() === t.getMonth();
+  if (sameMonth) return `${mo(f)} ${f.getDate()}–${t.getDate()}, ${t.getFullYear()}`;
+  if (sameYear)  return `${mo(f)} ${f.getDate()} – ${mo(t)} ${t.getDate()}, ${t.getFullYear()}`;
+  return `${mo(f)} ${f.getDate()}, ${f.getFullYear()} – ${mo(t)} ${t.getDate()}, ${t.getFullYear()}`;
 }
 
 function inferInputType(field: string): 'text' | 'select' {
@@ -490,6 +516,15 @@ const ACTION_PILL_CONFIG: Record<string, { type: PillType; label: string; icon: 
   edited:     { type: PillType.Neutral, label: 'Edited',    icon: 'pen-regular'                      },
   removed:    { type: PillType.Neutral, label: 'Deleted',   icon: 'trash-can-regular'                },
   'logged-in':{ type: PillType.Neutral, label: 'Logged in', icon: 'arrow-right-to-bracket-regular'   },
+  requested:  { type: PillType.Warning, label: 'Requested', icon: 'clock-regular'                    },
+  approved:   { type: PillType.Success, label: 'Approved',  icon: 'circle-check-regular'             },
+  denied:     { type: PillType.Neutral, label: 'Denied',    icon: 'circle-xmark-regular'             },
+};
+
+const TIMEOFF_STATUS_ICON: Record<string, { icon: string; color: string }> = {
+  requested: { icon: 'clock-solid',        color: 'warning-strong' },
+  approved:  { icon: 'circle-check-solid',  color: 'success-strong' },
+  denied:    { icon: 'circle-xmark-solid',  color: 'neutral-strong' },
 };
 
 function ActionPill({ action }: { action: string }) {
@@ -695,8 +730,83 @@ function AuditEventCard({
               )}
             </div>
 
-            {/* Automation steps timeline / change table */}
-            {event.action === 'logged-in' ? null : details.automationSteps ? (
+            {/* Time off request / Automation timeline / change table */}
+            {details.timeOff ? (
+              <div className="audit-timeoff-card">
+                <div className="audit-timeoff-card-header">
+                  <BodyText size="large" weight="semibold" color="neutral-strong">Time Off Request</BodyText>
+                  {event.action !== 'requested' && (
+                    <span className="audit-timeoff-status">
+                      <Pill muted type={ACTION_PILL_CONFIG[event.action]?.type ?? PillType.Neutral}>
+                        <span className="audit-timeoff-status-inner">
+                          <IconV2
+                            name={TIMEOFF_STATUS_ICON[event.action]?.icon ?? 'circle-info-solid'}
+                            size={13}
+                            color={TIMEOFF_STATUS_ICON[event.action]?.color ?? 'neutral-strong'}
+                          />
+                          {ACTION_PILL_CONFIG[event.action]?.label ?? event.action}
+                        </span>
+                      </Pill>
+                    </span>
+                  )}
+                </div>
+                <div className="audit-timeoff-card-body">
+                  <div className="audit-timeoff-card-field">
+                    <BodyText size="small" color="neutral-weak">Employee</BodyText>
+                    <BodyText size="medium" weight="medium">{affectedEmployee?.name ?? actor.name}</BodyText>
+                  </div>
+                  <div className="audit-timeoff-card-field">
+                    <BodyText size="small" color="neutral-weak">Dates Requested</BodyText>
+                    <BodyText size="medium" weight="medium">{formatTimeOffRange(details.timeOff.from, details.timeOff.to)}</BodyText>
+                  </div>
+                  <div className="audit-timeoff-card-field">
+                    <BodyText size="small" color="neutral-weak">Type</BodyText>
+                    <BodyText size="medium" weight="medium">{details.timeOff.policyType}</BodyText>
+                  </div>
+                  <div className="audit-timeoff-card-field">
+                    <BodyText size="small" color="neutral-weak">Hours</BodyText>
+                    <BodyText size="medium" weight="medium">{details.timeOff.hours}</BodyText>
+                  </div>
+                  {details.timeOff.note && (
+                    <div className="audit-timeoff-card-field audit-timeoff-card-field--full">
+                      <BodyText size="small" color="neutral-weak">Note</BodyText>
+                      <BodyText size="medium" weight="medium">{details.timeOff.note}</BodyText>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : details.multiAnswerList ? (
+              <div className="audit-timeoff-card">
+                <div className="audit-timeoff-card-header">
+                  <BodyText size="large" weight="semibold" color="neutral-strong">{details.multiAnswerList.fieldName}</BodyText>
+                  <span className="audit-mal-fieldtype">
+                    <IconV2 name="list-ul-regular" size={15} color="neutral-medium" />
+                    <BodyText size="small" color="neutral-medium">Multiple Answer List</BodyText>
+                  </span>
+                </div>
+                <div className="audit-mal-list">
+                  {details.multiAnswerList.options.map((opt) => (
+                    <div className="audit-mal-row" key={opt.label}>
+                      <Pill muted type={opt.before ? PillType.Success : PillType.Neutral}>
+                        <span className="audit-mal-pill-inner">
+                          <IconV2 name={opt.before ? 'square-check-solid' : 'square-regular'} size={15} color={opt.before ? 'success-strong' : 'neutral-medium'} />
+                          {opt.label}
+                        </span>
+                      </Pill>
+                      <span className="audit-mal-arrow">
+                        <IconV2 name="arrow-right-regular" size={14} color="neutral-medium" />
+                      </span>
+                      <Pill muted type={opt.after ? PillType.Success : PillType.Neutral}>
+                        <span className="audit-mal-pill-inner">
+                          <IconV2 name={opt.after ? 'square-check-solid' : 'square-regular'} size={15} color={opt.after ? 'success-strong' : 'neutral-medium'} />
+                          {opt.label}
+                        </span>
+                      </Pill>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : event.action === 'logged-in' ? null : details.automationSteps ? (
               <div className="audit-automation-timeline">
                 {details.automationSteps.map((step, i) => (
                   <div key={i} className={`audit-auto-step audit-auto-step--${step.status}`}>

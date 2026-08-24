@@ -354,7 +354,7 @@
 
 .audit-event-details {
   border-top: 1px solid var(--fabric-border-color-neutral-weak, #e8e8e8);
-  padding: 12px 16px;
+  padding: 12px 16px 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -380,6 +380,95 @@
   color: var(--fabric-color-text-neutral-weak, #aaa);
 }
 
+
+/* Time off request detail card */
+.audit-timeoff-card {
+  max-width: 640px;
+  margin: 4px 12px 8px;
+  background: #fff;
+  border: 1px solid var(--fabric-border-color-neutral-weak, #e0e0e0);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.audit-timeoff-card-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+}
+
+.audit-timeoff-card-header::after {
+  content: '';
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 0;
+  height: 1px;
+  background: var(--fabric-border-color-neutral-weak, #e8e8e8);
+}
+
+.audit-timeoff-card-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 32px;
+  padding: 24px;
+}
+
+.audit-timeoff-card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.audit-timeoff-card-field--full {
+  grid-column: 1 / -1;
+}
+
+.audit-timeoff-status {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.audit-timeoff-status-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Multiple answer list edit card */
+.audit-mal-fieldtype {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.audit-mal-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 24px;
+}
+
+.audit-mal-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.audit-mal-pill-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.audit-mal-arrow {
+  display: inline-flex;
+}
 
 /* Fabric Table wrapper — constrains padding/sizing inside the expanded card */
 .audit-change-table-wrap {
