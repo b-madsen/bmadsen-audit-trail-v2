@@ -34,6 +34,23 @@ import './AuditTrail.css';
 
 type ActorType = 'user' | 'system' | 'ask' | 'integration' | 'hr-services';
 
+// AI Connectors — Claude or ChatGPT acting through BambooHR's MCP server
+type ConnectorId = 'claude' | 'chatgpt';
+
+const CONNECTOR_LABEL: Record<ConnectorId, string> = {
+  claude: 'Claude',
+  chatgpt: 'ChatGPT',
+};
+
+// Font Awesome brand glyph, where IconV2 has one. Fabric 1.40.31 ships `openai`
+// but no `claude`, so Claude falls back to a masked SVG asset. If a later Fabric
+// picks up Font Awesome's `claude` brand icon, set it here and delete
+// .audit-connector-badge-icon plus claude-icon.svg.
+const CONNECTOR_ICON: Record<ConnectorId, string | null> = {
+  claude: null,
+  chatgpt: 'openai',
+};
+
 interface AuditActor {
   type: ActorType;
   name: string;
@@ -85,13 +102,14 @@ interface AuditEventData {
   timestamp: string;
   affectedEmployee?: { name: string; photo: string };
   viaAsk?: boolean;
+  viaConnector?: ConnectorId;
   partner?: boolean;
   northStarOnly?: boolean;
   hrcPerson?: string;
   details: {
     ipAddress: string;
     area: string;
-    client?: 'desktop' | 'mobile' | 'portal';
+    client?: 'desktop' | 'mobile' | 'portal' | 'connector';
     changes: AuditChange[];
     automationSteps?: AutomationStep[];
     timeOff?: {
@@ -121,6 +139,9 @@ interface AuditGroup {
 
 const AUDIT_GROUPS: AuditGroup[] = [
   { key: 'today',    label: 'Today',     date: new Date('2026-04-23'), events: [
+    { id: 'evt-conn-claude-1', action: 'requested', actor: { type: 'user', name: 'Kyle Offerman' }, viaConnector: 'claude', affectedEmployee: { name: 'Michelle Welch', photo: 'https://i.pravatar.cc/40?img=31' }, description: [{ text: 'Kyle Offerman', link: true }, { text: ' added a ' }, { text: 'time off request', link: true }, { text: ' for ' }, { text: 'Michelle Welch', link: true }, { text: ' via Claude' }], timestamp: '4:41 PM', details: { ipAddress: '10.0.4.58', area: 'Time Off', client: 'connector', changes: [], timeOff: { policyType: 'Vacation', from: '2026-07-06', to: '2026-07-10', hours: 40, note: 'Submitted on her behalf while she was out \u2014 Claude read the dates from her message' } } },
+    { id: 'evt-conn-chatgpt-1', action: 'edited', actor: { type: 'user', name: 'Derek Olson' }, viaConnector: 'chatgpt', affectedEmployee: { name: 'Jamie Russo', photo: 'https://i.pravatar.cc/40?img=60' }, description: [{ text: 'Derek Olson', link: true }, { text: ' edited ' }, { text: 'Job Title', link: true }, { text: ' for ' }, { text: 'Jamie Russo', link: true }, { text: ' via ChatGPT' }], timestamp: '4:18 PM', details: { ipAddress: '192.168.2.20', area: 'Employee Records', client: 'connector', changes: [{ employee: 'Jamie Russo', field: 'Job Title', before: 'Support Specialist', after: 'Senior Support Specialist', comment: 'Promotion approved in the Q2 review cycle \u2014 ChatGPT drafted the update from the review notes' }, { employee: 'Jamie Russo', field: 'Pay Grade', before: 'L2', after: 'L3', comment: 'Updated to match the new title band' }] } },
+    { id: 'evt-hrs-conn-1', action: 'edited', actor: { type: 'hr-services', name: 'HR Services' }, northStarOnly: true, hrcPerson: 'Sharon Brown', viaConnector: 'claude', description: [{ text: 'HR Services' }, { text: ' edited ' }, { text: 'Benefits enrollment', link: true }, { text: ' for ' }, { text: 'Marcus Rivera', link: true }, { text: ' via Claude' }], timestamp: '3:52 PM', details: { ipAddress: '198.51.100.12', area: 'Benefits', client: 'connector', changes: [{ employee: 'Marcus Rivera', field: 'Dependent Coverage', before: 'Employee only', after: 'Employee + spouse', comment: 'Qualifying life event confirmed \u2014 Claude applied the change from the marriage certificate on file' }] } },
     { id: 'evt-to-req', action: 'requested', actor: { type: 'user', name: 'Jennifer Coolidge', photo: 'https://i.pravatar.cc/40?img=49' }, description: [{ text: 'Jennifer Coolidge', link: true }, { text: ' requested ' }, { text: 'time off', link: true }], timestamp: '4:32 PM', details: { ipAddress: '10.0.4.21', area: 'Time Off', client: 'desktop', changes: [], timeOff: { policyType: 'Vacation', from: '2026-08-24', to: '2026-08-28', hours: 40, note: "Traveling for my cousin's wedding" } } },
     { id: 'evt-to-approved', action: 'approved', actor: { type: 'user', name: 'Sarah Chen', photo: 'https://i.pravatar.cc/40?img=47' }, affectedEmployee: { name: 'Marcus Rivera', photo: 'https://i.pravatar.cc/40?img=11' }, description: [{ text: 'Sarah Chen', link: true }, { text: ' approved ' }, { text: 'time off', link: true }, { text: ' for ' }, { text: 'Marcus Rivera', link: true }], timestamp: '3:10 PM', details: { ipAddress: '192.168.1.104', area: 'Time Off', client: 'desktop', changes: [], timeOff: { policyType: 'Sick', from: '2026-05-04', to: '2026-05-05', hours: 16, note: 'Doctor appointment and recovery' } } },
     { id: 'evt-to-denied', action: 'denied', actor: { type: 'user', name: 'Derek Olson', photo: 'https://i.pravatar.cc/40?img=68' }, affectedEmployee: { name: 'Priya Patel', photo: 'https://i.pravatar.cc/40?img=44' }, description: [{ text: 'Derek Olson', link: true }, { text: ' denied ' }, { text: 'time off', link: true }, { text: ' for ' }, { text: 'Priya Patel', link: true }], timestamp: '1:15 PM', details: { ipAddress: '192.168.2.20', area: 'Time Off', client: 'desktop', changes: [], timeOff: { policyType: 'Vacation', from: '2026-06-01', to: '2026-06-12', hours: 80, note: 'Overlaps a critical release window — please resubmit for later dates' } } },
@@ -185,12 +206,21 @@ const AUDIT_GROUPS: AuditGroup[] = [
   ] },
 ];
 
+// Filters on the client surface (details.client) rather than on actor.type —
+// a portal change still has a human actor, same as an AI Connector change.
+const PORTAL_LEAF = 'client-portal';
+
 interface ActorLeaf { id: string; label: string; }
 interface ActorNode { id: string; label: string; children?: ActorLeaf[]; }
 
 const ACTOR_TREE: ActorNode[] = [
   { id: 'user',   label: 'User' },
   { id: 'ask',    label: 'Bamboo AI' },
+  { id: 'ai-connector', label: 'AI Connectors', children: [
+    { id: 'connector-claude',  label: 'Claude'  },
+    { id: 'connector-chatgpt', label: 'ChatGPT' },
+  ] },
+  { id: PORTAL_LEAF, label: 'Client Portal' },
 ];
 
 const NORTH_STAR_ACTOR_TREE: ActorNode[] = [
@@ -574,6 +604,35 @@ function AvatarWithHRSBadge() {
   );
 }
 
+// AI Connector: generic user tile (the person is identified by name in the
+// description, not by photo) plus the connector's brand badge.
+function ConnectorBadge({ connector, stacked }: { connector: ConnectorId; stacked?: boolean }) {
+  return (
+    <div className={`audit-connector-badge-wrap ${stacked ? 'audit-connector-badge-wrap--stacked' : ''}`}>
+      <div className={`audit-connector-badge audit-connector-badge--${connector}`}>
+        {CONNECTOR_ICON[connector] ? (
+          <IconV2 name={CONNECTOR_ICON[connector] as string} size={12} color="neutral-forced-white" />
+        ) : (
+          <div className="audit-connector-badge-icon" />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AvatarWithConnectorBadge({ connector }: { connector: ConnectorId }) {
+  return (
+    <div className="audit-avatar-badge-wrap">
+      <IconTile
+        icon={<IconV2 name="user-solid" size={18} color="neutral-medium" />}
+        size={40}
+        variant="muted"
+      />
+      <ConnectorBadge connector={connector} />
+    </div>
+  );
+}
+
 function AvatarWithPartnerBadge() {
   return (
     <div className="audit-avatar-badge-wrap">
@@ -594,7 +653,7 @@ function AvatarWithPartnerBadge() {
 // Identity + AI: badges stack in the bottom-right corner, offset and overlapping.
 // The identity badge (broker or HR Services) sits behind/left; the AI badge is
 // right-most and on top.
-function AvatarWithBadgeStack({ identity }: { identity: 'partner' | 'hrs' }) {
+function AvatarWithBadgeStack({ identity, connector }: { identity: 'partner' | 'hrs'; connector?: ConnectorId }) {
   return (
     <div className="audit-avatar-badge-wrap">
       <IconTile
@@ -615,11 +674,15 @@ function AvatarWithBadgeStack({ identity }: { identity: 'partner' | 'hrs' }) {
           </div>
         </div>
       )}
-      <div className="audit-ask-badge audit-ask-badge--stacked">
-        <div className="audit-ask-badge-disc">
-          <IconV2 name="sparkles-solid" size={12} color="neutral-inverted" />
+      {connector ? (
+        <ConnectorBadge connector={connector} stacked />
+      ) : (
+        <div className="audit-ask-badge audit-ask-badge--stacked">
+          <div className="audit-ask-badge-disc">
+            <IconV2 name="sparkles-solid" size={12} color="neutral-inverted" />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -658,7 +721,7 @@ function AuditEventCard({
   const hasAnyReverted = revertedCount > 0;
   const allReverted = revertedCount === totalCount;
   const isAsk = actor.type === 'ask';
-  const showComment = isAsk || !!event.viaAsk;
+  const showComment = isAsk || !!event.viaAsk || !!event.viaConnector;
   const changeColumns = makeChangeColumns(
     (row) => { setFixTarget(row); setUpdateValue(row.after); },
     fixedChanges, showComment
@@ -678,7 +741,11 @@ function AuditEventCard({
             />
           </span>
           <div className="audit-event-actor-icon">
-            {event.partner && event.viaAsk ? (
+            {event.viaConnector && actor.type === 'hr-services' ? (
+              <AvatarWithBadgeStack identity="hrs" connector={event.viaConnector} />
+            ) : event.viaConnector ? (
+              <AvatarWithConnectorBadge connector={event.viaConnector} />
+            ) : event.partner && event.viaAsk ? (
               <AvatarWithBadgeStack identity="partner" />
             ) : actor.type === 'hr-services' && event.viaAsk ? (
               <AvatarWithBadgeStack identity="hrs" />
@@ -724,7 +791,7 @@ function AuditEventCard({
                 <>
                   <span className="audit-meta-sep">·</span>
                   <BodyText size="small" color="neutral-weak">
-                    <span className="audit-meta-label">Client</span> {details.client === 'mobile' ? 'BambooHR Mobile' : details.client === 'portal' ? 'Client Portal' : 'BambooHR Desktop'}
+                    <span className="audit-meta-label">Client</span> {details.client === 'mobile' ? 'BambooHR Mobile' : details.client === 'portal' ? 'Client Portal' : details.client === 'connector' ? `${event.viaConnector ? CONNECTOR_LABEL[event.viaConnector] : 'AI'} (AI Connector)` : 'BambooHR Desktop'}
                   </BodyText>
                 </>
               )}
@@ -780,7 +847,7 @@ function AuditEventCard({
                 <div className="audit-timeoff-card-header">
                   <BodyText size="large" weight="semibold" color="neutral-strong">{details.multiAnswerList.fieldName}</BodyText>
                   <span className="audit-mal-fieldtype">
-                    <IconV2 name="list-ul-regular" size={15} color="neutral-medium" />
+                    <IconV2 name="bars-sort-regular" size={15} color="neutral-medium" />
                     <BodyText size="small" color="neutral-medium">Multiple Answer List</BodyText>
                   </span>
                 </div>
@@ -1009,6 +1076,10 @@ function ActorsDropdown({ selectedIds, onSelectionChange, tree = ACTOR_TREE }: {
     }
   }
 
+  function toggleExpanded(id: string) {
+    setExpandedParents(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  }
+
   function toggleLeaf(id: string) {
     if (selectedIds.includes(id)) {
       onSelectionChange(selectedIds.filter(s => s !== id));
@@ -1040,15 +1111,30 @@ function ActorsDropdown({ selectedIds, onSelectionChange, tree = ACTOR_TREE }: {
           <div className="audit-filter-checkbox-list">
             {tree.map(node => {
               const state = actorParentState(node, selectedIds);
-              const isExpanded = expandedParents.includes(node.id) || state !== 'unchecked';
+              const isExpanded = expandedParents.includes(node.id);
               return (
                 <div key={node.id}>
-                  <ParentCheckbox
-                    id={node.id}
-                    label={node.label}
-                    state={state}
-                    onChange={() => toggleParent(node)}
-                  />
+                  <div className="audit-actor-parent-row">
+                    {node.children ? (
+                      <button
+                        type="button"
+                        className="audit-actor-disclosure"
+                        aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${node.label}`}
+                        aria-expanded={isExpanded}
+                        onClick={() => toggleExpanded(node.id)}
+                      >
+                        <IconV2 name={isExpanded ? 'angle-down-regular' : 'angle-right-regular'} size={12} color="neutral-medium" />
+                      </button>
+                    ) : (
+                      <span className="audit-actor-disclosure-spacer" />
+                    )}
+                    <ParentCheckbox
+                      id={node.id}
+                      label={node.label}
+                      state={state}
+                      onChange={() => toggleParent(node)}
+                    />
+                  </div>
                   {node.children && isExpanded && (
                     <div className="audit-actor-children">
                       {node.children.map(child => (
@@ -1356,14 +1442,25 @@ function applyFilters(
   selectedActions: string[],
   selectedAreas: string[],
   selectedTags: TagItem[],
+  showExtras: boolean,
 ): AuditGroup[] {
   const fromDate = dateRange.from ? new Date(dateRange.from) : null;
   const toDate   = dateRange.to   ? new Date(dateRange.to)   : null;
   if (fromDate) fromDate.setHours(0, 0, 0, 0);
   if (toDate)   toDate.setHours(23, 59, 59, 999);
 
-  const allowedActorTypes = selectedActors.length > 0
-    ? new Set(selectedActors.flatMap(id => ACTOR_LEAF_TO_TYPE[id] ?? []))
+  // AI Connector leafs filter on the viaConnector modifier rather than on
+  // actor.type — a connector event still has a human (or HR Services) actor.
+  const connectorLeafs = selectedActors.filter(id => id.startsWith('connector-'));
+  const allowedConnectors = connectorLeafs.length > 0
+    ? new Set(connectorLeafs.map(id => id.slice('connector-'.length)))
+    : null;
+
+  const portalSelected = selectedActors.includes(PORTAL_LEAF);
+
+  const actorLeafs = selectedActors.filter(id => !id.startsWith('connector-') && id !== PORTAL_LEAF);
+  const allowedActorTypes = actorLeafs.length > 0
+    ? new Set(actorLeafs.flatMap(id => ACTOR_LEAF_TO_TYPE[id] ?? []))
     : null;
 
   const allowedAreas = selectedAreas.length > 0
@@ -1383,7 +1480,14 @@ function applyFilters(
     .map(group => ({
       ...group,
       events: group.events.filter(event => {
-        if (allowedActorTypes && !allowedActorTypes.has(event.actor.type)) return false;
+        // AI Connectors are an Extras-only concept.
+        if (!showExtras && event.viaConnector) return false;
+        if (allowedActorTypes || allowedConnectors || portalSelected) {
+          const typeMatch = !!allowedActorTypes && allowedActorTypes.has(event.actor.type);
+          const connectorMatch = !!allowedConnectors && !!event.viaConnector && allowedConnectors.has(event.viaConnector);
+          const portalMatch = portalSelected && event.details.client === 'portal';
+          if (!typeMatch && !connectorMatch && !portalMatch) return false;
+        }
         if (selectedActions.length > 0 && !selectedActions.includes(event.action)) return false;
         if (allowedAreas && !allowedAreas.has(event.details.area)) return false;
         if (taggedActorNames.length > 0 && !taggedActorNames.includes(event.actor.name.toLowerCase())) return false;
@@ -1402,6 +1506,10 @@ export default function AuditTrail() {
   const [searchParams] = useSearchParams();
   const { showExtras } = useViewBar();
 
+  const actorTree = showExtras
+    ? NORTH_STAR_ACTOR_TREE
+    : NORTH_STAR_ACTOR_TREE.filter(node => node.id !== 'ai-connector');
+
   const highlightEventId = searchParams.get('event');
   const [expandedIds, setExpandedIds] = useState<Set<string>>(
     highlightEventId ? new Set([highlightEventId]) : new Set()
@@ -1415,6 +1523,16 @@ export default function AuditTrail() {
   const [auditGroups, setAuditGroups] = useState<AuditGroup[]>(AUDIT_GROUPS);
   const [showActionType, setShowActionType] = useState(true);
   const [showIpAddress, setShowIpAddress] = useState(false);
+
+  // Turning Extras off hides the AI Connectors group, so drop any selections
+  // made inside it — otherwise the Actors count keeps counting a hidden filter.
+  useEffect(() => {
+    if (showExtras) return;
+    setSelectedActors(prev => {
+      const kept = prev.filter(id => !id.startsWith('connector-'));
+      return kept.length === prev.length ? prev : kept;
+    });
+  }, [showExtras]);
 
   function handleEventAdded(newEvent: AuditEventData) {
     setAuditGroups(prev => {
@@ -1597,7 +1715,7 @@ export default function AuditTrail() {
         <TagsDropdown value={selectedTags} onChange={setSelectedTags} />
         <FilterDropdown label="Actions" icon="clock-rotate-left"          type="checkbox" options={ACTIONS} selectedIds={selectedActions} onSelectionChange={setSelectedActions} />
         <FilterDropdown label="Areas"   icon="layer-group"   type="checkbox" options={AREAS}   selectedIds={selectedAreas}   onSelectionChange={setSelectedAreas} />
-        <ActorsDropdown selectedIds={selectedActors} onSelectionChange={setSelectedActors} tree={NORTH_STAR_ACTOR_TREE} />
+        <ActorsDropdown selectedIds={selectedActors} onSelectionChange={setSelectedActors} tree={actorTree} />
         {(dateRange.from || dateRange.to || selectedActors.length > 0 || selectedActions.length > 0 || selectedAreas.length > 0 || selectedTags.length > 0) && (
           <TextButton
             onClick={() => {
@@ -1625,7 +1743,7 @@ export default function AuditTrail() {
 
         {applyFilters(
           auditGroups,
-          dateRange, selectedActors, selectedActions, selectedAreas, selectedTags
+          dateRange, selectedActors, selectedActions, selectedAreas, selectedTags, showExtras
         ).map(group => (
           <div key={group.key} className="audit-timeline-group">
             <DateSeparator label={formatGroupLabel(group.label, group.date)} />

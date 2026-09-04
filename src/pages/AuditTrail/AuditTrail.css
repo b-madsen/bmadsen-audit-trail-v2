@@ -196,11 +196,40 @@
   border-top: 1px solid var(--fabric-border-color-neutral-weak, #e0e0e0);
 }
 
+.audit-actor-parent-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.audit-actor-disclosure {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audit-actor-disclosure:hover {
+  background: var(--fabric-surface-color-neutral-x-weak, #f4f4f4);
+}
+
+.audit-actor-disclosure-spacer {
+  width: 16px;
+  flex-shrink: 0;
+}
+
 .audit-actor-children {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding-left: 24px;
+  padding-left: 44px;
   margin-top: 4px;
 }
 
@@ -688,6 +717,55 @@
   fill: #fff;
 }
 
+/* ── AI Connector avatar badge (Claude / ChatGPT via BambooHR MCP) ───────── */
+
+.audit-connector-badge-wrap {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audit-connector-badge {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audit-connector-badge--claude {
+  background: #D97757;
+}
+
+.audit-connector-badge--chatgpt {
+  background: #000;
+}
+
+.audit-connector-badge-icon {
+  background: #fff;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.audit-connector-badge--claude .audit-connector-badge-icon {
+  width: 13px;
+  height: 13px;
+  -webkit-mask-image: url('/assets/images/claude-icon.svg');
+  mask-image: url('/assets/images/claude-icon.svg');
+}
+
 /* ── Broker + AI badge stack ─────────────────────────────────────────────── */
 /* Badges overlap in the corner: identity (broker) sits behind and to the left,
    the AI badge is right-most and on top. */
@@ -698,7 +776,8 @@
   z-index: 1;
 }
 
-.audit-ask-badge--stacked {
+.audit-ask-badge--stacked,
+.audit-connector-badge-wrap--stacked {
   right: -4px;
   z-index: 2;
 }
